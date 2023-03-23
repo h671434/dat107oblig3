@@ -1,5 +1,5 @@
 package dat107.model;
 
-public class Avdeling {
+public class Project {
 
 }
