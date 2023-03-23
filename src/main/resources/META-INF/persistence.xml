@@ -6,10 +6,10 @@
 
 	<persistence-unit name="oblig3PU" transaction-type="RESOURCE_LOCAL">
 	
-		<class>dat107.model.Employee</class>
-		<class>dat107.model.Department</class>
-		<class>dat107.model.Project</class>
-		<class>dat107.model.ProjectParticipation</class>
+		<class>dat107.oblig3.data.model.Employee</class>
+		<class>dat107.oblig3.data.model.Department</class>
+		<class>dat107.oblig3.data.model.Project</class>
+		<class>dat107.oblig3.data.model.ProjectParticipation</class>
 				
 		<properties>
 		    <!--  Generelle JPA properties -->

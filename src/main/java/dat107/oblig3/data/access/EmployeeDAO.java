@@ -1,16 +1,16 @@
-package dat107.dataaccess;
+package dat107.oblig3.data.access;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import dat107.model.Employee;
+import dat107.oblig3.data.model.Employee;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 
-public class EmployeeDAO implements DAO<Employee>{
+public class EmployeeDAO implements DataAccess<Employee>{
 
 	private EntityManagerFactory emf;
 	

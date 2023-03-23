@@ -1,8 +1,10 @@
-package dat107.model;
+package dat107.oblig3.data.model;
 
 import java.sql.Date;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -10,7 +12,9 @@ import jakarta.persistence.Table;
 @Table(name = "employees", schema = "oblig3")
 public class Employee {
 
-	@Id private Integer employee_id;
+	@Id 
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer employee_id;
 	private String username;
 	private String first_name;
 	private String last_name;

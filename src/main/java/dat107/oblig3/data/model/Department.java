@@ -1,4 +1,4 @@
-package dat107.model;
+package dat107.oblig3.data.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

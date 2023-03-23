@@ -5,9 +5,11 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="oblig3Kode/src"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" path="src/main/sql"/>
 	<classpathentry kind="lib" path="oblig3Kode/lib/eclipselink-3.0.3.jar"/>
-	<classpathentry kind="lib" path="oblig3Kode/lib/jakarta.persistence-api-3.1.0.jar"/>
+	<classpathentry kind="lib" path="oblig3Kode/lib/jakarta.persistence-api-3.1.0.jar" sourcepath="oblig3Kode/lib/jakarta.persistence-api-3.1.0-sources.jar"/>
 	<classpathentry kind="lib" path="oblig3Kode/lib/postgresql-42.5.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
