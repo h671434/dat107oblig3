@@ -1,4 +1,4 @@
-package dat107.oblig3.data.model;
+package corp.dbapp.data.model;
 
 import java.sql.Date;
 
@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 @Table(name = "employees", schema = "oblig3")
 public class Employee {
 
-	@Id 
+	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer employee_id;
 	private String username;
@@ -20,10 +20,10 @@ public class Employee {
 	private String last_name;
 	private Date employment_date;
 	private String position;
-	
+
 	public Employee() {}
 
-	public Employee(Integer employeeId, String username, String firstName, 
+	public Employee(Integer employeeId, String username, String firstName,
 			String lastName, Date employmentDate, String position) {
 		this.employee_id = employeeId;
 		this.username = username;
@@ -83,16 +83,16 @@ public class Employee {
 
 	@Override
 	public String toString() {
-		return "Employee [employee_id=" + employee_id 
-				+ ", username=" + username 
-				+ ", first_name=" + first_name 
-				+ ", last_name=" + last_name 
-				+ ", employment_date=" + employment_date 
+		return "Employee [employee_id=" + employee_id
+				+ ", username=" + username
+				+ ", first_name=" + first_name
+				+ ", last_name=" + last_name
+				+ ", employment_date=" + employment_date
 				+ ", position=" + position + "]";
 	}
-	
+
 	public void print() {
 		System.out.println(this.toString());
 	}
-	
+
 }

@@ -1,4 +1,4 @@
-package dat107.oblig3.data.model;
+package corp.dbapp.data.model;
 
 public class ProjektParticipation {
 
