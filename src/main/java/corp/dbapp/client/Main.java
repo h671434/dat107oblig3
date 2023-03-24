@@ -12,12 +12,12 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Hello world!");
 
-        DataAccess<Employee> employeeDAO = new EmployeeDAO();
-
-        employeeDAO.get(1).ifPresent(e -> e.print());
-        employeeDAO.getAll().forEach(e -> e.print());
-
-        employeeDAO.getBy("username", "pto").forEach(e -> e.print());
+//        DataAccess<Employee> employeeDAO = new EmployeeDAO();
+//
+//        employeeDAO.get(1).ifPresent(e -> e.print());
+//        employeeDAO.getAll().forEach(e -> e.print());
+//
+//        employeeDAO.getBy("username", "pto").forEach(e -> e.print());
     
 
 		SwingUtilities.invokeLater(new Runnable() {
@@ -31,7 +31,6 @@ public class Main {
 		AppWindow frame = new AppWindow();
 	
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(1200, 800);
 		frame.setLocationByPlatform(true);
 		frame.setVisible(true);
 	}

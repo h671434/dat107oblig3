@@ -1,53 +1,42 @@
 package corp.dbapp.data.access;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import corp.dbapp.data.model.Employee;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.NonUniqueResultException;
 import jakarta.persistence.TypedQuery;
 
-public class EmployeeDAO implements DataAccess<Employee>{
-
-	private EntityManagerFactory emf;
-
-	public EmployeeDAO() {
-		this.emf = Persistence.createEntityManagerFactory("oblig3PU",
-				Map.of("jakarta.persistence.jdbc.password", "pass"));
-	}
+public class EmployeeDAO extends DataAccess<Employee>{
 
 	@Override
-	public Optional<Employee> get(int id) {
-        try (EntityManager em = emf.createEntityManager()){
-        	return Optional.ofNullable(em.find(Employee.class, id));
-        }
+	protected Class<Employee> getEntityClass() {
+		return Employee.class;
 	}
-
-	@Override
-	public List<Employee> getAll() {
-		String arg = "SELECT t from Employee t";
+	 
+	public Optional<Employee> getById(int id) {
+		return get(id);
+	}
+	
+	public Optional<Employee> getByUsername(String username) {
+		String arg = "SELECT DISTINCT t FROM " 
+				+ getEntityClass().getSimpleName() + " t "
+				+ "WHERE t.username LIKE :username";
 
         try (EntityManager em = emf.createEntityManager()) {
-        	TypedQuery<Employee> query = em.createQuery(arg, Employee.class);
+        	TypedQuery<Employee> query = em.createQuery(arg, getEntityClass());
+        	query.setParameter("username", username);
 
-        	return query.getResultList();
+        	return Optional.of(query.getSingleResult());
+        } catch (NoResultException | NonUniqueResultException e) {
+        	return Optional.empty();
         }
 	}
-
-	@Override
-	public List<Employee> getBy(String field, Object param) {
-		String arg = "SELECT t FROM Employee t "
-				+ "WHERE t." + field + " LIKE :param";
-
-        try (EntityManager em = emf.createEntityManager()) {
-        	TypedQuery<Employee> query = em.createQuery(arg, Employee.class);
-        	query.setParameter("param", param);
-
-        	return query.getResultList();
-        }
+	
+	public void updatePosition(Employee toUpdate, String newPosition) {	
+		toUpdate.setPosition(newPosition);
+		save(toUpdate);	
 	}
 
 }
