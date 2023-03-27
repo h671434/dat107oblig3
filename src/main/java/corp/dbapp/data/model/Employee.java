@@ -20,6 +20,7 @@ public class Employee {
 	private String last_name;
 	private Date employment_date;
 	private String position;
+	private Integer department_id;
 
 	public Employee() {}
 
@@ -31,6 +32,18 @@ public class Employee {
 		this.last_name = lastName;
 		this.employment_date = employmentDate;
 		this.position = position;
+	}
+	
+	public Employee(Integer employeeId, String username, String firstName,
+			String lastName, Date employmentDate, String position,
+			Integer department_id) {
+		this.employee_id = employeeId;
+		this.username = username;
+		this.first_name = firstName;
+		this.last_name = lastName;
+		this.employment_date = employmentDate;
+		this.position = position;
+		this.department_id = department_id;
 	}
 
 	public Integer getEmployeeId() {
@@ -79,6 +92,14 @@ public class Employee {
 
 	public void setPosition(String position) {
 		this.position = position;
+	}
+	
+	public Integer getDepartmentId() {
+		return department_id;
+	}
+	
+	public void setDepartmentId(Integer department_id) {
+		this.department_id = department_id;
 	}
 
 	@Override

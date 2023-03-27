@@ -9,7 +9,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.NonUniqueResultException;
 import jakarta.persistence.TypedQuery;
 
-public class EmployeeDAO extends DataAccess<Employee>{
+public class EmployeeDAO extends DAO<Employee>{
 
 	@Override
 	protected Class<Employee> getEntityClass() {

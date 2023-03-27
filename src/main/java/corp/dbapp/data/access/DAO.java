@@ -9,13 +9,13 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 
-public abstract class DataAccess <T>{
+public abstract class DAO <T>{
 
 	protected EntityManagerFactory emf = Persistence.createEntityManagerFactory(
 					"oblig3PU", Map.of("jakarta.persistence.jdbc.password", "pass"));
 
 	/**
-	 * Only used in methods from abstract class DataAccess<T>. 
+	 * Only used in methods from abstract class DAO<T>. 
 	 * Gets the class of DAO's entity.
 	 * @return the entity class
 	 */

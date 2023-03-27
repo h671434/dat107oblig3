@@ -18,12 +18,11 @@ public class SearchBar extends JPanel {
 	private JButton searchButton = new JButton("Search");
 	private JLabel searchOptionLabel = new JLabel("Search by:");
 	
-	private JComboBox<String> searchOptions;
+	private JComboBox<String> searchOptions = new JComboBox<String>();
 	
 	private Map<String, Consumer<String>> responder = new HashMap<>();
 	
-	public SearchBar(String[] searchByOptions) {
-		this.searchOptions = new JComboBox<String>(searchByOptions);
+	public SearchBar() {
 		setLayout(new FlowLayout());
 		setAlignmentX(CENTER_ALIGNMENT);
 		
@@ -39,9 +38,12 @@ public class SearchBar extends JPanel {
 		responder.get(searchOptions.getSelectedItem()).accept(searchField.getText());
 	}
 	
-	public void setResponder(String key, Consumer<String> onSearch) {
-		responder.put(key, onSearch);
+	public void addResponder(String option, Consumer<String> onSearch) {
+		responder.put(option, onSearch);
+		searchOptions.addItem(option);
 	}
-	
-	
+
 }
+	
+
+
