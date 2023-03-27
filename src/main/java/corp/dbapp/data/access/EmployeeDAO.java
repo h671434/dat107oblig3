@@ -1,5 +1,6 @@
 package corp.dbapp.data.access;
 
+import java.util.List;
 import java.util.Optional;
 
 import corp.dbapp.data.model.Employee;
@@ -32,6 +33,10 @@ public class EmployeeDAO extends DataAccess<Employee>{
         } catch (NoResultException | NonUniqueResultException e) {
         	return Optional.empty();
         }
+	}
+	
+	public List<Employee> getByProject(int project_id) {
+		return getBy("project_idl", project_id);
 	}
 	
 	public void updatePosition(Employee toUpdate, String newPosition) {	

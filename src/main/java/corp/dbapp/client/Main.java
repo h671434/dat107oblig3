@@ -4,11 +4,11 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import corp.dbapp.client.gui.AppWindow;
-import corp.dbapp.data.access.DataAccess;
-import corp.dbapp.data.access.EmployeeDAO;
-import corp.dbapp.data.model.Employee;
 
 public class Main {
+	
+	public static final int PORT = 8564;
+	
     public static void main(String[] args) {
         System.out.println("Hello world!");
 
@@ -18,16 +18,17 @@ public class Main {
 //        employeeDAO.getAll().forEach(e -> e.print());
 //
 //        employeeDAO.getBy("username", "pto").forEach(e -> e.print());
-    
-
+        
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				createAndShowGui();
 			}
 		});
+		
+		new Thread(new ServerReplacer(PORT)).run();
 	}
 
-	private static void createAndShowGui() {
+	private static void createAndShowGui() {	
 		AppWindow frame = new AppWindow();
 	
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
