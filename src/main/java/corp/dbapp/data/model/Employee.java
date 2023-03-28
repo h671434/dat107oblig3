@@ -20,30 +20,22 @@ public class Employee {
 	private String last_name;
 	private Date employment_date;
 	private String position;
-	private Integer department_id;
+	private Double monthly_salary;
+	private Integer department;
 
-	public Employee() {}
-
-	public Employee(Integer employeeId, String username, String firstName,
-			String lastName, Date employmentDate, String position) {
-		this.employee_id = employeeId;
-		this.username = username;
-		this.first_name = firstName;
-		this.last_name = lastName;
-		this.employment_date = employmentDate;
-		this.position = position;
+	public Employee() {
 	}
-	
-	public Employee(Integer employeeId, String username, String firstName,
-			String lastName, Date employmentDate, String position,
-			Integer department_id) {
+
+	public Employee(Integer employeeId, String username, String firstName, String lastName, Date employmentDate,
+			String position, Double monthlySalary, Integer departmentId) {
 		this.employee_id = employeeId;
 		this.username = username;
 		this.first_name = firstName;
 		this.last_name = lastName;
 		this.employment_date = employmentDate;
 		this.position = position;
-		this.department_id = department_id;
+		this.monthly_salary = monthlySalary;
+		this.department = departmentId;
 	}
 
 	public Integer getEmployeeId() {
@@ -93,23 +85,27 @@ public class Employee {
 	public void setPosition(String position) {
 		this.position = position;
 	}
-	
-	public Integer getDepartmentId() {
-		return department_id;
+
+	public Double getMonthlySalary() {
+		return monthly_salary;
 	}
-	
-	public void setDepartmentId(Integer department_id) {
-		this.department_id = department_id;
+
+	public void setMonthlySalary(Double monthly_salary) {
+		this.monthly_salary = monthly_salary;
+	}
+
+	public Integer getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(Integer department) {
+		this.department = department;
 	}
 
 	@Override
 	public String toString() {
-		return "Employee [employee_id=" + employee_id
-				+ ", username=" + username
-				+ ", first_name=" + first_name
-				+ ", last_name=" + last_name
-				+ ", employment_date=" + employment_date
-				+ ", position=" + position + "]";
+		return "Employee [employee_id=" + employee_id + ", username=" + username + ", first_name=" + first_name
+				+ ", last_name=" + last_name + ", employment_date=" + employment_date + ", position=" + position + "]";
 	}
 
 	public void print() {

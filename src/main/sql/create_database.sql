@@ -29,8 +29,8 @@ VALUES
 	
 	('eer', 'Eirik', 'Ermantraut', '2019-12-23', 'Developer', 25000.00),
 	('pne', 'Pilly', 'Nesen', '2020-01-03', 'Accountant', 25000.00),
-	('sit', 'Sofie', 'Itle', '2020-10-23', 'HR', 25000.00),
-	('kot', 'Ken', 'Otterman', '2020-02-23', 'Developer', 25000.00);
+	('sit', 'Sofie', 'Itle', '2020-10-23', 'Salesperson', 25000.00),
+	('kot', 'Ken', 'Otterman', '2020-02-23', 'Developer', 25000.00),
 	('cba', 'Charlotte', 'Banana', '2021-10-20', 'Developer', 25000.00),
 	('man', 'Miss', 'Andersen', '2021-10-23', 'Salesperson', 25000.00),
 	('boy', 'Big', 'Oyster', '2022-10-23', 'Developer', 25000.00);
@@ -43,7 +43,7 @@ CREATE TABLE departments(
 	department_name VARCHAR(30) NOT NULL,
 	department_manager INTEGER NOT NULL,
 	CONSTRAINT pk_departments PRIMARY KEY(department_id),
-	CONSTRAINT fk_employees FOREIGN KEY(derpartment_manager)
+	CONSTRAINT fk_employees FOREIGN KEY(department_manager)
 		REFERENCES employees(employee_id)
 );
 
@@ -73,8 +73,8 @@ UPDATE employees
 	WHERE position LIKE 'Salesperson';
 	
 ALTER TABLE employees 
-	ALTER COLUMN department TYPE INTEGER NOT NULL,
+	ALTER COLUMN department SET NOT NULL,
 	ADD CONSTRAINT fk_departments FOREIGN KEY(department)
 		REFERENCES departments(department_id);
 		
-
+		

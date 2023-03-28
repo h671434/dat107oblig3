@@ -10,14 +10,15 @@ import jakarta.persistence.Table;
 @Table(name = "departments", schema = "oblig3")
 public class Department {
 
-	@Id 
+	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int department_id;
 	private String department_name;
 	private int department_manager;
 
-	public Department() {};
-	
+	public Department() {
+	};
+
 	public Department(int department_id, String department_name, int department_manager) {
 		this.department_id = department_id;
 		this.department_name = department_name;
@@ -50,8 +51,7 @@ public class Department {
 
 	@Override
 	public String toString() {
-		return "Department [department_id=" + department_id
-				+ ", department_name=" + department_name
+		return "Department [department_id=" + department_id + ", department_name=" + department_name
 				+ ", department_manager=" + department_manager + "]";
 	}
 
