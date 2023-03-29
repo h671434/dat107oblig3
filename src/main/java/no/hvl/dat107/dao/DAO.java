@@ -1,4 +1,4 @@
-package corp.dbapp.data.access;
+package no.hvl.dat107.dao;
 
 import java.util.List;
 import java.util.Map;
@@ -67,6 +67,13 @@ public abstract class DAO<T> {
 			return query.getResultList();
 		}
 	}
+	
+	/**
+	 * Adds new entity to database.
+	 * @param Entity to add
+	 * @return true if operation was succsesful, false otherwise.
+	 */
+	public abstract boolean addNew(T toAdd);
 
 	/**
 	 * Searches for all entities where any field matches the search. Does not

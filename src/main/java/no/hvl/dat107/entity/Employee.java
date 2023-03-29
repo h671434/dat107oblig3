@@ -1,4 +1,4 @@
-package corp.dbapp.data.model;
+package no.hvl.dat107.entity;
 
 import java.sql.Date;
 
@@ -23,8 +23,7 @@ public class Employee {
 	private Double monthly_salary;
 	private Integer department;
 
-	public Employee() {
-	}
+	public Employee() {}
 
 	public Employee(Integer employeeId, String username, String firstName, String lastName, Date employmentDate,
 			String position, Double monthlySalary, Integer departmentId) {

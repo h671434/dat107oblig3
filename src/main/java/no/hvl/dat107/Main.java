@@ -1,9 +1,10 @@
-package corp.dbapp.client;
+package no.hvl.dat107;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import corp.dbapp.client.gui.AppWindow;
+import no.hvl.dat107.gui.AppWindow;
+import no.hvl.dat107.util.ServerReplacer;
 
 public class Main {
 

@@ -1,13 +1,13 @@
-package corp.dbapp.data.access;
+package no.hvl.dat107.dao;
 
 import java.util.List;
 import java.util.Optional;
 
-import corp.dbapp.data.model.Employee;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.NonUniqueResultException;
 import jakarta.persistence.TypedQuery;
+import no.hvl.dat107.entity.Employee;
 
 public class EmployeeDAO extends DAO<Employee> {
 
@@ -53,8 +53,10 @@ public class EmployeeDAO extends DAO<Employee> {
 		save(toUpdate);
 	}
 
-	public void addNewEmployee(Employee newEmployee) {
+	@Override
+	public boolean addNew(Employee toAdd) {
 		// TODO
+		return false;
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package corp.dbapp.client;
+package no.hvl.dat107.util;
 
 import java.io.IOException;
 import java.net.ServerSocket;

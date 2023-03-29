@@ -1,15 +1,16 @@
-package corp.dbapp.client.gui;
+package no.hvl.dat107.gui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -25,9 +26,10 @@ public class AppWindow extends JFrame {
 	public final AppNavigationPanel navigation = new AppNavigationPanel();
 	public final AppContentPanel content = new AppContentPanel();
 
-	private Map<String, Screen> screens = new HashMap<>() {
+	private Map<String, Screen> screens = new LinkedHashMap<>() {
 		{
 			put("Employees", new EmployeesScreen());
+			put("Departments", new DepartmentsScreen());
 		}
 	};
 
@@ -40,6 +42,7 @@ public class AppWindow extends JFrame {
 		setJMenuBar(toolbar);
 		getContentPane().add(navigation, BorderLayout.WEST);
 		getContentPane().add(content, BorderLayout.CENTER);
+		
 		addContentScreens();
 	}
 
@@ -90,12 +93,36 @@ public class AppWindow extends JFrame {
 		}
 	}
 
-	private class AppNavigationPanel extends JPanel {
-
+	private final class AppNavigationPanel extends JPanel {
+		                
+		private GridBagConstraints nextButtonPos = new GridBagConstraints() {
+			{
+				fill = GridBagConstraints.HORIZONTAL;
+				weightx = 1;
+				weighty = 0;
+				anchor = GridBagConstraints.PAGE_START;
+				gridx = 0;
+				gridy = 0;
+			}
+		};
+		
 		public AppNavigationPanel() {
-			setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+			setLayout(new GridBagLayout());
 			setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 			setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+			
+			JPanel emptyArea = new JPanel();
+			emptyArea.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
+			
+			GridBagConstraints fillUnderButtons = new GridBagConstraints() {
+				{
+					fill = GridBagConstraints.BOTH;
+					weighty = 1;
+					gridy = 100;
+				}	
+			};
+			
+			add(emptyArea, fillUnderButtons);
 		}
 
 		public void addNavigationButton(String screenName) {
@@ -105,13 +132,15 @@ public class AppWindow extends JFrame {
 			button.setForeground(UITheme.DEFAULT_TEXT_COLOR);
 			button.setAlignmentX(CENTER_ALIGNMENT);
 			button.setBorder(BorderFactory.createEmptyBorder());
-			button.setPreferredSize(new Dimension(navigation.getWidth(), 50));
+			button.setPreferredSize(new Dimension(navigation.getWidth(), 40));
 			button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			add(button);
+			
+			add(button, nextButtonPos);
+			nextButtonPos.gridy++;
 		}
 	}
 
-	private class AppContentPanel extends JPanel {
+	private final class AppContentPanel extends JPanel {
 
 		private final CardLayout layout = new CardLayout();
 

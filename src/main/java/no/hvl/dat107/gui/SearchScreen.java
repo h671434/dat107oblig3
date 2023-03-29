@@ -1,7 +1,8 @@
-package corp.dbapp.client.gui;
+package no.hvl.dat107.gui;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,21 +27,26 @@ public abstract class SearchScreen<T> extends Screen {
 	protected final SearchBar searchBar;
 	protected final JTable table;
 	protected final DataTableModel tableModel;
+	protected final JPanel buttons;
 	private Map<String, Function<String, List<T>>> searchOpt = new HashMap<>();
 
 	protected SearchScreen() {
 		this.searchBar = new SearchBar((o, s) -> onSearch(o, s));
 		this.tableModel = getTableModel();
 		this.table = new JTable(tableModel);
+		this.buttons = new JPanel();
 
 		setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 		setForeground(UITheme.DEFAULT_TEXT_COLOR);
 
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		table.setPreferredScrollableViewportSize(new Dimension(850, 550));
+		
+		buttons.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 
 		addTopPanel(searchBar);
 		addCenterPanel(new JScrollPane(table));
+		addBottomPanel(buttons);
 	}
 
 	protected abstract DataTableModel getTableModel();
@@ -50,7 +56,8 @@ public abstract class SearchScreen<T> extends Screen {
 		tableModel.updateContent(results.apply(search));
 	}
 
-	protected void addSearchOption(String option, Function<String, List<T>> getter) {
+	protected void addSearchOption(String option, Function<String, 
+			List<T>> getter) {
 		searchBar.addSearchOption(option);
 		searchOpt.put(option, getter);
 	}
@@ -62,7 +69,28 @@ public abstract class SearchScreen<T> extends Screen {
 	}
 
 	protected void showNoResultsDialog(String message) {
-		JOptionPane.showMessageDialog(this, message, "No results", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(this, message, "No results", 
+				JOptionPane.ERROR_MESSAGE);
+	}
+	
+	protected JButton addButton(String text, ActionListener onPress, 
+			boolean onlyEnabledOnSelection) {
+		JButton newButton = new JButton(text);
+		newButton.addActionListener(onPress);
+		buttons.add(newButton);
+		
+		if(onlyEnabledOnSelection) {
+			newButton.setEnabled(false);
+			addSelectionListener(selected -> {
+				newButton.setEnabled(selected != null);
+			});
+		}
+		
+		return newButton;
+	}
+	
+	protected String showEditFieldDialog(String field) {
+		return JOptionPane.showInputDialog(table, "Insert new " + field);
 	}
 
 	public T getSelected() {
@@ -107,7 +135,15 @@ public abstract class SearchScreen<T> extends Screen {
 			this.content = newContent;
 			fireTableDataChanged();
 		}
-
+		
+		@Override
+		public abstract String getColumnName(int columnIndex);
+		
+		@Override
+		public int getRowCount() {
+			return content.size();
+		}
+		
 	}
 
 }

@@ -57,7 +57,9 @@ VALUES
 	
 -- Add department and constraints to employees
 ALTER TABLE employees
-	ADD department INTEGER;
+	ADD department INTEGER,
+	ADD CONSTRAINT fk_departments FOREIGN KEY(department)
+		REFERENCES departments(department_id);
 	
 UPDATE employees
 	SET department = 1 
@@ -74,7 +76,6 @@ UPDATE employees
 	
 ALTER TABLE employees 
 	ALTER COLUMN department SET NOT NULL,
-	ADD CONSTRAINT fk_departments FOREIGN KEY(department)
-		REFERENCES departments(department_id);
+
 		
 		

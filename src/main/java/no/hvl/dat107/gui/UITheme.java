@@ -1,4 +1,4 @@
-package corp.dbapp.client.gui;
+package no.hvl.dat107.gui;
 
 import java.awt.Color;
 

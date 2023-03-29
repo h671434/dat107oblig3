@@ -1,4 +1,4 @@
-package corp.dbapp.data.model;
+package no.hvl.dat107.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,8 +16,7 @@ public class Department {
 	private String department_name;
 	private int department_manager;
 
-	public Department() {
-	};
+	public Department() {}
 
 	public Department(int department_id, String department_name, int department_manager) {
 		this.department_id = department_id;
