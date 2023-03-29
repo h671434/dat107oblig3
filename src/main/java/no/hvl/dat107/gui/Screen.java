@@ -8,11 +8,11 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public abstract class Screen extends JPanel {
 
-	private JPanel top = new JPanel();
-	private JPanel bottom = new JPanel();
-	private JPanel left = new JPanel();
-	private JPanel right = new JPanel();
-	private JPanel center = new JPanel();
+	protected JPanel top = new JPanel();
+	protected JPanel bottom = new JPanel();
+	protected JPanel left = new JPanel();
+	protected JPanel right = new JPanel();
+	protected JPanel center = new JPanel();
 
 	public Screen() {
 		setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);

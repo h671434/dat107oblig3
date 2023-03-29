@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import no.hvl.dat107.dao.EmployeeDAO;
 import no.hvl.dat107.entity.Employee;
@@ -73,7 +74,15 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 	}
 	
 	private void onAddEmployee() {
-		// TODO
+		JPanel addEmployeePanel = new JPanel();
+		
+		// TODO lag panel
+		
+		addRightPanel(addEmployeePanel);
+		
+		// TODO opprett ansatt
+		
+		right.remove(addEmployeePanel);
 	}
 
 	@Override
