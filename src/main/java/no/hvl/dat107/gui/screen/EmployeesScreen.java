@@ -1,9 +1,10 @@
-package no.hvl.dat107.gui;
+package no.hvl.dat107.gui.screen;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -43,7 +44,11 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 
 	private List<Employee> searchByUsername(String search) {
 		Employee result = dao.getByUsername(search).get();
-
+		
+		if(result == null) {
+			return Collections.emptyList();
+		} 
+		
 		return Collections.singletonList(result);
 	}
 	
@@ -75,8 +80,6 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 	
 	private void onAddEmployee() {
 		JPanel addEmployeePanel = new JPanel();
-		
-		// TODO lag panel
 		
 		addRightPanel(addEmployeePanel);
 		
@@ -125,5 +128,5 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 			}
 		};
 	}
-
+	
 }

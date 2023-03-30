@@ -1,4 +1,4 @@
-package no.hvl.dat107.gui;
+package no.hvl.dat107.gui.screen;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -20,6 +20,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.AbstractTableModel;
+
+import no.hvl.dat107.gui.UITheme;
 
 @SuppressWarnings("serial")
 public abstract class SearchScreen<T> extends Screen {
@@ -94,7 +96,13 @@ public abstract class SearchScreen<T> extends Screen {
 	}
 
 	public T getSelected() {
-		return tableModel.content.get(table.getSelectedRow());
+		int selectedRow = table.getSelectedRow();
+		
+		if (selectedRow == -1) {
+			return null;
+		}
+		
+		return tableModel.content.get(selectedRow);
 	}
 
 	public class SearchBar extends JPanel {
@@ -132,7 +140,10 @@ public abstract class SearchScreen<T> extends Screen {
 		protected List<T> content = new ArrayList<>();
 
 		public void updateContent(List<T> newContent) {
+			table.clearSelection();
+			
 			this.content = newContent;
+			
 			fireTableDataChanged();
 		}
 		

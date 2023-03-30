@@ -1,4 +1,4 @@
-package no.hvl.dat107.gui;
+package no.hvl.dat107.gui.screen;
 
 import java.util.ArrayList;
 import java.util.Collections;

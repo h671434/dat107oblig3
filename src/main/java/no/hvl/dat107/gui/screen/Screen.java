@@ -1,9 +1,11 @@
-package no.hvl.dat107.gui;
+package no.hvl.dat107.gui.screen;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
 
 import javax.swing.JPanel;
+
+import no.hvl.dat107.gui.UITheme;
 
 @SuppressWarnings("serial")
 public abstract class Screen extends JPanel {

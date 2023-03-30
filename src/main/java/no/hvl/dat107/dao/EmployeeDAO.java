@@ -26,7 +26,7 @@ public class EmployeeDAO extends DAO<Employee> {
 
 		try (EntityManager em = emf.createEntityManager()) {
 			TypedQuery<Employee> query = em.createQuery(arg, getEntityClass());
-			query.setParameter("username", username);
+			query.setParameter("username", "%" + username + "%");
 
 			return Optional.of(query.getSingleResult());
 		} catch (NoResultException | NonUniqueResultException e) {

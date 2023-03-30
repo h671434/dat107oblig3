@@ -53,7 +53,7 @@ public abstract class DAO<T> {
 	 * Get all entity instances where the field matches the given parameter. Selects
 	 * all "t" where t.field = param.
 	 * 
-	 * @param field     such as "monthly_salary" or "position"
+	 * @param field such as "monthly_salary" or "position"
 	 * @param parameter such as 30000.00 or "Developer"
 	 * @return a List containing all matching entity instances
 	 */
@@ -70,7 +70,7 @@ public abstract class DAO<T> {
 	
 	/**
 	 * Adds new entity to database.
-	 * @param Entity to add
+	 * @param entity to add
 	 * @return true if operation was succsesful, false otherwise.
 	 */
 	public abstract boolean addNew(T toAdd);
