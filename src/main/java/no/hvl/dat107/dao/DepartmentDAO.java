@@ -15,6 +15,10 @@ public class DepartmentDAO extends DAO<Department> {
 	public Optional<Department> getById(int id) {
 		return get(id);
 	}
+	
+	public List<String> getAllDepartmentNames() {
+		
+	}
 
 	@Override
 	public List<Department> search(String search) {
