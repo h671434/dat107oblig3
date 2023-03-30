@@ -10,11 +10,14 @@ import javax.swing.JPanel;
 
 import no.hvl.dat107.dao.EmployeeDAO;
 import no.hvl.dat107.entity.Employee;
+import no.hvl.dat107.gui.widget.EmployeeInfoWidget;
 
 @SuppressWarnings("serial")
 public class EmployeesScreen extends SearchScreen<Employee> {
 
 	private EmployeeDAO dao = new EmployeeDAO();
+	
+	private EmployeeInfoWidget infoWidget = new EmployeeInfoWidget(this);
 
 	public EmployeesScreen() {
 		addSearchOption("Any", s -> dao.search(s));
@@ -25,7 +28,7 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 		addButton("Edit Salary", e -> onEditSalary(), true);
 		addButton("Edit Department",e -> onEditDepartment(), true);
 		addButton("Add Employee", e -> onAddEmployee(), false);
-
+		
 		tableModel.updateContent(dao.getAll());
 	}
 
@@ -79,13 +82,24 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 	}
 	
 	private void onAddEmployee() {
-		JPanel addEmployeePanel = new JPanel();
+		infoWidget.createEmployee();
 		
-		addRightPanel(addEmployeePanel);
+		addRightPanel(infoWidget);
 		
 		// TODO opprett ansatt
 		
-		right.remove(addEmployeePanel);
+	}
+	
+	@Override
+	public void display() {
+		if(tableModel.isEmpty()) {
+			tableModel.updateContent(dao.getAll());
+		}
+	}
+
+	@Override
+	public void cache() throws Exception {
+		infoWidget.cache();
 	}
 
 	@Override
@@ -113,7 +127,7 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 
 			@Override
 			public Object getValueAt(int rowIndex, int columnIndex) {
-				Employee e = content.get(rowIndex);
+				Employee e = get(rowIndex);
 				switch (columnIndex) {
 				case 0: return e.getEmployeeId();
 				case 1: return e.getUsername();

@@ -3,6 +3,7 @@ package no.hvl.dat107;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import no.hvl.dat107.dao.DepartmentDAO;
 import no.hvl.dat107.gui.AppWindow;
 import no.hvl.dat107.util.ServerReplacer;
 
@@ -12,13 +13,6 @@ public class Main {
 
 	public static void main(String[] args) {
 		System.out.println("Hello world!");
-
-//        DAO<Employee> employeeDAO = new EmployeeDAO();
-//
-//        employeeDAO.get(1).ifPresent(e -> e.print());
-//        employeeDAO.getAll().forEach(e -> e.print());
-//
-//        employeeDAO.getBy("username", "pto").forEach(e -> e.print());
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {

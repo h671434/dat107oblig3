@@ -12,6 +12,8 @@ public class DepartmentsScreen extends SearchScreen<Department> {
 
 	private DepartmentDAO dao = new DepartmentDAO();
 	
+//	private DepartmentInfoWidget infoWidget = new DepartmentInfoWidget();
+	
 	public DepartmentsScreen() {
 		addSearchOption("ID", s -> searchById(s));
 		
@@ -38,6 +40,19 @@ public class DepartmentsScreen extends SearchScreen<Department> {
 	}
 	
 	@Override
+	public void display() {
+		if(tableModel.isEmpty()) {
+			tableModel.updateContent(dao.getAll());
+		}
+	}
+
+	@Override
+	public void cache() throws Exception {
+//		infoWidget.cache();
+	}
+
+	
+	@Override
 	protected SearchScreen<Department>.DataTableModel getTableModel() {
 		return new DataTableModel() {
 
@@ -58,7 +73,7 @@ public class DepartmentsScreen extends SearchScreen<Department> {
 			
 			@Override
 			public Object getValueAt(int rowIndex, int columnIndex) {
-				Department d = content.get(rowIndex);
+				Department d = get(rowIndex);
 				switch (columnIndex) {
 				case 0: return d.getDepartmentId();
 				case 1: return d.getDepartmentName();

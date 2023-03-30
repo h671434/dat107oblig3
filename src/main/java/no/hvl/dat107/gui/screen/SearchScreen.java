@@ -137,14 +137,22 @@ public abstract class SearchScreen<T> extends Screen {
 
 	public abstract class DataTableModel extends AbstractTableModel {
 
-		protected List<T> content = new ArrayList<>();
+		private List<T> content = new ArrayList<>();
 
+		public T get(int index) {
+			return content.get(index);
+		}
+		
 		public void updateContent(List<T> newContent) {
 			table.clearSelection();
 			
 			this.content = newContent;
 			
 			fireTableDataChanged();
+		}
+		
+		public boolean isEmpty() {
+			return (tableModel == null) || (tableModel.isEmpty());
 		}
 		
 		@Override
@@ -154,7 +162,7 @@ public abstract class SearchScreen<T> extends Screen {
 		public int getRowCount() {
 			return content.size();
 		}
-		
+				
 	}
 
 }

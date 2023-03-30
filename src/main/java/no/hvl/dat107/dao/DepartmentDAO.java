@@ -3,6 +3,8 @@ package no.hvl.dat107.dao;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import no.hvl.dat107.entity.Department;
 
 public class DepartmentDAO extends DAO<Department> {
@@ -16,8 +18,16 @@ public class DepartmentDAO extends DAO<Department> {
 		return get(id);
 	}
 	
-	public List<String> getAllDepartmentNames() {
+	public List<String> getNamesContaining(String search) {
+		String arg = "SELECT t.department_name FROM Department t "
+				+ "WHERE LOWER(t.department_name) LIKE :search";
 		
+		try (EntityManager em = emf.createEntityManager()) {
+			TypedQuery<String> query = em.createQuery(arg, String.class);
+			query.setParameter("search", "%" + search.toLowerCase() + "%");
+			
+			return query.getResultList();
+		}
 	}
 
 	@Override

@@ -29,8 +29,11 @@ public abstract class DAO<T> {
 	 * @return Optional containing the entity instance or empty if not found
 	 */
 	public Optional<T> get(int id) {
+		// Using try-with-resources since it auto-closes the EntityManager
 		try (EntityManager em = emf.createEntityManager()) {
-			return Optional.ofNullable(em.find(getEntityClass(), id));
+			T result = em.find(getEntityClass(), id);
+			
+			return Optional.ofNullable(result);
 		}
 	}
 
@@ -58,7 +61,8 @@ public abstract class DAO<T> {
 	 * @return a List containing all matching entity instances
 	 */
 	public List<T> getBy(String field, Object param) {
-		String arg = "SELECT t FROM " + getEntityClass().getSimpleName() + " t " + "WHERE t." + field + " LIKE :param";
+		String arg = "SELECT t FROM " + getEntityClass().getSimpleName() + " t " 
+				+ "WHERE t." + field + " LIKE :param";
 
 		try (EntityManager em = emf.createEntityManager()) {
 			TypedQuery<T> query = em.createQuery(arg, getEntityClass());

@@ -43,7 +43,7 @@ CREATE TABLE departments(
 	department_name VARCHAR(30) NOT NULL,
 	department_manager INTEGER NOT NULL,
 	CONSTRAINT pk_departments PRIMARY KEY(department_id),
-	CONSTRAINT fk_employees FOREIGN KEY(department_manager)
+	CONSTRAINT fk_manager FOREIGN KEY(department_manager)
 		REFERENCES employees(employee_id)
 );
 
@@ -75,7 +75,37 @@ UPDATE employees
 	WHERE position LIKE 'Salesperson';
 	
 ALTER TABLE employees 
-	ALTER COLUMN department SET NOT NULL,
+	ALTER COLUMN department SET NOT NULL;
+	
+-- Create project tables
+CREATE TABLE projects(
+	project_id SERIAL,
+	project_name VARCHAR(20) NOT NULL,
+	project_description VARCHAR(300)
+);
 
-		
+CREATE TABLE project_participations(
+	employee INTEGER NOT NULL,
+	project INTEGER NOT NULL,
+	role VARCHAR(30),
+	joined_date DATE NOT NULL,
+	left_date DATE,
+	ADD CONSTRAINT pk_project_participation PRIMARY KEY(project, employee),
+	ADD CONSTRAINT fk_employee FOREIGN KEY(employee)
+		REFERENCES employees(employee_id),
+	ADD CONSTRAINT fk_project FOREIGN KEY(project)
+		REFERENCES projects(project_id)
+);		
+
+INSERT INTO projects
+	(project_name, project_description)
+VALUES
+	('Build app', 'Build a database app to manage employees'),
+	('Make money', 'Earn stacks'),
+	('Mario Kart', 'Mario Kart tournament. Loser loses job, winner gets a promotion'),
+	('Office pool', 'Build pool inside the office');
+	
+INSERT INTO project_participations
+	(employee, project, role, joined_date)
+VALUES
 		
