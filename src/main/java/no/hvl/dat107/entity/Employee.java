@@ -1,11 +1,13 @@
 package no.hvl.dat107.entity;
 
 import java.sql.Date;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -15,6 +17,7 @@ public class Employee {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer employee_id;
+	
 	private String username;
 	private String first_name;
 	private String last_name;
@@ -22,27 +25,44 @@ public class Employee {
 	private String position;
 	private Double monthly_salary;
 	private Integer department;
+	
+	@OneToMany(mappedBy = "employee")
+	private List<ProjectParticipation> project_participations;
 
 	public Employee() {}
 
-	public Employee(Integer employeeId, String username, String firstName, String lastName, Date employmentDate,
-			String position, Double monthlySalary, Integer departmentId) {
-		this.employee_id = employeeId;
+	public Employee(String username, String firstName, String lastName, 
+			Date employmentDate, String position, Double monthlySalary, 
+			Integer department) {
 		this.username = username;
 		this.first_name = firstName;
 		this.last_name = lastName;
 		this.employment_date = employmentDate;
 		this.position = position;
 		this.monthly_salary = monthlySalary;
-		this.department = departmentId;
+		this.department = department;
+	}
+	
+	public void addProjectParticipation(ProjectParticipation pp) {
+		project_participations.add(pp);
+	}
+	
+	public void removeProjectParticipation(ProjectParticipation pp) {
+		project_participations.remove(pp);
+	}
+	
+	public void print() {
+		System.out.println(this.toString());
+	}
+	
+	public void printWithProjects() {
+		System.out.println();
+		print();
+		project_participations.forEach(pp -> pp.print());
 	}
 
-	public Integer getEmployeeId() {
+	public Integer getId() {
 		return employee_id;
-	}
-
-	public void setEmployeeId(Integer employee_id) {
-		this.employee_id = employee_id;
 	}
 
 	public String getUsername() {
@@ -73,10 +93,6 @@ public class Employee {
 		return employment_date;
 	}
 
-	public void setEmploymentDate(Date employment_date) {
-		this.employment_date = employment_date;
-	}
-
 	public String getPosition() {
 		return position;
 	}
@@ -100,15 +116,15 @@ public class Employee {
 	public void setDepartment(Integer department) {
 		this.department = department;
 	}
-
+	
 	@Override
 	public String toString() {
-		return "Employee [employee_id=" + employee_id + ", username=" + username + ", first_name=" + first_name
-				+ ", last_name=" + last_name + ", employment_date=" + employment_date + ", position=" + position + "]";
+		return "Employee [employee_id=" + employee_id 
+				+ ", username=" + username 
+				+ ", first_name=" + first_name
+				+ ", last_name=" + last_name 
+				+ ", employment_date=" + employment_date
+				+ ", position=" + position + "]";
 	}
-
-	public void print() {
-		System.out.println(this.toString());
-	}
-
+	
 }

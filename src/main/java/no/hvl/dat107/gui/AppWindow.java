@@ -82,7 +82,7 @@ public class AppWindow extends JFrame implements AutoCloseable{
 			currentScreen = screens.get(name);
 			currentScreen.loadAndDisplay();
 			
-			screenCards.show(this, name);
+			screenCards.show(screenPanel, name);
 		} catch (Exception e) {
 			handleScreenChangeException(e);
 		}

@@ -28,7 +28,7 @@ public abstract class DAO<T> {
 	 * @param id primary key
 	 * @return Optional containing the entity instance or empty if not found
 	 */
-	public Optional<T> get(int id) {
+	public Optional<T> get(Object id) {
 		// Using try-with-resources since it auto-closes the EntityManager
 		try (EntityManager em = emf.createEntityManager()) {
 			T result = em.find(getEntityClass(), id);
@@ -44,7 +44,7 @@ public abstract class DAO<T> {
 	 */
 	public List<T> getAll() {
 		String arg = "SELECT t from " + getEntityClass().getSimpleName() + " t";
-
+		
 		try (EntityManager em = emf.createEntityManager()) {
 			TypedQuery<T> query = em.createQuery(arg, getEntityClass());
 

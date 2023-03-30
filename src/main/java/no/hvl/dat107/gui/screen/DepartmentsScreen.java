@@ -75,9 +75,9 @@ public class DepartmentsScreen extends SearchScreen<Department> {
 			public Object getValueAt(int rowIndex, int columnIndex) {
 				Department d = get(rowIndex);
 				switch (columnIndex) {
-				case 0: return d.getDepartmentId();
-				case 1: return d.getDepartmentName();
-				case 2: return d.getDepartmentManager();
+				case 0: return d.getId();
+				case 1: return d.getName();
+				case 2: return d.getManager();
 				}
 				return "";
 				

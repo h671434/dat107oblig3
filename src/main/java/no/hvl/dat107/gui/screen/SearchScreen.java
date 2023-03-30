@@ -152,7 +152,7 @@ public abstract class SearchScreen<T> extends Screen {
 		}
 		
 		public boolean isEmpty() {
-			return (tableModel == null) || (tableModel.isEmpty());
+			return (tableModel == null) || (content.isEmpty());
 		}
 		
 		@Override

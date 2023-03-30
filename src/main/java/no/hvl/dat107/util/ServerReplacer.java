@@ -5,11 +5,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * Closes the previous running instance of the program on startup. Used during
- * development, because I forget the program during testing.
+ * !! NOT PART OF PROJECT !!
  * 
- * @author Aleksander XXVI
- *
+ * Closes the previous running instance of the program on startup. Used during
+ * development, because I forget to close the program before restarting.
+ * 
+ * Code taken from @author marco-ruiz
+ * at @see https://github.com/marco-ruiz/stackoverflow-qa/tree/master/so-common/src/main/java/so/a56247038
+ * More info here: @see https://stackoverflow.com/questions/56242731/terminating-the-older-instance-of-a-program-if-a-newer-instance-is-started
  */
 public class ServerReplacer extends Thread {
 

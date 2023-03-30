@@ -129,7 +129,7 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 			public Object getValueAt(int rowIndex, int columnIndex) {
 				Employee e = get(rowIndex);
 				switch (columnIndex) {
-				case 0: return e.getEmployeeId();
+				case 0: return e.getId();
 				case 1: return e.getUsername();
 				case 2: return e.getFirstName();
 				case 3: return e.getLastName();
