@@ -17,8 +17,6 @@ public class DepartmentsScreen extends SearchScreen<Department> {
 	public DepartmentsScreen() {
 		addSearchOption("ID", s -> searchById(s));
 		
-		addButton("Add Department", e -> onAddDepartment(), false);
-		
 		dataview.updateContent(dao.getAll());
 	}
 	
@@ -40,8 +38,10 @@ public class DepartmentsScreen extends SearchScreen<Department> {
 		return result;
 	}
 
-	private void onAddDepartment() {
-		// TODO
+	@Override
+	public void display() {
+		if(dataview.isEmpty()) {
+			dataview.updateContent(dao.getAll());
+		}
 	}
-
 }

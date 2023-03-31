@@ -6,7 +6,6 @@ import java.awt.Component;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import dat107.oblig3.gui.DynamicVisibility;
 import dat107.oblig3.gui.UITheme;
 
 @SuppressWarnings("serial")

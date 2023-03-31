@@ -13,6 +13,11 @@ public class ProjectsScreen extends SearchScreen<Project> {
 	protected DataRepresentation<Project> getDataRepresentation() {
 		return null; // TODO
 	}
-
+	@Override
+	public void display() {
+		if(dataview.isEmpty()) {
+			dataview.updateContent(dao.getAll());
+		}
+	}
 
 }

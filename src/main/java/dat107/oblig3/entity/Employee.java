@@ -17,7 +17,6 @@ public class Employee {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer employee_id;
-	
 	private String username;
 	private String first_name;
 	private String last_name;
@@ -25,7 +24,6 @@ public class Employee {
 	private String position;
 	private double monthly_salary;
 	private int department;
-	
 	@OneToMany(mappedBy = "employee")
 	private List<ProjectParticipation> project_participations;
 

@@ -1,7 +1,6 @@
 package dat107.oblig3.gui.widget;
 
 import dat107.oblig3.entity.Department;
-import dat107.oblig3.gui.screen.SearchScreen;
 
 @SuppressWarnings("serial")
 public class DepartmentTable extends DataTable<Department> {

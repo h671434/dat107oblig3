@@ -13,7 +13,6 @@ public class Department {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int department_id;
-	
 	private String department_name;
 	private int department_manager;
 
@@ -28,7 +27,6 @@ public class Department {
 		System.out.println(this.toString());
 	}
 
-	
 	public int getId() {
 		return department_id;
 	}

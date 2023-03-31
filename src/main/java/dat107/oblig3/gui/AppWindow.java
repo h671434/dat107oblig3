@@ -2,25 +2,13 @@ package dat107.oblig3.gui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.border.EtchedBorder;
 
 import dat107.oblig3.gui.screen.DepartmentsScreen;
 import dat107.oblig3.gui.screen.EmployeesScreen;
@@ -55,6 +43,8 @@ public class AppWindow extends JFrame implements AutoCloseable{
 		getContentPane().add(screenPanel, BorderLayout.CENTER);
 		
 		addScreens();
+		
+		screens.get("Employees").display();
 	}
 
 	public void addScreens() {
@@ -67,7 +57,7 @@ public class AppWindow extends JFrame implements AutoCloseable{
 	public void changeScreen(String name)  {
 		if(currentScreen != null) {
 			try {
-				currentScreen.cache();
+//				currentScreen.cache();
 			} catch (Exception e) {
 				handleScreenChangeException(e);
 			}

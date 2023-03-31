@@ -10,9 +10,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.NonUniqueResultException;
-import jakarta.persistence.RollbackException;
 import jakarta.persistence.TypedQuery;
-import no.hvl.dat107.Todo;
 
 public class EmployeeDAO extends DAO<Employee> {
 
@@ -24,7 +22,7 @@ public class EmployeeDAO extends DAO<Employee> {
 	public Optional<Employee> getById(int id) {
 		return get(id);
 	}
-
+	
 	public Optional<Employee> getByUsername(String username) {
 		String arg = "SELECT DISTINCT t FROM " + getEntityClass().getSimpleName() + " t "
 				+ "WHERE t.username LIKE :username";
@@ -35,7 +33,7 @@ public class EmployeeDAO extends DAO<Employee> {
 
 			return Optional.of(query.getSingleResult());
 			
-		} catch (NoResultException | NonUniqueResultException e) {
+		} catch (NoResultException e) {
 			return Optional.empty();
 		}
 	}
@@ -80,7 +78,7 @@ public class EmployeeDAO extends DAO<Employee> {
 		}
 	}
 
-	public void updateDepartment(int id, Department newDepartment) {
+	public void updateDepartment(int id, int newDepartment) {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();

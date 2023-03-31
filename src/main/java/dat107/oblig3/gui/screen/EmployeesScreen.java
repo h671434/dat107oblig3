@@ -1,12 +1,9 @@
 package dat107.oblig3.gui.screen;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 import dat107.oblig3.dao.EmployeeDAO;
 import dat107.oblig3.entity.Employee;
@@ -31,6 +28,13 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 	@Override
 	protected DataRepresentation<Employee> getDataRepresentation() {
 		return new EmployeeTable();
+	}
+	
+	@Override
+	public void display() {
+		if(dataview.isEmpty()) {
+			dataview.updateContent(dao.getAll());
+		}
 	}
 
 	private List<Employee> searchById(String search) {
@@ -58,14 +62,14 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 	private void onEditPosition() {
 		String newPosition = showEditFieldDialog("Position");
 		if (!newPosition.isBlank())
-			dao.updatePosition(getSelected(), newPosition);
+			dao.updatePosition(getSelected().getId(), newPosition);
 	}
 	
 	private void onEditSalary() {
 		String input = showEditFieldDialog("Salary");
 		try {
 			double newSalary = Double.parseDouble(input);
-			dao.updateSalary(getSelected(), newSalary);
+			dao.updateSalary(getSelected().getId(), newSalary);
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(null, "Invalid input: " + input);
 		}
@@ -75,7 +79,7 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 		String input = showEditFieldDialog("Salary");
 		try {
 			int newDepartment = Integer.parseInt(input);
-			dao.updateDepartment(getSelected(), newDepartment);
+			dao.updateDepartment(getSelected().getId(), newDepartment);
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(null, "Invalid input: " + input);
 		}

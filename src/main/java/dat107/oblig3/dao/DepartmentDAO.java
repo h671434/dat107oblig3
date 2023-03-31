@@ -17,6 +17,15 @@ public class DepartmentDAO extends DAO<Department> {
 	public Optional<Department> getById(int id) {
 		return get(id);
 	}
+
+	@Override
+	public List<Department> search(String search) {
+		return search(search, "department_name");
+	}
+	
+	public List<Department> searchByName(String search) {
+		return search(search, "department_name");
+	}
 	
 	public List<String> getNamesContaining(String search) {
 		String arg = "SELECT t.department_name FROM Department t "
@@ -29,30 +38,6 @@ public class DepartmentDAO extends DAO<Department> {
 			return query.getResultList();
 		}
 	}
-	
 
-	@Override
-	public boolean addNew(Department toAdd) {
-		// TODO
-		return false;
-	}
-
-	@Override
-	public List<Department> search(String search) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void save(Department entity) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void delete(Department entity) {
-		// TODO Auto-generated method stub
-
-	}
 
 }

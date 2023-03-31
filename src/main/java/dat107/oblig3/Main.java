@@ -3,7 +3,6 @@ package dat107.oblig3;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import dat107.oblig3.dao.DepartmentDAO;
 import dat107.oblig3.gui.AppWindow;
 import dat107.oblig3.util.ServerReplacer;
 

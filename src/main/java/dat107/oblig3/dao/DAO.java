@@ -1,5 +1,6 @@
-package dat107.oblig3.dao;
+	package dat107.oblig3.dao;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,9 +10,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
-import jakarta.persistence.RollbackException;
 import jakarta.persistence.TypedQuery;
-import no.hvl.dat107.Todo;
 
 public abstract class DAO<T> {
 
@@ -19,14 +18,15 @@ public abstract class DAO<T> {
 			Map.of("jakarta.persistence.jdbc.password", "pass"));
 
 	/**
-	 * Only used in methods from abstract class DAO<T>. Gets the class of DAO's
-	 * entity.
-	 * @return the entity class
+	 * For methods in this abstract class, where the code would be
+	 * otherwise same for each subclass-implementation. Used to avoid 
+	 * repetitive code.
+	 * @return the entity class of the current DAO
 	 */
 	protected abstract Class<T> getEntityClass();
 
 	/**
-	 * Get the entity of class T with given primary key.
+	 * Get entity with corresponding primary key.
 	 * @param id primary key
 	 * @return Optional containing the entity instance or empty if not found
 	 */
@@ -35,13 +35,13 @@ public abstract class DAO<T> {
 		try (EntityManager em = emf.createEntityManager()) {
 			T result = em.find(getEntityClass(), id);
 			
-			return Optional.ofNullable(result);
+			return Optional.of(result);
 		}
 	}
 
 	/**
 	 * Get all entity instances.
-	 * @return a List containing all entity instances
+	 * @return List containing all entity instances
 	 */
 	public List<T> getAll() {
 		String arg = "SELECT t from " + getEntityClass().getSimpleName() + " t";
@@ -54,12 +54,11 @@ public abstract class DAO<T> {
 	}
 
 	/**
-	 * Get all entity instances where the field matches the given parameter. 
-	 * Selects all entities where the given field = param.
+	 * Gets all entities where the given field == param.
 	 * Used as helper method for getBy-methods in subclasses.
-	 * @param field such as "monthly_salary" or "position"
-	 * @param parameter such as 30000.00 or "Developer"
-	 * @return a List containing all matching entity instances
+	 * @param field to find value in
+	 * @param parameter value to look for
+	 * @return List containing results
 	 */
 	protected List<T> getBy(String field, Object param) {
 		String arg = "SELECT t FROM " + getEntityClass().getSimpleName() + " t " 
@@ -76,7 +75,7 @@ public abstract class DAO<T> {
 	/**
 	 * Searches for all entities where any field matches the search. Does not
 	 * include numbers or dates.
-	 * @return a List containing all entities with fields containing the search
+	 * @return List containing all entities with fields containing the search
 	 */
 	public abstract List<T> search(String search);
 	
@@ -85,21 +84,23 @@ public abstract class DAO<T> {
 	 * search string. Used as a helper method for {@link #search(String)}.
 	 * @param search string to look for
 	 * @param fields to search through
-	 * @return a List containing all enitites with fields containing the search
+	 * @return List containing all enitites with fields containing the search
 	 */
 	protected List<T> search(String search, String... fields) {
-		StringBuilder argBuilder = new StringBuilder();
-				
-		argBuilder.append("SELECT t FROM " + getEntityClass().getSimpleName() + " t ");
-		argBuilder.append("WHERE t." + fields[0] + "LIKE (:search) ");
-		for(int i = 1; i < fields.length; i++) {
-			argBuilder.append("OR t." + fields[i] + "LIKE (:search) ");
+		if(fields.length == 0) {
+			return Collections.emptyList();
 		}
-
-		String arg = argBuilder.toString();
+		
+		StringBuilder arg = new StringBuilder();
+		
+		arg.append("SELECT t FROM " + getEntityClass().getSimpleName() + " t ");
+		arg.append("WHERE t." + fields[0] + "LIKE (:search) ");
+		for(int i = 1; i < fields.length; i++) {
+			arg.append("OR t." + fields[i] + "LIKE (:search) ");
+		}
 		
 		try (EntityManager em = emf.createEntityManager()) {
-			TypedQuery<T> query = em.createQuery(arg, getEntityClass());
+			TypedQuery<T> query = em.createQuery(arg.toString(), getEntityClass());
 			query.setParameter("search", "%" + search + "%");
 
 			return query.getResultList();
@@ -126,7 +127,7 @@ public abstract class DAO<T> {
 			}
 		}
 	}
-
+	
 	/**
 	 * Deletes the given entity from the database.
 	 * @param entity to delete
