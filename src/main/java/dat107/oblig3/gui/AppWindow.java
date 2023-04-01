@@ -12,7 +12,10 @@ import javax.swing.JPanel;
 
 import dat107.oblig3.gui.screen.DepartmentsScreen;
 import dat107.oblig3.gui.screen.EmployeesScreen;
+import dat107.oblig3.gui.screen.ProjectsScreen;
 import dat107.oblig3.gui.screen.Screen;
+import dat107.oblig3.gui.widget.NavigationPanel;
+import dat107.oblig3.gui.widget.ToolBar;
 
 @SuppressWarnings("serial")
 public class AppWindow extends JFrame implements AutoCloseable{
@@ -27,6 +30,7 @@ public class AppWindow extends JFrame implements AutoCloseable{
 	private Map<String, Screen> screens = new LinkedHashMap<>() {{
 			put("Employees", new EmployeesScreen());
 			put("Departments", new DepartmentsScreen());
+			put("Projects", new ProjectsScreen());
 		}};
 
 	public AppWindow() {
@@ -54,26 +58,19 @@ public class AppWindow extends JFrame implements AutoCloseable{
 		});
 	}
 
-	public void changeScreen(String name)  {
-		if(currentScreen != null) {
-			try {
-//				currentScreen.cache();
-			} catch (Exception e) {
-				handleScreenChangeException(e);
-			}
-		}
-		
+	public void changeScreen(String name)  {		
 		try {
 			currentScreen = screens.get(name);
-			currentScreen.loadAndDisplay();
+			currentScreen.safeDisplay();
 			
 			screenCards.show(screenPanel, name);
+			
 		} catch (Exception e) {
-			handleScreenChangeException(e);
+			handleChangeScreenException(e);
 		}
 	}
 		
-	private void handleScreenChangeException(Exception e) {
+	private void handleChangeScreenException(Exception e) {
 		try {
 			currentScreen.close();
 		} catch(Exception ignored) {
@@ -85,7 +82,7 @@ public class AppWindow extends JFrame implements AutoCloseable{
 	}
 	
 	public void showErrorDialogAndClose(String errorMessage) {
-		int refreshOrExit = JOptionPane.showConfirmDialog(this, 
+		JOptionPane.showConfirmDialog(this, 
 				errorMessage, "dbApp Error", 
 				JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
 		

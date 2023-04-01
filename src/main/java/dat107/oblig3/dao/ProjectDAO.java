@@ -8,14 +8,12 @@ public class ProjectDAO extends DAO<Project>{
 
 	@Override
 	protected Class<Project> getEntityClass() {
-		// TODO Auto-generated method stub
-		return null;
+		return Project.class;
 	}
 
 	@Override
 	public List<Project> search(String search) {
-		// TODO Auto-generated method stub
-		return null;
+		return search(search, "project_name", "project_description");
 	}
 
 }

@@ -79,9 +79,17 @@ public abstract class Screen extends JPanel implements AutoCloseable {
 		this.center.revalidate();
 	}
 
+	/**
+	 * Final screen initialization.
+	 */
 	public abstract void display();
 	
-	public void loadAndDisplay() {
+	/*
+	 * Makes sure that display and gui changes are done on the correct thread.
+	 * Invokes display on the event dispatching thread after all pending AWT 
+	 * events have been processed.
+	 */
+	public void safeDisplay() {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -91,7 +99,7 @@ public abstract class Screen extends JPanel implements AutoCloseable {
 	}
 	
 	public void close() {
-		// TODO
+		
 	}
 	
 }

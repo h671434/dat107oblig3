@@ -1,5 +1,6 @@
 package dat107.oblig3.gui.screen;
 
+import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
@@ -10,40 +11,46 @@ import java.util.function.Function;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 
 import dat107.oblig3.gui.UITheme;
-import dat107.oblig3.gui.widget.DataRepresentation;
 import dat107.oblig3.gui.widget.SearchBar;
+import dat107.oblig3.gui.widget.entitysets.EntitySet;
 
 @SuppressWarnings("serial")
 public abstract class SearchScreen<T> extends Screen {
 
 	protected final SearchBar searchBar;
-	protected final DataRepresentation<T> dataview;
+	protected final EntitySet<T> dataset;
+	protected final JScrollPane scrollPane;
 	protected final JPanel buttons;
+	
 	private Map<String, Function<String, List<T>>> searchOpt = new HashMap<>();
 
 	protected SearchScreen() {
 		this.searchBar = new SearchBar((o, s) -> onSearch(o, s));
-		this.dataview = getDataRepresentation();
+		this.dataset = getDatasetWidget();
+		this.scrollPane = new JScrollPane(dataset.getGuiComponent());
 		this.buttons = new JPanel();
 
 		setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 		setForeground(UITheme.DEFAULT_TEXT_COLOR);
 		
+		scrollPane.setPreferredSize(new Dimension(850, 550));
+		scrollPane.getVerticalScrollBar().setUnitIncrement(6);
 		buttons.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 
 		addTopPanel(searchBar);
-		addCenterPanel(new JScrollPane(dataview.getGuiComponent()));
+		addCenterPanel(scrollPane);
 		addBottomPanel(buttons);
 	}
 
-	protected abstract DataRepresentation<T> getDataRepresentation();
+	protected abstract EntitySet<T> getDatasetWidget();
 
 	private void onSearch(String option, String search) {
 		Function<String, List<T>> results = searchOpt.get(option);
-		dataview.updateContent(results.apply(search));
+		dataset.updateContent(results.apply(search));
 	}
 
 	protected void addSearchOption(String option, Function<String, 
@@ -53,7 +60,7 @@ public abstract class SearchScreen<T> extends Screen {
 	}
 
 	protected void addSelectionListener(Consumer<T> onSelection) {
-		dataview.addSelectionListener(onSelection);
+		dataset.addSelectionListener(onSelection);
 	}
 
 	protected void showNoResultsDialog(String message) {
@@ -82,10 +89,7 @@ public abstract class SearchScreen<T> extends Screen {
 	}
 
 	public T getSelected() {
-		return dataview.getSelected();
+		return dataset.getSelected();
 	}
 	
-
-	
-
 }

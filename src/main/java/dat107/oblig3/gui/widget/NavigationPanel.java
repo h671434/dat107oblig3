@@ -1,4 +1,4 @@
-package dat107.oblig3.gui;
+package dat107.oblig3.gui.widget;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -9,6 +9,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
+
+import dat107.oblig3.gui.AppWindow;
+import dat107.oblig3.gui.UITheme;
 
 @SuppressWarnings("serial")
 public class NavigationPanel extends JPanel {

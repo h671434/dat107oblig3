@@ -1,16 +1,17 @@
-package dat107.oblig3.gui.widget;
+package dat107.oblig3.gui.widget.entitysets;
 
 import dat107.oblig3.entity.Department;
+import dat107.oblig3.gui.widget.entitysets.EntityTable.DataTableModel;
 
 @SuppressWarnings("serial")
-public class DepartmentTable extends DataTable<Department> {
+public class DepartmentTable extends EntityTable<Department> {
 
 	@Override
-	protected DataTable<Department>.DataTableModel getTableModel() {
+	protected EntityTable<Department>.DataTableModel getTableModel() {
 		return new DepartmentTableModel();
 	}
 
-	public class DepartmentTableModel extends DataTable<Department>.DataTableModel {
+	public class DepartmentTableModel extends EntityTable<Department>.DataTableModel {
 
 		@Override
 		public int getColumnCount() {

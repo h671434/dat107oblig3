@@ -6,8 +6,8 @@ import java.util.List;
 
 import dat107.oblig3.dao.DepartmentDAO;
 import dat107.oblig3.entity.Department;
-import dat107.oblig3.gui.widget.DataRepresentation;
-import dat107.oblig3.gui.widget.DepartmentTable;
+import dat107.oblig3.gui.widget.entitysets.DepartmentTable;
+import dat107.oblig3.gui.widget.entitysets.EntitySet;
 
 @SuppressWarnings("serial")
 public class DepartmentsScreen extends SearchScreen<Department> {
@@ -17,11 +17,11 @@ public class DepartmentsScreen extends SearchScreen<Department> {
 	public DepartmentsScreen() {
 		addSearchOption("ID", s -> searchById(s));
 		
-		dataview.updateContent(dao.getAll());
+		dataset.updateContent(dao.getAll());
 	}
 	
 	@Override
-	protected DataRepresentation<Department> getDataRepresentation() {
+	protected EntitySet<Department> getDatasetWidget() {
 		return new DepartmentTable();
 	}
 	
@@ -40,8 +40,8 @@ public class DepartmentsScreen extends SearchScreen<Department> {
 
 	@Override
 	public void display() {
-		if(dataview.isEmpty()) {
-			dataview.updateContent(dao.getAll());
+		if(dataset.isEmpty()) {
+			dataset.updateContent(dao.getAll());
 		}
 	}
 }

@@ -7,8 +7,8 @@ import javax.swing.JOptionPane;
 
 import dat107.oblig3.dao.EmployeeDAO;
 import dat107.oblig3.entity.Employee;
-import dat107.oblig3.gui.widget.DataRepresentation;
-import dat107.oblig3.gui.widget.EmployeeTable;
+import dat107.oblig3.gui.widget.entitysets.EmployeeTable;
+import dat107.oblig3.gui.widget.entitysets.EntitySet;
 
 @SuppressWarnings("serial")
 public class EmployeesScreen extends SearchScreen<Employee> {
@@ -26,14 +26,14 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 	}
 	
 	@Override
-	protected DataRepresentation<Employee> getDataRepresentation() {
+	protected EntitySet<Employee> getDatasetWidget() {
 		return new EmployeeTable();
 	}
 	
 	@Override
 	public void display() {
-		if(dataview.isEmpty()) {
-			dataview.updateContent(dao.getAll());
+		if(dataset.isEmpty()) {
+			dataset.updateContent(dao.getAll());
 		}
 	}
 

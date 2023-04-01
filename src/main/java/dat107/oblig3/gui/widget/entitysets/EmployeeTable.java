@@ -1,15 +1,16 @@
-package dat107.oblig3.gui.widget;
+package dat107.oblig3.gui.widget.entitysets;
 
 import dat107.oblig3.entity.Employee;
+import dat107.oblig3.gui.widget.entitysets.EntityTable.DataTableModel;
 
 @SuppressWarnings("serial")
-public class EmployeeTable extends DataTable<Employee>{
+public class EmployeeTable extends EntityTable<Employee>{
 	
-	protected DataTable<Employee>.DataTableModel getTableModel() {
+	protected EntityTable<Employee>.DataTableModel getTableModel() {
 		return new EmployeeTableModel();
 	}
 	
-	private class EmployeeTableModel extends DataTable<Employee>.DataTableModel {
+	private class EmployeeTableModel extends EntityTable<Employee>.DataTableModel {
 
 		@Override
 		public String getColumnName(int columnIndex) {

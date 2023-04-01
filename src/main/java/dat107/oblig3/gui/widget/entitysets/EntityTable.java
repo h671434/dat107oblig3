@@ -1,4 +1,4 @@
-package dat107.oblig3.gui.widget;
+package dat107.oblig3.gui.widget.entitysets;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -10,18 +10,38 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
 @SuppressWarnings("serial")
-public abstract class DataTable<T> extends JTable implements DataRepresentation<T> {
+public abstract class EntityTable<T> extends JTable implements EntitySet<T> {
 	
 	protected List<T> content = new ArrayList<>();
 	protected DataTableModel model = getTableModel();
 
-	public DataTable() {
+	public EntityTable() {
 		setModel(model);
 		setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		setPreferredScrollableViewportSize(new Dimension(850, 550));
 	}
 	
+	/**
+	 * Get the tablemodel for the current table. The tablemodel controlls
+	 * what data goes in the table, and how it is collected.
+	 */
 	protected abstract DataTableModel getTableModel();
+	
+	@Override
+	public T get(int index) {
+		return content.get(index);
+	}
+	
+	@Override
+	public T getSelected() {
+		int selectedRow = getSelectedRow();
+		
+		if (selectedRow == -1) {
+			return null;
+		}
+		
+		return content.get(selectedRow);
+	}
 	
 	@Override
 	public void updateContent(List<T> newContent) {
@@ -37,22 +57,6 @@ public abstract class DataTable<T> extends JTable implements DataRepresentation<
 		getSelectionModel().addListSelectionListener(e -> {
 			onSelection.accept(getSelected());
 		});
-	}
-
-	@Override
-	public T get(int index) {
-		return content.get(index);
-	}
-	
-	@Override
-	public T getSelected() {
-		int selectedRow = getSelectedRow();
-		
-		if (selectedRow == -1) {
-			return null;
-		}
-		
-		return content.get(selectedRow);
 	}
 	
 	@Override
