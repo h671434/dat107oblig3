@@ -1,5 +1,6 @@
 package dat107.oblig3.gui.screen;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -9,6 +10,7 @@ import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import dat107.oblig3.dao.EmployeeDAO;
 import dat107.oblig3.entity.Employee;
@@ -23,9 +25,7 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 	
 	private final EmployeeWidgetsPanel widgets = new EmployeeWidgetsPanel();
 	
-	private JButton editEmployeeButton;
 	private JButton viewProjectsButton;
-	private JButton addNewEmployeeButton;
 	
 	private EmployeeDAO dao = new EmployeeDAO();
 
@@ -35,13 +35,14 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 		addSearchOption("Username", s -> searchByUsername(s));
 
 		viewProjectsButton = addButton("View Projects", e -> widgets.onViewProjects(), true);
-		editEmployeeButton = addButton("Edit Employee", e -> widgets.onEditEmployee(), true);
-		addNewEmployeeButton = addButton("Add New Employee", e -> widgets.onNewEmployee(), false);
+		addButton("Edit Employee", e -> widgets.onEditEmployee(), true);
+		addButton("Add New Employee", e -> widgets.onNewEmployee(), false);
 		
 		addSelectionListener(selected -> {
 			widgets.hideAboutWidget();
 			widgets.setEmployee(selected);
 		});
+		
 		
 		setRightPanel(widgets);
 	}
@@ -91,8 +92,9 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 		private ParticipationsWidget projectsWidget = new ParticipationsWidget("Projects", EmployeesScreen.this);
 		
 		GridBagConstraints positions = new GridBagConstraints() {{
-				ipady = 10;
-				insets = new Insets(0, 0, 25, 0);
+				ipady = 16;
+				ipadx = 20;
+				insets = new Insets(20, 20, 20, 20);
 				weightx = 1;
 				weighty = 1;
 				fill = GridBagConstraints.HORIZONTAL;
@@ -132,12 +134,12 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 			getRootPane().validate();
 		}
  		
-		public void onEditEmployee() {
+		public void onEditEmployee() {	
+			aboutWidget.editEmployee();
+			
 			if(!aboutWidgetIsShowing()) {
 				showAboutWidget();
 			}
-			
-			aboutWidget.editEmployee();
 		}
 		
 		private boolean aboutWidgetIsShowing() {
@@ -146,7 +148,7 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 		
 		private void showAboutWidget() {
 			positions.gridy = 0;
-			add(aboutWidget);	
+			add(aboutWidget, positions);	
 			
 			getRootPane().validate();
 		}

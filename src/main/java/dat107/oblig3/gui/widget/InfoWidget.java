@@ -3,6 +3,7 @@ package dat107.oblig3.gui.widget;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -17,6 +18,9 @@ import javax.swing.JPanel;
 
 import dat107.oblig3.gui.UITheme;
 
+/**
+ * Widget preset class to easily build new widgets
+ */
 @SuppressWarnings("serial")
 public class InfoWidget extends JPanel {
 
@@ -37,6 +41,7 @@ public class InfoWidget extends JPanel {
 		gridy = 0;
 		ipadx = 5;
 		ipady = 5;
+		anchor = GridBagConstraints.LINE_START;
 		insets = new Insets(2, 2, 2, 2);
 	}};
 	
@@ -47,6 +52,7 @@ public class InfoWidget extends JPanel {
 		
 		titleLabel.setForeground(UITheme.DEFAULT_TEXT_COLOR);
 		titleLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+		titleLabel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
 		
 		fieldPanel.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
 		
@@ -72,7 +78,7 @@ public class InfoWidget extends JPanel {
 		label.setForeground(UITheme.DEFAULT_TEXT_COLOR);
 		label.setLabelFor(field);
 		
-		JPanel outerComponentPanel = new JPanel();
+		JPanel outerComponentPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		outerComponentPanel.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
 		outerComponentPanel.add(field);
 		
@@ -91,7 +97,7 @@ public class InfoWidget extends JPanel {
 	
 	public void addFullWidthField(Component field) {
 		GridBagConstraints fullWidth = new GridBagConstraints() {{
-			fill = GridBagConstraints.HORIZONTAL;
+			fill = HORIZONTAL;
 			gridy = nextLabelPos.gridy;
 		}};
 		
@@ -99,6 +105,13 @@ public class InfoWidget extends JPanel {
 		
 		nextLabelPos.gridy++;
 		nextFieldPos.gridy++;
+	}
+	
+	/**
+	 * Does not remove label
+	 */
+	public void removeField(Component component) {
+		fieldPanel.remove(component);
 	}
 	
 	public void removeAllFields() {

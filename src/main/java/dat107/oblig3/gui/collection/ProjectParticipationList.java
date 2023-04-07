@@ -2,13 +2,22 @@ package dat107.oblig3.gui.collection;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
+import dat107.oblig3.dao.EmployeeDAO;
+import dat107.oblig3.entity.Employee;
+import dat107.oblig3.entity.Project;
 import dat107.oblig3.entity.ProjectParticipation;
 import dat107.oblig3.gui.UITheme;
+import dat107.oblig3.gui.inputcontrols.EntityComboBox;
+import dat107.oblig3.gui.inputcontrols.NumericField;
 
 @SuppressWarnings("serial")
 public class ProjectParticipationList extends EntityList<ProjectParticipation> {
@@ -34,6 +43,10 @@ public class ProjectParticipationList extends EntityList<ProjectParticipation> {
 		this.type = type;
 	}
 	
+	public void addAdditionalEntry(ProjectParticipation additional) {
+		addEntry(createEntry(additional));
+	}
+	
 	@Override
 	protected ProjectParticipationList.ProjectParticipationListEntry createEntry(
 			ProjectParticipation entity) {
@@ -51,6 +64,11 @@ public class ProjectParticipationList extends EntityList<ProjectParticipation> {
 		panel.add(text);
 		
 		return panel;
+	}
+	
+	@Override
+	public Dimension getPreferredScrollableViewportSize() {
+		return new Dimension(278, getPreferredSize().height);
 	}
 
 	public class ProjectParticipationListEntry 

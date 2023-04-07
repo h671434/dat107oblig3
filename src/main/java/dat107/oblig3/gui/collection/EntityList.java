@@ -75,12 +75,20 @@ public abstract class EntityList<T> extends JPanel implements EntityCollection<T
 		entries.add(entry);
 	}
 	
+	protected void removeEntry(ListEntry entry) {
+		remove(entry);
+		entries.remove(entry);
+	}
+	
 	/**
 	 * Returns a ListEntry for the given entity. Used in 
 	 * @see #replaceEntries(List<T>)
 	 */
 	protected abstract ListEntry createEntry(T entity);
 	
+	/**
+	 * Returns panel thats shown when list is empty
+	 */
 	protected JPanel emptyListMessage() {
 		JPanel panel = new JPanel(new BorderLayout());
 		
@@ -175,6 +183,8 @@ public abstract class EntityList<T> extends JPanel implements EntityCollection<T
 		 * Should to be added to every child-component
 		 */
 		protected MouseAdapter clickListener;
+		
+		protected ListEntry() {};
 		
 		public ListEntry(T entity) {
 			this.entity = entity;

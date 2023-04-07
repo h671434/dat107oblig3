@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import dat107.oblig3.entity.Department;
 import dat107.oblig3.entity.Employee;
+import dat107.oblig3.entity.Project;
+import dat107.oblig3.entity.ProjectParticipation;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
@@ -123,6 +125,62 @@ public class EmployeeDAO extends DAO<Employee> {
 			tx.commit();
 			
 			return newEmployee;
+			
+		} catch (Throwable e) {
+			if ((tx != null) && (tx.isActive())) {
+				tx.rollback();
+			}
+			
+			throw e;
+		}
+	}
+	
+	public ProjectParticipation addEmployeeToProject(Employee employee, 
+			Project project, int hours) throws Throwable {
+		EntityTransaction tx = null;
+		try (EntityManager em = emf.createEntityManager()) {
+			tx = em.getTransaction();
+			
+			tx.begin();
+			
+			ProjectParticipation newParticipation = new ProjectParticipation(
+					employee, project, hours);
+			em.persist(newParticipation);
+			
+			employee.addProjectParticipation(newParticipation);
+			project.addProjectParticipation(newParticipation);
+			
+			tx.commit();
+			
+			return newParticipation;
+			
+		} catch (Throwable e) {
+			if ((tx != null) && (tx.isActive())) {
+				tx.rollback();
+			}
+			
+			throw e;
+		}
+	}
+	
+	public ProjectParticipation addEmployeeToProject(Employee employee, 
+			Project project) throws Throwable {
+		EntityTransaction tx = null;
+		try (EntityManager em = emf.createEntityManager()) {
+			tx = em.getTransaction();
+			
+			tx.begin();
+			
+			ProjectParticipation newParticipation = new ProjectParticipation(
+					employee, project);
+			em.persist(newParticipation);
+			
+			employee.addProjectParticipation(newParticipation);
+			project.addProjectParticipation(newParticipation);
+			
+			tx.commit();
+			
+			return newParticipation;
 			
 		} catch (Throwable e) {
 			if ((tx != null) && (tx.isActive())) {
