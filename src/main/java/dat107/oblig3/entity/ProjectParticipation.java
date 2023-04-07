@@ -22,7 +22,7 @@ public class ProjectParticipation {
 	@JoinColumn(name = "project")
 	private Project project;
 	
-	private Integer hours;
+	private int hours_worked = 0;
 	
 	public ProjectParticipation() {}
 	
@@ -31,6 +31,11 @@ public class ProjectParticipation {
 		this.project = project;
 		employee.addProjectParticipation(this);
 		project.addProjectParticipation(this);
+	}
+	
+	public ProjectParticipation(Employee employee, Project project, int hours_worked) {
+		this(employee, project);
+		this.hours_worked = hours_worked;
 	}
 	
 	public void print() {
@@ -45,19 +50,19 @@ public class ProjectParticipation {
 		return project;
 	}
 
-	public Integer getHours() {
-		return hours;
+	public int getHoursWorked() {
+		return hours_worked;
 	}
 
-	public void setHours(Integer hours) {
-		this.hours = hours;
+	public void setHoursWorked(Integer hours) {
+		this.hours_worked = hours;
 	}
 
 	@Override
 	public String toString() {
-		return "ProjectParticipation [employee=" + employee 
-				+ ", project=" + project 
-				+ ", hours=" + hours + "]";
+		return "Employee: " + employee 
+				+ " - Project: " + project
+				+ " - Hours worked: " + hours_worked;  
 	}
 	
 }

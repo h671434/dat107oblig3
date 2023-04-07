@@ -1,7 +1,6 @@
-package dat107.oblig3.gui.widget.entitysets;
+package dat107.oblig3.gui.collection;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -9,23 +8,25 @@ import java.util.function.Consumer;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
+/**
+ * Costum gui table template.
+ * @param <T> Entity-type
+ */
 @SuppressWarnings("serial")
-public abstract class EntityTable<T> extends JTable implements EntitySet<T> {
+public abstract class EntityTable<T> extends JTable implements EntityCollection<T> {
 	
 	protected List<T> content = new ArrayList<>();
-	protected DataTableModel model = getTableModel();
+	protected EntityTableModel model = getTableModel();
 
 	public EntityTable() {
 		setModel(model);
-		setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		setPreferredScrollableViewportSize(new Dimension(850, 550));
+		setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 	}
 	
 	/**
-	 * Get the tablemodel for the current table. The tablemodel controlls
-	 * what data goes in the table, and how it is collected.
+	 * Get the tablemodel for the current table. 
 	 */
-	protected abstract DataTableModel getTableModel();
+	protected abstract EntityTableModel getTableModel();
 	
 	@Override
 	public T get(int index) {
@@ -69,7 +70,11 @@ public abstract class EntityTable<T> extends JTable implements EntitySet<T> {
 		return this;
 	}
 	
-	public abstract class DataTableModel extends AbstractTableModel {
+	/**
+	 * The tablemodel controlls what data goes in the table, and how it is 
+	 * collected. Each sub-class of EntityTable has its own implementation.
+	 */
+	public abstract class EntityTableModel extends AbstractTableModel {
 		
 		@Override
 		public abstract String getColumnName(int index);

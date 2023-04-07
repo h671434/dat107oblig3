@@ -1,6 +1,6 @@
 package dat107.oblig3.dao;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,9 +23,9 @@ public class EmployeeDAO extends DAO<Employee> {
 		return get(id);
 	}
 	
-	public Optional<Employee> getByUsername(String username) {
+	public Optional<Employee> getByUsername(String username) throws NonUniqueResultException {
 		String arg = "SELECT DISTINCT t FROM " + getEntityClass().getSimpleName() + " t "
-				+ "WHERE t.username LIKE :username";
+				+ "WHERE LOWER(t.username) LIKE LOWER(:username)";
 
 		try (EntityManager em = emf.createEntityManager()) {
 			TypedQuery<Employee> query = em.createQuery(arg, getEntityClass());
@@ -38,7 +38,12 @@ public class EmployeeDAO extends DAO<Employee> {
 		}
 	}
 
-	public void updatePosition(int id, String newPosition) {
+	@Override
+	public List<Employee> search(String search) {
+		return search(search, "username", "first_name", "last_name", "position");
+	}
+	
+	public void updatePosition(int id, String newPosition) throws Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();
@@ -51,14 +56,15 @@ public class EmployeeDAO extends DAO<Employee> {
 			tx.commit();
 			
 		} catch (Throwable e) {
-			e.printStackTrace();
 			if ((tx != null) && (tx.isActive())) {
 				tx.rollback();
 			}
+			
+			throw e;
 		}
 	}
 
-	public void updateSalary(int id, double newSalary) {
+	public void updateSalary(int id, double newSalary) throws Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();
@@ -71,14 +77,15 @@ public class EmployeeDAO extends DAO<Employee> {
 			tx.commit();
 			
 		} catch (Throwable e) {
-			e.printStackTrace();
 			if ((tx != null) && (tx.isActive())) {
 				tx.rollback();
 			}
+			
+			throw e;
 		}
 	}
 
-	public void updateDepartment(int id, int newDepartment) {
+	public void updateDepartment(int id, Department newDepartment) throws Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();
@@ -91,16 +98,17 @@ public class EmployeeDAO extends DAO<Employee> {
 			tx.commit();
 		
 		} catch (Throwable e) {
-			e.printStackTrace();
 			if ((tx != null) && (tx.isActive())) {
 				tx.rollback();
 			}
+			
+			throw e;
 		}
 	}
 
-	public void saveNew(String username, String firstName, String lastName, 
+	public Employee saveNew(String username, String firstName, String lastName, 
 			Date employmentDate, String position, double monthlySalary, 
-			int department) {
+			Department department) throws Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();
@@ -114,17 +122,15 @@ public class EmployeeDAO extends DAO<Employee> {
 			
 			tx.commit();
 			
+			return newEmployee;
+			
 		} catch (Throwable e) {
-			e.printStackTrace();
 			if ((tx != null) && (tx.isActive())) {
 				tx.rollback();
 			}
+			
+			throw e;
 		}
-	}
-
-	@Override
-	public List<Employee> search(String search) {
-		return search(search, "username", "first_name", "last_name", "position");
 	}
 
 }

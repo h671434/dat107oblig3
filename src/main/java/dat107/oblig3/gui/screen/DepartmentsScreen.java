@@ -1,13 +1,13 @@
 package dat107.oblig3.gui.screen;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import dat107.oblig3.dao.DepartmentDAO;
 import dat107.oblig3.entity.Department;
-import dat107.oblig3.gui.widget.entitysets.DepartmentTable;
-import dat107.oblig3.gui.widget.entitysets.EntitySet;
+import dat107.oblig3.gui.collection.DepartmentTable;
+import dat107.oblig3.gui.collection.EntityCollection;
 
 @SuppressWarnings("serial")
 public class DepartmentsScreen extends SearchScreen<Department> {
@@ -15,27 +15,29 @@ public class DepartmentsScreen extends SearchScreen<Department> {
 	private DepartmentDAO dao = new DepartmentDAO();
 	
 	public DepartmentsScreen() {
+		addSearchOption("Any", s -> dao.search(s));
 		addSearchOption("ID", s -> searchById(s));
-		
-		dataset.updateContent(dao.getAll());
 	}
 	
 	@Override
-	protected EntitySet<Department> getDatasetWidget() {
+	protected EntityCollection<Department> getDatasetComponent() {
 		return new DepartmentTable();
 	}
 	
 	private List<Department> searchById(String search) {
-		List<Department> result;
 		try {
 			int id = Integer.parseInt(search);
-			result = Collections.singletonList(dao.get(id).get());
+			Optional<Department> result = dao.get(id);
+			
+			if(result.isPresent()) {
+				return Collections.singletonList(result.get());
+			} 
+			
 		} catch (NumberFormatException e) {
 			showNoResultsDialog("ID must be a number");
-			result = new ArrayList<>();
-		}
-
-		return result;
+		}	
+		
+		return Collections.emptyList();
 	}
 
 	@Override

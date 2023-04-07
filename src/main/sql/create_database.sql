@@ -106,7 +106,7 @@ VALUES
 	('Mario Kart 2021', 'The offical company Mario Kart tournament of 2021. Last place loses job, winner gets a promotion.'),
 	('Office Pool', 'Build a giant pool inside the office.'),
 	('Mario Kart 2022', 'The offical company Mario Kart tournament of 2022. Last place loses job, winner gets a promotion.'),
-	('Make Poney', 'Earn stacks');
+	('Make Money', 'Earn stacks');
 	
 INSERT INTO project_participations
 	(employee, project, role, hours_worked)

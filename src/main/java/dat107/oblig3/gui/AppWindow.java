@@ -14,14 +14,12 @@ import dat107.oblig3.gui.screen.DepartmentsScreen;
 import dat107.oblig3.gui.screen.EmployeesScreen;
 import dat107.oblig3.gui.screen.ProjectsScreen;
 import dat107.oblig3.gui.screen.Screen;
-import dat107.oblig3.gui.widget.NavigationPanel;
-import dat107.oblig3.gui.widget.ToolBar;
 
 @SuppressWarnings("serial")
-public class AppWindow extends JFrame implements AutoCloseable{
+public class AppWindow extends JFrame implements AutoCloseable {
 
 	public final ToolBar toolbar;
-	public final NavigationPanel navigation;
+	public final NavigationSideBar navigation;
 	public final JPanel screenPanel;
 	
 	private final CardLayout screenCards;
@@ -31,16 +29,16 @@ public class AppWindow extends JFrame implements AutoCloseable{
 			put("Employees", new EmployeesScreen());
 			put("Departments", new DepartmentsScreen());
 			put("Projects", new ProjectsScreen());
-		}};
+	}};
 
 	public AppWindow() {
-		setBackground(UITheme.ROOT_BACKGROUND_COLOR);
-		setSize(1200, 750);
+		setBackground(UITheme.LIGHT_ACCENT_COLOR);
+		setSize(1300, 800);
 		
 		this.toolbar = new ToolBar();
 		this.screenCards = new CardLayout();
 		this.screenPanel = new JPanel(screenCards);
-		this.navigation = new NavigationPanel(this);
+		this.navigation = new NavigationSideBar(this);
 
 		setJMenuBar(toolbar);
 		getContentPane().add(navigation, BorderLayout.WEST);
@@ -73,12 +71,10 @@ public class AppWindow extends JFrame implements AutoCloseable{
 	private void handleChangeScreenException(Exception e) {
 		try {
 			currentScreen.close();
-		} catch(Exception ignored) {
-		}
+		} catch(Exception ignored) {}
 		
-		String errorMessage = "Unexpected error occured when changing screen.";
-		System.err.println(errorMessage + "\n" + e.getMessage());	
-		showErrorDialogAndClose(errorMessage);
+		e.printStackTrace();
+		showErrorDialogAndClose("Unexpected error occured when changing screen.");
 	}
 	
 	public void showErrorDialogAndClose(String errorMessage) {
@@ -88,10 +84,14 @@ public class AppWindow extends JFrame implements AutoCloseable{
 		
 		close();
 	}
-
+	
 	@Override
 	public void close() {
 		this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+	}
+	
+	public void refresh() {
+		validate();
 	}
 
 }

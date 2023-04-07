@@ -8,7 +8,7 @@ import dat107.oblig3.util.ServerReplacer;
 
 public class Main {
 
-	public static final int PORT = 8564;
+	private static final int PORT = 8564;
 
 	public static void main(String[] args) {
 		System.out.println("Hello world!");

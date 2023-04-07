@@ -1,16 +1,20 @@
-package dat107.oblig3.gui.widget.entitysets;
+package dat107.oblig3.gui.collection;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import dat107.oblig3.entity.Employee;
-import dat107.oblig3.gui.widget.entitysets.EntityTable.DataTableModel;
 
 @SuppressWarnings("serial")
 public class EmployeeTable extends EntityTable<Employee>{
 	
-	protected EntityTable<Employee>.DataTableModel getTableModel() {
+	private static DateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+	
+	protected EmployeeTable.EmployeeTableModel getTableModel() {
 		return new EmployeeTableModel();
 	}
 	
-	private class EmployeeTableModel extends EntityTable<Employee>.DataTableModel {
+	private class EmployeeTableModel extends EntityTable<Employee>.EntityTableModel {
 
 		@Override
 		public String getColumnName(int columnIndex) {
@@ -22,7 +26,7 @@ public class EmployeeTable extends EntityTable<Employee>{
 			case 4:	return "Position";
 			case 5: return "Date of Employment";
 			case 6: return "Monthly Salary";
-			case 7: return "Department ID";
+			case 7: return "Department";
 			}
 			return "";
 		}
@@ -41,9 +45,9 @@ public class EmployeeTable extends EntityTable<Employee>{
 			case 2: return e.getFirstName();
 			case 3: return e.getLastName();
 			case 4:	return e.getPosition();
-			case 5: return e.getEmploymentDate();
+			case 5: return DATE_FORMAT.format(e.getEmploymentDate());
 			case 6:	return e.getMonthlySalary();
-			case 7: return e.getDepartment();
+			case 7: return e.getDepartment().getName();
 			}
 			return "";
 		}

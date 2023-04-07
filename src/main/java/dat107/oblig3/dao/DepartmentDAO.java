@@ -23,10 +23,9 @@ public class DepartmentDAO extends DAO<Department> {
 		return search(search, "department_name");
 	}
 	
-	public List<Department> searchByName(String search) {
-		return search(search, "department_name");
-	}
-	
+	/**
+	 * @return a list of all department names containing the search string
+	 */
 	public List<String> getNamesContaining(String search) {
 		String arg = "SELECT t.department_name FROM Department t "
 				+ "WHERE LOWER(t.department_name) LIKE :search";

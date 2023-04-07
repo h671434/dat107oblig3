@@ -1,4 +1,4 @@
-package dat107.oblig3.gui.widget;
+package dat107.oblig3.gui;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -10,26 +10,23 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
-import dat107.oblig3.gui.AppWindow;
-import dat107.oblig3.gui.UITheme;
-
 @SuppressWarnings("serial")
-public class NavigationPanel extends JPanel {
+public class NavigationSideBar extends JPanel {
     
 	private final AppWindow window;
 	
-	private GridBagConstraints nextButtonPos = new GridBagConstraints() {
-		{
+	private JButton selectedButton;
+	
+	private GridBagConstraints nextButtonPos = new GridBagConstraints() {{
 			fill = GridBagConstraints.HORIZONTAL;
 			weightx = 1;
 			weighty = 0;
 			anchor = GridBagConstraints.PAGE_START;
 			gridx = 0;
 			gridy = 0;
-		}
-	};
+	}};
 	
-	public NavigationPanel(AppWindow window) {
+	public NavigationSideBar(AppWindow window) {
 		this.window = window;
 		
 		setLayout(new GridBagLayout());
@@ -53,15 +50,32 @@ public class NavigationPanel extends JPanel {
 
 	public void addNavigationButton(String screenName) {
 		JButton button = new JButton(screenName);
+		
 		button.addActionListener(e -> window.changeScreen(screenName));
+		button.addActionListener(e -> setSelectedButton(button));
 		button.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 		button.setForeground(UITheme.DEFAULT_TEXT_COLOR);
 		button.setAlignmentX(CENTER_ALIGNMENT);
 		button.setBorder(BorderFactory.createEmptyBorder());
 		button.setPreferredSize(new Dimension(getWidth(), 40));
 		button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		button.setFocusPainted(false);
 		
 		add(button, nextButtonPos);
 		nextButtonPos.gridy++;
+		
+		if(selectedButton == null) {
+			setSelectedButton(button);
+		}
+	}
+	
+	private void setSelectedButton(JButton button) {
+		if(selectedButton != null) {
+			selectedButton.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
+		}
+		
+		selectedButton = button;
+		
+		selectedButton.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
 	}
 }

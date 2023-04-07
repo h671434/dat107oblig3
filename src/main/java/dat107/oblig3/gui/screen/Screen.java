@@ -2,6 +2,9 @@ package dat107.oblig3.gui.screen;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.Window;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -11,15 +14,20 @@ import dat107.oblig3.gui.UITheme;
 @SuppressWarnings("serial")
 public abstract class Screen extends JPanel implements AutoCloseable {
 
+	protected BorderLayout layout = new BorderLayout();
+	
 	protected JPanel top = new JPanel();
 	protected JPanel bottom = new JPanel();
 	protected JPanel left = new JPanel();
 	protected JPanel right = new JPanel();
-	protected JPanel center = new JPanel();
+	protected Component center = new JPanel();
 
 	public Screen() {
+		setLayout(layout);
 		setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
-		setLayout(new BorderLayout());
+		
+		layout.setVgap(5);
+		layout.setHgap(20);
 
 		top.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 		bottom.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
@@ -34,61 +42,8 @@ public abstract class Screen extends JPanel implements AutoCloseable {
 		add(center, BorderLayout.CENTER);
 	}
 	
-	public void addTopPanel(Component top) {
-		for (Component comp : this.top.getComponents()) {
-			this.top.remove(comp);
-		}
-		
-		this.top.add(top);
-		this.top.revalidate();
-	}
-
-	public void addBottomPanel(Component bottom) {
-		for (Component comp : this.bottom.getComponents()) {
-			this.bottom.remove(comp);
-		}
-		
-		this.bottom.add(bottom);
-		this.bottom.revalidate();
-	}
-
-	public void addLeftPanel(Component left) {
-		for (Component comp : this.left.getComponents()) {
-			this.left.remove(comp);
-		}
-		
-		this.left.add(left);
-		this.left.revalidate();
-	}
-
-	public void addRightPanel(Component right) {
-		for (Component comp : this.right.getComponents()) {
-			this.right.remove(comp);
-		}
-		
-		this.right.add(right);
-		this.right.revalidate();
-	}
-
-	public void addCenterPanel(Component center) {
-		for (Component comp : this.center.getComponents()) {
-			this.center.remove(comp);
-		}
-		
-		this.center.add(center);
-		this.center.revalidate();
-	}
-
-	/**
-	 * Final screen initialization.
-	 */
 	public abstract void display();
 	
-	/*
-	 * Makes sure that display and gui changes are done on the correct thread.
-	 * Invokes display on the event dispatching thread after all pending AWT 
-	 * events have been processed.
-	 */
 	public void safeDisplay() {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -98,8 +53,65 @@ public abstract class Screen extends JPanel implements AutoCloseable {
 		});
 	}
 	
-	public void close() {
-		
+	public abstract void refresh();
+	
+	@Override
+	public void close() {	
+		this.dispatchEvent(new WindowEvent(getWindow(), WindowEvent.WINDOW_CLOSING));
 	}
 	
+	public Window getWindow() {
+		Container parent = getParent();
+		
+		while(parent != null) {
+			if(parent instanceof Window) {
+				return (Window) parent;
+			}
+			
+			parent = parent.getParent();
+		}
+		
+		return null;
+	}
+	
+	
+	public void setTopPanel(Component top) {
+		replacePanelContent(this.top, top);
+	}
+
+	public void setBottomPanel(Component bottom) {
+		replacePanelContent(this.bottom, bottom);
+	}
+
+	public void setLeftPanel(Component left) {
+		replacePanelContent(this.left, left);
+	}
+
+	public void setRightPanel(Component right) {
+		replacePanelContent(this.right, right);
+	}
+
+	public void setCenterPanel(Component center) {
+		this.remove(this.center);
+		this.add(center);
+		
+		this.center = center;
+	}
+	
+	/*
+	 * Removes all current components in parent, and adds newContent.
+	 * If newContent is null, an empty JPanel will be added instead.
+	 */
+	private void replacePanelContent(JPanel parent, Component newContent) {
+		for (Component comp : parent.getComponents()) {
+			parent.remove(comp);
+		}
+		
+		if(newContent != null) {
+			parent.add(newContent);
+		}
+		
+		validate();
+	}
+
 }

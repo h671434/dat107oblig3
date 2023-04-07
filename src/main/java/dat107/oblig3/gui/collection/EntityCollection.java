@@ -1,4 +1,4 @@
-package dat107.oblig3.gui.widget.entitysets;
+package dat107.oblig3.gui.collection;
 
 import java.awt.Component;
 import java.util.List;
@@ -6,9 +6,9 @@ import java.util.function.Consumer;
 
 /**
  * Interface for gui-components which represent sets of data,
- * such as tables and lists.
+ * such as tables and lists. 
  */
-public interface EntitySet<T> {
+public interface EntityCollection<T> {
 	
 	/**
 	 * Get the dataset item with the given index.
@@ -31,7 +31,12 @@ public interface EntitySet<T> {
 	void addSelectionListener(Consumer<T> onSelection);
 	
 	/**
-	 * Returns if the widget currently has any data.
+	 * Unselects the current selected entity.
+	 */
+	void clearSelection();
+	
+	/**
+	 * Returns false if the widget currently contains any data.
 	 */
 	boolean isEmpty();
 

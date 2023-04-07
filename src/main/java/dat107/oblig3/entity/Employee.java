@@ -1,13 +1,18 @@
 package dat107.oblig3.entity;
 
-import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -23,15 +28,18 @@ public class Employee {
 	private Date employment_date;
 	private String position;
 	private double monthly_salary;
-	private int department;
+	@ManyToOne
+	@JoinColumn(name = "department")
+	@OneToOne(mappedBy = "department_manager")
+	private Department department;
 	@OneToMany(mappedBy = "employee")
-	private List<ProjectParticipation> project_participations;
+	private List<ProjectParticipation> project_participations = new ArrayList<>();
 
 	public Employee() {}
 
 	public Employee(String username, String firstName, String lastName, 
 			Date employmentDate, String position, double monthlySalary, 
-			int department) {
+			Department department) {
 		this.username = username;
 		this.first_name = firstName;
 		this.last_name = lastName;
@@ -41,12 +49,11 @@ public class Employee {
 		this.department = department;
 	}
 	
-	public void addProjectParticipation(ProjectParticipation pp) {
-		project_participations.add(pp);
-	}
-	
-	public void removeProjectParticipation(ProjectParticipation pp) {
-		project_participations.remove(pp);
+	@Override
+	public String toString() {
+		return  "#" + employee_id 
+				+ " @" + username
+				+ " " + first_name + " " + last_name;
 	}
 	
 	public void print() {
@@ -107,22 +114,43 @@ public class Employee {
 		this.monthly_salary = monthly_salary;
 	}
 
-	public Integer getDepartment() {
+	public Department getDepartment() {
 		return department;
 	}
 
-	public void setDepartment(int department) {
+	public void setDepartment(Department department) {
 		this.department = department;
 	}
 	
+	public List<ProjectParticipation> getParticipations() {
+		return project_participations;
+	}
+	
+	public void addProjectParticipation(ProjectParticipation pp) {
+		project_participations.add(pp);
+	}
+	
+	public void removeProjectParticipation(ProjectParticipation pp) {
+		project_participations.remove(pp);
+	}
+
 	@Override
-	public String toString() {
-		return "Employee [employee_id=" + employee_id 
-				+ ", username=" + username 
-				+ ", first_name=" + first_name
-				+ ", last_name=" + last_name 
-				+ ", employment_date=" + employment_date
-				+ ", position=" + position + "]";
+	public int hashCode() {
+		return Objects.hash(department, employee_id, employment_date, 
+				first_name, last_name, monthly_salary, position,
+				project_participations, username);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		
+		return (employee_id == ((Employee) obj).employee_id);
 	}
 	
 }

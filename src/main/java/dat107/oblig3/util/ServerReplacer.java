@@ -5,10 +5,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * !! NOT PART OF PROJECT !!
+ * !! USED DURING TESTING !!
  * 
  * Closes the previous running instance of the program on startup. Used during
- * development, because I forget to close the program before restarting.
+ * development, because I forget to close the program before runnung again.
+ * Used during testing to avoid ending up with multiple running instances.
  * 
  * Code taken from @author marco-ruiz
  * at @see https://github.com/marco-ruiz/stackoverflow-qa/tree/master/so-common/src/main/java/so/a56247038

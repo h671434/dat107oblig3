@@ -38,6 +38,12 @@ public class Project {
 		project_participations.remove(pp);
 	}
 	
+	@Override
+	public String toString() {
+		return "#" + project_id 
+				+ " " +  project_name;
+	}
+	
 	public void print() {
 		System.out.println(this.toString());
 	}
@@ -68,15 +74,8 @@ public class Project {
 		this.project_description = project_description;
 	}
 
-	public List<ProjectParticipation> getProjectParticipations() {
+	public List<ProjectParticipation> getParticipations() {
 		return this.project_participations;
-	}
-	
-	@Override
-	public String toString() {
-		return "Project [project_id=" + project_id 
-				+ ", project_name=" + project_name
-				+ ", project_description=" + project_description + "]";
 	}
 	
 }

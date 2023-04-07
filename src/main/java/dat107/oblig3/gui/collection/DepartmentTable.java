@@ -1,17 +1,17 @@
-package dat107.oblig3.gui.widget.entitysets;
+package dat107.oblig3.gui.collection;
 
 import dat107.oblig3.entity.Department;
-import dat107.oblig3.gui.widget.entitysets.EntityTable.DataTableModel;
+import dat107.oblig3.entity.Employee;
 
 @SuppressWarnings("serial")
 public class DepartmentTable extends EntityTable<Department> {
 
 	@Override
-	protected EntityTable<Department>.DataTableModel getTableModel() {
+	protected DepartmentTable.DepartmentTableModel getTableModel() {
 		return new DepartmentTableModel();
 	}
 
-	public class DepartmentTableModel extends EntityTable<Department>.DataTableModel {
+	public class DepartmentTableModel extends EntityTable<Department>.EntityTableModel {
 
 		@Override
 		public int getColumnCount() {
@@ -34,7 +34,9 @@ public class DepartmentTable extends EntityTable<Department> {
 			switch (columnIndex) {
 			case 0: return d.getId();
 			case 1: return d.getName();
-			case 2: return d.getManager();
+			case 2: 
+				Employee manager = d.getManager();
+				return manager.getFirstName() + " " + manager.getLastName();
 			}
 			return "";
 			

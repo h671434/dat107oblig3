@@ -94,9 +94,9 @@ public abstract class DAO<T> {
 		StringBuilder arg = new StringBuilder();
 		
 		arg.append("SELECT t FROM " + getEntityClass().getSimpleName() + " t ");
-		arg.append("WHERE t." + fields[0] + " LIKE (:search) ");
+		arg.append("WHERE LOWER(t." + fields[0] + ") LIKE LOWER(:search) ");
 		for(int i = 1; i < fields.length; i++) {
-			arg.append("OR t." + fields[i] + " LIKE (:search) ");
+			arg.append("OR LOWER(t." + fields[i] + ") LIKE LOWER(:search) ");
 		}
 		
 		try (EntityManager em = emf.createEntityManager()) {
