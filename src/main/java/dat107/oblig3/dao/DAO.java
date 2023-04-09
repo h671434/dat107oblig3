@@ -111,13 +111,15 @@ public abstract class DAO<T> {
 	 * Saves changes to given entity in the database.
 	 * @param entity to save
 	 */
-	public void update(T entity) {	
+	public void update(T entity) throws Throwable {	
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();
 	
 			tx.begin();
+			
 			em.merge(entity);
+			
 			tx.commit();
 			
 		} catch (Throwable e) {
@@ -125,6 +127,8 @@ public abstract class DAO<T> {
 			if ((tx != null) && (tx.isActive())) {
 				tx.rollback();
 			}
+			
+			throw e;
 		}
 	}
 	
@@ -132,7 +136,7 @@ public abstract class DAO<T> {
 	 * Deletes the given entity from the database.
 	 * @param entity to delete
 	 */
-	public void delete(Object id) {
+	public void delete(Object id) throws Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();
@@ -145,10 +149,11 @@ public abstract class DAO<T> {
 			tx.commit();
 
 		} catch (Throwable e) {
-			e.printStackTrace();
 			if ((tx != null &&tx.isActive())) {
 				tx.rollback();
 			}
+			
+			throw e;
 		}
 	}
 }

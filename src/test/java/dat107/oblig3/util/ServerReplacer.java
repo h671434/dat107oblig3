@@ -8,7 +8,7 @@ import java.net.Socket;
  * !! USED DURING TESTING !!
  * 
  * Closes the previous running instance of the program on startup. Used during
- * development, because I forget to close the program before runnung again.
+ * development, because I forget to close the program before re-running.
  * Used during testing to avoid ending up with multiple running instances.
  * 
  * Code taken from @author marco-ruiz

@@ -97,7 +97,7 @@ public class InfoWidget extends JPanel {
 	
 	public void addFullWidthField(Component field) {
 		GridBagConstraints fullWidth = new GridBagConstraints() {{
-			fill = HORIZONTAL;
+			gridwidth = 2;
 			gridy = nextLabelPos.gridy;
 		}};
 		

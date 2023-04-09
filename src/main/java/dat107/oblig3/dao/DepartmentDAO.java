@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import dat107.oblig3.entity.Department;
+import dat107.oblig3.entity.Employee;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 
 public class DepartmentDAO extends DAO<Department> {
@@ -22,10 +24,7 @@ public class DepartmentDAO extends DAO<Department> {
 	public List<Department> search(String search) {
 		return search(search, "department_name");
 	}
-	
-	/**
-	 * @return a list of all department names containing the search string
-	 */
+
 	public List<String> getNamesContaining(String search) {
 		String arg = "SELECT t.department_name FROM Department t "
 				+ "WHERE LOWER(t.department_name) LIKE :search";
@@ -38,5 +37,60 @@ public class DepartmentDAO extends DAO<Department> {
 		}
 	}
 
-
+	public void updateManager(int departmentId, Employee newEmployee) 
+			throws IllegalArgumentException, Throwable {
+		EntityTransaction tx = null;
+		try (EntityManager em = emf.createEntityManager()) {
+			tx = em.getTransaction();
+			
+			tx.begin();
+			
+			newEmployee = em.merge(newEmployee);
+			
+			Department toUpdate = em.find(Department.class, departmentId);
+			
+			if(!toUpdate.isMember(newEmployee)) {
+				throw new IllegalArgumentException(
+						"Employee is not a member of the department.");
+			}
+			
+			toUpdate.setManager(newEmployee);
+						
+			tx.commit();
+		
+		} catch (Throwable e) {
+			if ((tx != null) && (tx.isActive())) {
+				tx.rollback();
+			}
+			
+			throw e;
+		}
+	}
+	
+	public Department saveNewDepartment(String name, Employee manager) 
+			throws Throwable {
+		EntityTransaction tx = null;
+		try (EntityManager em = emf.createEntityManager()) {
+			tx = em.getTransaction();
+			
+			tx.begin();
+			
+			manager = em.merge(manager);
+			
+			Department newDepartment = new Department(name, manager);
+			em.persist(newDepartment);
+			
+			tx.commit();
+			
+			return newDepartment;
+			
+		} catch (Throwable e) {
+			if ((tx != null) && (tx.isActive())) {
+				tx.rollback();
+			}
+			
+			throw e;
+		}
+	}
+	
 }

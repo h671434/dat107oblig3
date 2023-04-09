@@ -25,8 +25,9 @@ public class EmployeeDAO extends DAO<Employee> {
 		return get(id);
 	}
 	
-	public Optional<Employee> getByUsername(String username) throws NonUniqueResultException {
-		String arg = "SELECT DISTINCT t FROM " + getEntityClass().getSimpleName() + " t "
+	public Optional<Employee> getByUsername(String username) 
+			throws NonUniqueResultException {
+		String arg = "SELECT DISTINCT t FROM Employee t "
 				+ "WHERE LOWER(t.username) LIKE LOWER(:username)";
 
 		try (EntityManager em = emf.createEntityManager()) {
@@ -87,14 +88,23 @@ public class EmployeeDAO extends DAO<Employee> {
 		}
 	}
 
-	public void updateDepartment(int id, Department newDepartment) throws Throwable {
+	public void updateDepartment(int id, Department newDepartment) 
+			throws Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();
 			
 			tx.begin();
 			
+			newDepartment = em.merge(newDepartment);
+			
 			Employee toUpdate = em.find(Employee.class, id);
+			
+			if(toUpdate.isManager()) {
+				throw new IllegalArgumentException(
+						"Employee is a manager in another Department");
+			}
+			
 			toUpdate.setDepartment(newDepartment);
 						
 			tx.commit();
@@ -108,14 +118,16 @@ public class EmployeeDAO extends DAO<Employee> {
 		}
 	}
 
-	public Employee saveNew(String username, String firstName, String lastName, 
-			Date employmentDate, String position, double monthlySalary, 
-			Department department) throws Throwable {
+	public Employee saveNewEmployee(String username, String firstName, 
+			String lastName, Date employmentDate, String position, 
+			double monthlySalary, Department department) throws Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();
 			
 			tx.begin();
+			
+			department = em.merge(department);
 			
 			Employee newEmployee = new Employee(username, firstName, 
 					lastName, employmentDate, position, 
@@ -135,13 +147,16 @@ public class EmployeeDAO extends DAO<Employee> {
 		}
 	}
 	
-	public ProjectParticipation addEmployeeToProject(Employee employee, 
-			Project project, int hours) throws Throwable {
+	public ProjectParticipation addEmployeeToProject(int employeeId, 
+			int projectId, int hours) throws Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();
 			
 			tx.begin();
+			
+			Employee employee = em.find(Employee.class, employeeId);
+			Project project = em.find(Project.class, projectId);
 			
 			ProjectParticipation newParticipation = new ProjectParticipation(
 					employee, project, hours);
@@ -163,13 +178,16 @@ public class EmployeeDAO extends DAO<Employee> {
 		}
 	}
 	
-	public ProjectParticipation addEmployeeToProject(Employee employee, 
-			Project project) throws Throwable {
+	public ProjectParticipation addEmployeeToProject(int employeeId, 
+			int projectId) throws Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();
 			
 			tx.begin();
+			
+			Employee employee = em.find(Employee.class, employeeId);
+			Project project = em.find(Project.class, projectId);
 			
 			ProjectParticipation newParticipation = new ProjectParticipation(
 					employee, project);

@@ -22,6 +22,8 @@ public class ProjectParticipation {
 	@JoinColumn(name = "project")
 	private Project project;
 	
+	private String role = "";
+	
 	private int hours_worked = 0;
 	
 	public ProjectParticipation() {}
@@ -48,6 +50,14 @@ public class ProjectParticipation {
 
 	public Project getProject() {
 		return project;
+	}
+	
+	public String getRole() {
+		return role;
+	}
+	
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	public int getHoursWorked() {

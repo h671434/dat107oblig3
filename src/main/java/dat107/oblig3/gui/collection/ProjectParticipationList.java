@@ -43,10 +43,6 @@ public class ProjectParticipationList extends EntityList<ProjectParticipation> {
 		this.type = type;
 	}
 	
-	public void addAdditionalEntry(ProjectParticipation additional) {
-		addEntry(createEntry(additional));
-	}
-	
 	@Override
 	protected ProjectParticipationList.ProjectParticipationListEntry createEntry(
 			ProjectParticipation entity) {
@@ -77,13 +73,11 @@ public class ProjectParticipationList extends EntityList<ProjectParticipation> {
 		public ProjectParticipationListEntry(ProjectParticipation entity) {
 			super(entity);
 			
-			setLayout(new FlowLayout(FlowLayout.LEFT));
+			setLayout(new GridLayout(0, 1));
 			setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
 			
 			addIdAndNameLabel();
-			addHoursWorkedField();
-			
-			removeMouseListener(clickListener);
+			addHoursAndRoleField();
 		}
 		
 		private void addIdAndNameLabel() {
@@ -92,17 +86,20 @@ public class ProjectParticipationList extends EntityList<ProjectParticipation> {
 			idAndName.setForeground(UITheme.DEFAULT_TEXT_COLOR);
 			
 			if (type == ListContent.EMPLOYEE) {
-				idAndName.setText(entity.getEmployee().toString() + "  - ");
+				idAndName.setText(entity.getEmployee().toString());
 			}
 			if (type == ListContent.PROJECT) {
-				idAndName.setText(entity.getProject().toString() + "  - ");
+				idAndName.setText(entity.getProject().toString());
 			}
 			
 			add(idAndName);
 		}
 		
-		private void addHoursWorkedField() {
-			JLabel hoursWorkedLabel = new JLabel(entity.getHoursWorked() + " hours worked");
+		private void addHoursAndRoleField() {
+			String text = "    " + entity.getRole()
+					+ " - " + entity.getHoursWorked() + " hours";
+			
+			JLabel hoursWorkedLabel = new JLabel(text);
 			hoursWorkedLabel.setForeground(UITheme.DEFAULT_TEXT_COLOR);
 			
 			add(hoursWorkedLabel);

@@ -14,7 +14,7 @@ import dat107.oblig3.gui.inputcontrols.NumericField;
 import dat107.oblig3.gui.screen.Screen;
 
 @SuppressWarnings("serial")
-public class AboutEmployeeWidget extends InfoWidget {
+public class EditEmployeeWidget extends InfoWidget {
 	
 	private final Screen screen;
 	
@@ -25,15 +25,16 @@ public class AboutEmployeeWidget extends InfoWidget {
 	private final DateField employmentDate = new DateField();
 	private final JTextField position = new JTextField(10);
 	private final NumericField salary = new NumericField(10, true);
-	private final EntityComboBox<Department> department = EntityComboBox.createDepartmentComboBox();
+	private final EntityComboBox<Department> department = 
+			EntityComboBox.createDepartmentComboBox();
 	
-	private final JButton saveButton = 	createWidgetButton("Save", e -> onSave());
+	private final JButton saveButton = createWidgetButton("Save", e -> onSave());
 	private final JButton cancelButton = createWidgetButton("Cancel", e -> onCancel());
 	
 	private EmployeeDAO dao = new EmployeeDAO();
 	private Employee employee;
 	
-	public AboutEmployeeWidget(Screen screen) {
+	public EditEmployeeWidget(Screen screen) {
 		super("About Employee");
 		this.screen = screen;
 		
@@ -60,7 +61,12 @@ public class AboutEmployeeWidget extends InfoWidget {
 		employmentDate.setEditable(editable);
 		position.setEditable(editable);
 		salary.setEditable(editable);
-		department.setEditable(editable);
+		
+		if(employee != null && employee.isManager()) {
+			department.setEditable(false);
+		} else {
+			department.setEditable(editable);
+		}
 	}
 
 	public void setEmployee(Employee employee) {
@@ -168,7 +174,7 @@ public class AboutEmployeeWidget extends InfoWidget {
 	
 	private void saveNewEmployee() {
 		try {
-			 dao.saveNew(username.getText(), firstName.getText(), 
+			 dao.saveNewEmployee(username.getText(), firstName.getText(), 
 					lastName.getText(), employmentDate.getDate(), 
 					position.getText(), salary.getDouble(),
 					(Department) department.getSelectedItem());

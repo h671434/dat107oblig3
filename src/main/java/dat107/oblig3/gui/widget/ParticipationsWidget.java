@@ -21,10 +21,11 @@ public class ParticipationsWidget extends InfoWidget {
 	
 	private final Screen screen;
 	
-	private final ProjectParticipationList list = new ProjectParticipationList();
+	private final ProjectParticipationList participationsList = 
+			new ProjectParticipationList();
 	
-	private final JButton addEmployeeToProjectButton = 
-			createWidgetButton("Add New Participation", e -> onAddNewParticipation());
+	private final JButton addNewPartcipationButton = 
+			createWidgetButton("Add New Participation", e -> onAddParticipation());
 	private final JButton saveButton = 
 			createWidgetButton("Save", 	e -> onSave());
 	private final JButton cancelButton = 
@@ -42,7 +43,7 @@ public class ParticipationsWidget extends InfoWidget {
 		super(title);
 		this.screen = screen;
 		
-		JScrollPane listScrollPane = new JScrollPane(list);
+		JScrollPane listScrollPane = new JScrollPane(participationsList);
 		
 		listScrollPane.setHorizontalScrollBarPolicy(
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -51,10 +52,10 @@ public class ParticipationsWidget extends InfoWidget {
 		
 		addFullWidthField(listScrollPane);
 		
-		setButtons(addEmployeeToProjectButton);
+		setButtons(addNewPartcipationButton);
 	}
 	
-	private void onAddNewParticipation() {
+	private void onAddParticipation() {
 		addFullWidthField(createNewParticipationWidget());
 		
 		setButtons(cancelButton, saveButton);
@@ -79,19 +80,21 @@ public class ParticipationsWidget extends InfoWidget {
 		EmployeeDAO dao = new EmployeeDAO();
 		
 		try {
+			Employee employee = (Employee)employeeComboBox.getSelectedItem();
+			Project project = (Project)projectComboBox.getSelectedItem();
+			
 			ProjectParticipation newParticipation;
+			
 			if(hoursField.getText().isBlank()) {
 				newParticipation = dao.addEmployeeToProject(
-							(Employee)employeeComboBox.getSelectedItem(),
-							(Project)projectComboBox.getSelectedItem());
+						employee.getId(), project.getId());
 			} else {
 				newParticipation = dao.addEmployeeToProject(
-						(Employee)employeeComboBox.getSelectedItem(),
-						(Project)projectComboBox.getSelectedItem(),
+						employee.getId(), project.getId(),
 						hoursField.getInt());
 			}
 			
-			list.addAdditionalEntry(newParticipation);
+			participationsList.createEntryAndAdd(newParticipation);
 			
 		} catch (Throwable e) {
 			JOptionPane.showMessageDialog(screen, 
@@ -104,7 +107,7 @@ public class ParticipationsWidget extends InfoWidget {
 	private void onCancel() {
 		removeNewParticipationWidget();
 		
-		setButtons(addEmployeeToProjectButton);
+		setButtons(addNewPartcipationButton);
 		
 		screen.validate();
 	}
@@ -126,15 +129,15 @@ public class ParticipationsWidget extends InfoWidget {
 		
 		setTitle("Projects");
 		
-		list.setListType(ProjectParticipationList.ListContent.PROJECT);
+		participationsList.setListType(ProjectParticipationList.ListContent.PROJECT);
 		
 		if(employee != null) {
-			list.updateContent(employee.getParticipations());
+			participationsList.updateContent(employee.getParticipations());
 		} else {
-			list.updateContent(Collections.emptyList());
+			participationsList.updateContent(Collections.emptyList());
 		}
 		
-		setButtons(addEmployeeToProjectButton);
+		setButtons(addNewPartcipationButton);
 		
 		screen.validate();
 	}
@@ -151,15 +154,15 @@ public class ParticipationsWidget extends InfoWidget {
 		
 		setTitle("Participants");
 		
-		list.setListType(ProjectParticipationList.ListContent.EMPLOYEE);
+		participationsList.setListType(ProjectParticipationList.ListContent.EMPLOYEE);
 		
 		if(project != null) {
-			list.updateContent(project.getParticipations());
+			participationsList.updateContent(project.getParticipations());
 		} else {
-			list.updateContent(Collections.emptyList());
+			participationsList.updateContent(Collections.emptyList());
 		}
 		
-		setButtons(addEmployeeToProjectButton);
+		setButtons(addNewPartcipationButton);
 		
 		screen.validate();
 	}

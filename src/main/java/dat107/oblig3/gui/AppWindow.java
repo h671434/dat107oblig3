@@ -33,7 +33,7 @@ public class AppWindow extends JFrame implements AutoCloseable {
 
 	public AppWindow() {
 		setBackground(UITheme.LIGHT_ACCENT_COLOR);
-		setSize(1300, 800);
+		setSize(1400, 900);
 		
 		this.toolbar = new ToolBar();
 		this.screenCards = new CardLayout();

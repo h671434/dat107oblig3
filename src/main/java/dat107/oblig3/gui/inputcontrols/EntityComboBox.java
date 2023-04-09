@@ -1,6 +1,7 @@
 package dat107.oblig3.gui.inputcontrols;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxModel;
@@ -17,7 +18,16 @@ import dat107.oblig3.entity.Project;
 @SuppressWarnings("serial")
 public class EntityComboBox<T> extends JComboBox<T> {
 	
-	private EntityComboBox() {
+	private EntityComboBoxModel model;
+	
+	public EntityComboBox(Supplier<List<T>> contentSupplier) {
+		setModel(new EntityComboBoxModel(contentSupplier));
+	}
+	
+	public void setModel(EntityComboBoxModel model) {
+		super.setModel(model);
+		
+		this.model = model;
 	}
 	
 	@Override
@@ -25,74 +35,64 @@ public class EntityComboBox<T> extends JComboBox<T> {
 		setEnabled(editable);
 	}
 	
+	public void refresh() {
+		model.refresh();
+	}
+	
 	public static EntityComboBox<Department> createDepartmentComboBox() {
 		DepartmentDAO dao = new DepartmentDAO();
 		
-		return new EntityComboBox<Department>() {{
-			setModel(new EntityComboBoxModel(dao));
-		}};
+		return new EntityComboBox<>(() -> dao.getAll());
 	}
 	
 	public static EntityComboBox<Project> createProjectComboBox() {
 		ProjectDAO dao = new ProjectDAO();
 		
-		return new EntityComboBox<Project>() {{
-			setModel(new EntityComboBoxModel(dao));
-		}};
+		return new EntityComboBox<>(() -> dao.getAll());
 	}
 	
 	public static EntityComboBox<Employee> createEmployeeComboBox() {
 		EmployeeDAO dao = new EmployeeDAO();
 		
-		return new EntityComboBox<Employee>() {{
-			setModel(new EntityComboBoxModel(dao));
-		}};
+		return new EntityComboBox<>(() -> dao.getAll());
 	}
 	
 	public class EntityComboBoxModel extends AbstractListModel<T> 
 		implements ComboBoxModel<T> {
-
-		private final DAO<T> dao;
+		
+		private Supplier<List<T>> contentSupplier; 
 		
 		private List<T> entities;
 		private int selected = -1;
 		
-		public EntityComboBoxModel(DAO<T> dao) {
-			this.dao = dao;
+		public EntityComboBoxModel(Supplier<List<T>> contentSupplier) {
+			this.contentSupplier = contentSupplier;
 			
 			refresh();
 		}
 		
 		public void refresh() {
-			entities = dao.getAll();
+			entities = contentSupplier.get();
+			
+			fireContentsChanged(this, -1, -1);
 			
 			setSelectedItem(null);
 		}
 		
 		@Override
 		public void setSelectedItem(Object item) {
-			if(item != null) { 
-				selected = getIndexOf(item);
-			} else {
-				selected = -1;
-			}
+			selected = getIndexOf(item);
 			
 			fireContentsChanged(this, -1, -1);
 		}
 		
 		public int getIndexOf(Object item) {
-			for(int i = 0; i < entities.size(); i++) {
-				if(item.equals(entities.get(i))) {
-					return i;
-				}
-			}
-			
-			return -1;
+			return entities.indexOf(item);
 		}
 		
 		@Override
 		public T getSelectedItem() {
-			if(selected == -1) {
+			if(selected == -1 || selected >= entities.size()) {
 				return null;
 			}
 			
@@ -106,6 +106,10 @@ public class EntityComboBox<T> extends JComboBox<T> {
 		
 		@Override
 		public T getElementAt(int index) {
+			if(index == -1 || index >= entities.size()) {
+				return null;
+			}
+			
 			return entities.get(index);
 		}
 		

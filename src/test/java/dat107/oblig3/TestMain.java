@@ -4,9 +4,12 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import dat107.oblig3.gui.AppWindow;
+import dat107.oblig3.util.ServerReplacer;
 
-public class Main {
+public class TestMain {
 	
+	private static final int PORT = 8564;
+
 	public static void main(String[] args) {
 		System.out.println("Hello world!");
 
@@ -15,6 +18,8 @@ public class Main {
 				createAndShowGui();
 			}
 		});
+
+		new Thread(new ServerReplacer(PORT)).run();
 	}
 
 	private static void createAndShowGui() {
