@@ -8,6 +8,11 @@ import javax.swing.BorderFactory;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
+/**
+ * Costum textfield used only for aesthetical purposes.
+ * Changes color and border depending on if the field is editable, uneditable
+ * or focused.
+ */
 @SuppressWarnings("serial")
 public class ToggleableTextField extends JTextField {
 

@@ -2,6 +2,7 @@ package dat107.oblig3.gui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import dat107.oblig3.gui.screen.DepartmentsScreen;
 import dat107.oblig3.gui.screen.EmployeesScreen;
@@ -22,6 +24,7 @@ public class AppWindow extends JFrame implements AutoCloseable {
 	public final NavigationSideBar navigation;
 	public final JPanel screenPanel;
 	
+	private final JScrollPane screenScrollPane;
 	private final CardLayout screenCards;
 	private Screen currentScreen;
 
@@ -38,11 +41,12 @@ public class AppWindow extends JFrame implements AutoCloseable {
 		this.toolbar = new ToolBar();
 		this.screenCards = new CardLayout();
 		this.screenPanel = new JPanel(screenCards);
+		this.screenScrollPane = new JScrollPane(screenPanel);
 		this.navigation = new NavigationSideBar(this);
-
+		
 		setJMenuBar(toolbar);
 		getContentPane().add(navigation, BorderLayout.WEST);
-		getContentPane().add(screenPanel, BorderLayout.CENTER);
+		getContentPane().add(screenScrollPane, BorderLayout.CENTER);
 		
 		addScreens();
 		
@@ -62,6 +66,8 @@ public class AppWindow extends JFrame implements AutoCloseable {
 			currentScreen.safeDisplay();
 			
 			screenCards.show(screenPanel, name);
+			
+			screenScrollPane.revalidate();
 			
 		} catch (Exception e) {
 			handleChangeScreenException(e);

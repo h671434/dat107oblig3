@@ -15,6 +15,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.Scrollable;
 
 import dat107.oblig3.gui.UITheme;
 
@@ -22,7 +23,7 @@ import dat107.oblig3.gui.UITheme;
  * Widget preset class to easily build new widgets
  */
 @SuppressWarnings("serial")
-public class InfoWidget extends JPanel {
+public class Widget extends JPanel {
 
 	protected JLabel titleLabel = new JLabel("");
 	protected JPanel fieldPanel = new JPanel(new GridBagLayout());
@@ -45,7 +46,7 @@ public class InfoWidget extends JPanel {
 		insets = new Insets(2, 2, 2, 2);
 	}};
 	
-	public InfoWidget() {
+	public Widget() {
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
 		setBorder(BorderFactory.createLineBorder(UITheme.LIGHT_ACCENT_COLOR));
@@ -63,7 +64,7 @@ public class InfoWidget extends JPanel {
 		add(buttonPanel);
 	}
 	
-	public InfoWidget(String title) {
+	public Widget(String title) {
 		this();
 		titleLabel.setText(title);
 	}
@@ -72,6 +73,9 @@ public class InfoWidget extends JPanel {
 		titleLabel.setText(title);
 	}
 	
+	/**
+	 * Adds a new row to fieldPanel with a label and the field-component.
+	 */
 	public JLabel addLabeledField(String name, Component field) {
 		JLabel label = new JLabel(name, JLabel.TRAILING);
 		label.setForeground(UITheme.DEFAULT_TEXT_COLOR);
@@ -107,14 +111,10 @@ public class InfoWidget extends JPanel {
 	}
 	
 	/**
-	 * Does not remove label
+	 * Does not remove labels.
 	 */
 	public void removeField(Component component) {
 		fieldPanel.remove(component);
-	}
-	
-	public void removeAllFields() {
-		fieldPanel.removeAll();
 	}
 	
 	public static JButton createWidgetButton(String text, ActionListener onPress) {
@@ -131,6 +131,11 @@ public class InfoWidget extends JPanel {
 		return button;
 	}
 	
+	/**
+	 * Removes the current buttons and adds the new given buttons.
+	 * Each row in the buttonpanel can contain two buttons.
+	 * If the amount of buttons are odd, the last button will be full width.
+	 */
 	public void setButtons(JButton... buttons) {
 		removeAllButtons();
 		

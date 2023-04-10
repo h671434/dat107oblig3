@@ -22,7 +22,7 @@ public class ProjectParticipation {
 	@JoinColumn(name = "project")
 	private Project project;
 	
-	private String role = "";
+	private String role = "Team Member";
 	
 	private int hours_worked = 0;
 	
@@ -38,6 +38,17 @@ public class ProjectParticipation {
 	public ProjectParticipation(Employee employee, Project project, int hours_worked) {
 		this(employee, project);
 		this.hours_worked = hours_worked;
+	}
+	
+	public ProjectParticipation(Employee employee, Project project, String role) {
+		this(employee, project);
+		this.role = role;
+	}
+	
+	public ProjectParticipation(Employee employee, Project project, String role,
+			int hours_worked) {
+		this(employee, project, hours_worked);
+		this.role = role;
 	}
 	
 	public void print() {

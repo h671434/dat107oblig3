@@ -96,13 +96,13 @@ public abstract class DAO<T> {
 		arg.append("SELECT t FROM " + getEntityClass().getSimpleName() + " t ");
 		arg.append("WHERE LOWER(CAST(t." + fields[0] + " AS VARCHAR)) LIKE LOWER(:search) ");
 		for(int i = 1; i < fields.length; i++) {
-			arg.append("OR LOWER(CAST(t." + fields[0] + " AS VARCHAR)) LIKE LOWER(:search) ");
+			arg.append("OR LOWER(CAST(t." + fields[i] + " AS VARCHAR)) LIKE LOWER(:search) ");
 		}
 		
 		try (EntityManager em = emf.createEntityManager()) {
 			TypedQuery<T> query = em.createQuery(arg.toString(), getEntityClass());
 			query.setParameter("search", "%" + search + "%");
-
+			
 			return query.getResultList();
 		}
 	}

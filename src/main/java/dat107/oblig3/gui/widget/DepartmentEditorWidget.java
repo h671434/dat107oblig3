@@ -14,8 +14,11 @@ import dat107.oblig3.gui.inputcontrols.EntityComboBox;
 import dat107.oblig3.gui.inputcontrols.ToggleableTextField;
 import dat107.oblig3.gui.screen.Screen;
 
+/**
+ * Widget to view and edit the fields of a department.
+ */
 @SuppressWarnings("serial")
-public class DepartmentEditorWidget extends InfoWidget {
+public class DepartmentEditorWidget extends Widget {
 
 	private final Screen screen;
 	
@@ -43,6 +46,9 @@ public class DepartmentEditorWidget extends InfoWidget {
 		addLabeledField("Manager:", managerComboBox);
 	}
 	
+	/**
+	 * Returns the employees from the current department to the employees-combobox.
+	 */
 	private List<Employee> getEmployees() {
 		if(department == null) {
 			return new EmployeeDAO().getAll();
@@ -77,6 +83,9 @@ public class DepartmentEditorWidget extends InfoWidget {
 		managerComboBox.setSelectedItem(null);
 	}
 	
+	/**
+	 * Fills the widgets fields with info from the current department.
+	 */
 	private void fillAllFields() {
 		idField.setText(department.getId() + "");
 		nameField.setText(department.getName());
@@ -85,33 +94,33 @@ public class DepartmentEditorWidget extends InfoWidget {
 		managerComboBox.setSelectedItem(department.getManager());
 	}
 	
-	
 	private void setAllFieldsEditable(boolean editable) {
 		nameField.setEditable(editable);
 		managerComboBox.setEditable(editable);
 	}
 	
-	public void editDepartment() {
+	/**
+	 * Updates gui components to allow editing.
+	 */
+	public void editDepartment() {		
+ 		managerComboBox.setEditable(true);
+		
 		setTitle("Edit Department");
-		
-		managerComboBox.setEditable(true);
-		
 		setButtons(cancelButton, saveButton);
 	}
 	
+	/**
+	 * Sets department to null and updates gui components.
+	 */
 	public void newDepartment() {
-		setTitle("New Department");
-		
-		emptyAllFields();
+		setDepartment(null);
 		
 		idField.setText("Generated");
-		
+		setTitle("New Department");
 		setAllFieldsEditable(true);
 		setButtons(cancelButton, saveButton);
 	}
-	
 
-	
 	private void onSave() {
 		if(department != null) {
 			saveChanges();
@@ -122,6 +131,9 @@ public class DepartmentEditorWidget extends InfoWidget {
 		onCancel();
 	}
 	
+	/**
+	 * Updates manager if the field has been changed.
+	 */
 	private void saveChanges() {
 		Employee newManager = (Employee) managerComboBox.getSelectedItem();
 		

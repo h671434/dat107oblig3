@@ -45,6 +45,9 @@ public class EntityComboBox<T> extends JComboBox<T> {
 		this.model = model;
 	}
 	
+	/**
+	 * Configure methods are used to initialize the look of the ComboBox.
+	 */
 	public void configureComboBox() {
 		setOpaque(false);
 		setBackground(ToggleableTextField.DEFAULT_BACKGROUND);
@@ -105,10 +108,18 @@ public class EntityComboBox<T> extends JComboBox<T> {
 		});
 	}
 	
+	/**
+	 * Overrides setEditable to disable selection on the ComboBox, as 
+	 * setEditable would otherwise only affect the textfield.
+	 */
 	@Override
 	public void setEditable(boolean editable) {
 		setEnabled(editable);
 		
+		setEditableLook(editable);
+	}
+	
+	private void setEditableLook(boolean editable) {
 		setBackground(ToggleableTextField.DEFAULT_BACKGROUND);
 		
 		if(editable) {
@@ -128,24 +139,38 @@ public class EntityComboBox<T> extends JComboBox<T> {
 		model.refresh();
 	}
 	
+	/**
+	 * Create a combobox which contains all departments.
+	 */
 	public static EntityComboBox<Department> createDepartmentComboBox() {
 		DepartmentDAO dao = new DepartmentDAO();
 		
 		return new EntityComboBox<>(() -> dao.getAll());
 	}
 	
+	/**
+	 * Creates a combobox which contains all projects.
+	 */
 	public static EntityComboBox<Project> createProjectComboBox() {
 		ProjectDAO dao = new ProjectDAO();
 		
 		return new EntityComboBox<>(() -> dao.getAll());
 	}
 	
+	/**
+	 * Creates a combobox which contains all employees.
+	 */
 	public static EntityComboBox<Employee> createEmployeeComboBox() {
 		EmployeeDAO dao = new EmployeeDAO();
 		
 		return new EntityComboBox<>(() -> dao.getAll());
 	}
 	
+	/**
+	 * Custom combobox model to allow entities to be collected 
+	 * from a supplier when refresh() is called. So that items can be
+	 * easisly updated.
+	 */
 	public class EntityComboBoxModel extends AbstractListModel<T> 
 		implements ComboBoxModel<T> {
 		

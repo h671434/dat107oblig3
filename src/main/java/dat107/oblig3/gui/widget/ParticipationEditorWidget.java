@@ -20,7 +20,7 @@ import dat107.oblig3.gui.screen.Screen;
 import jakarta.persistence.EntityExistsException;
 
 @SuppressWarnings("serial")
-public class ParticipationEditorWidget extends InfoWidget {
+public class ParticipationEditorWidget extends Widget {
 
 	private final Screen screen;
 	
@@ -107,6 +107,10 @@ public class ParticipationEditorWidget extends InfoWidget {
 		setTitle("About Participation");
 	}
 	
+	/**
+	 * Trys to udate project participation with values from fields.
+	 * Asks user to save as new project participation if particpation doesn't exist.
+	 */
 	private void saveChanges() {
 		if(!employeeIsValid()) {
 			showErrorMessage("No employee selected");
@@ -123,6 +127,7 @@ public class ParticipationEditorWidget extends InfoWidget {
 		
 		Employee employee = (Employee) employeeComboBox.getSelectedItem();
 		Project project = (Project) projectComboBox.getSelectedItem();
+		String role = roleField.getText();
 		int hours = hoursField.getInt();
 		
 		EmployeeDAO dao = new EmployeeDAO();
@@ -130,7 +135,7 @@ public class ParticipationEditorWidget extends InfoWidget {
 		boolean shouldSaveAsNew = false;
 		
 		try {
-			dao.updateProjectParticipation(employee.getId(), project.getId(), hours);
+			dao.updateProjectParticipation(employee.getId(), project.getId(), role, hours);
 		} catch (IllegalArgumentException e) {
 			shouldSaveAsNew = askUserOnException(
 					"Project partcicpation doesn't exist.",
@@ -145,13 +150,17 @@ public class ParticipationEditorWidget extends InfoWidget {
 		}
 	}
 	
+	/**
+	 * Trys to save a new project participation with values from fields.
+	 * Asks to update existing participation of participation exists.
+	 */
 	private void saveNewParticipation() {
 		if(!employeeIsValid()) {
-			showErrorMessage("No employee selected");
+			showErrorMessage("No employee selected.");
 			return;
 		}
 		if(!projectIsValid()) {
-			showErrorMessage("No project selected");
+			showErrorMessage("No project selected.");
 			return;
 		}
 		
@@ -164,10 +173,19 @@ public class ParticipationEditorWidget extends InfoWidget {
 		boolean shouldAskToUpdate = false;
 		
 		try {
-			if(hoursIsValid()) {
+			if(hoursIsValid() && roleIsValid()) {
+				String role = roleField.getText();
 				int hours = hoursField.getInt();
 				
-				dao.addEmployeeToProject(employee.getId(), project.getId(), hours);
+				dao.addEmployeeToProject(employee.getId(), project.getId(), role, hours);
+			} else if(roleIsValid())  {
+				String role = roleField.getText();
+				
+				dao.addEmployeeToProject(employee.getId(), project.getId(), role);
+			} else if (hoursIsValid()) {
+				int hours = hoursField.getInt();
+				
+				dao.addEmployeeToProject(employee.getId(), project.getId(), hours);	
 			} else {
 				dao.addEmployeeToProject(employee.getId(), project.getId());
 			}
@@ -199,6 +217,10 @@ public class ParticipationEditorWidget extends InfoWidget {
 		Project project = (Project) projectComboBox.getSelectedItem();
 		
 		return project != null;
+	}
+	
+	private boolean roleIsValid() {
+		return !roleField.getText().isBlank();
 	}
 	
 	private boolean hoursIsValid() {

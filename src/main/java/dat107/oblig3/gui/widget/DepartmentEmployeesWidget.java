@@ -14,7 +14,7 @@ import dat107.oblig3.gui.collection.EmployeeList;
 import dat107.oblig3.gui.screen.Screen;
 
 @SuppressWarnings("serial")
-public class DepartmentEmployeesWidget extends InfoWidget {
+public class DepartmentEmployeesWidget extends Widget {
 	
 	private final Screen screen;
 	
@@ -43,16 +43,15 @@ public class DepartmentEmployeesWidget extends InfoWidget {
 	}
 	
 	private void updateEmployeesList(boolean includeManager) {
-		List<Employee> employees;
+		List<Employee> employees = Collections.emptyList();
+		
 		if(department != null) {
 			 employees = department.getEmployees();
 				
 			 if(!includeManager) {
 				 employees.remove(department.getManager());
 			 }	
-		} else {
-			employees = Collections.emptyList();
-		}
+		} 
 		
 		employeesList.updateContent(employees);
 	}

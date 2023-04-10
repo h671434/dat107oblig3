@@ -3,16 +3,22 @@ package dat107.oblig3.gui.screen;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JPanel;
+import javax.swing.Scrollable;
 import javax.swing.SwingUtilities;
 
 import dat107.oblig3.gui.UITheme;
 
+/**
+ * Abstract screen class, contains no methods related to jpa.
+ */
 @SuppressWarnings("serial")
-public abstract class Screen extends JPanel implements AutoCloseable {
+public abstract class Screen extends JPanel implements Scrollable, AutoCloseable {
 
 	protected BorderLayout layout = new BorderLayout();
 	
@@ -99,7 +105,7 @@ public abstract class Screen extends JPanel implements AutoCloseable {
 	}
 	
 	/*
-	 * Removes all current components in parent, and adds newContent.
+	 * Removes all current components from parent, and adds newContent.
 	 * If newContent is null, an empty JPanel will be added instead.
 	 */
 	private void replacePanelContent(JPanel parent, Component newContent) {
@@ -112,6 +118,31 @@ public abstract class Screen extends JPanel implements AutoCloseable {
 		}
 		
 		validate();
+	}
+
+	@Override
+	public Dimension getPreferredScrollableViewportSize() {
+		return getPreferredSize();
+	}
+
+	@Override
+	public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+		return 5;
+	}
+
+	@Override
+	public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+		return 5;
+	}
+
+	@Override
+	public boolean getScrollableTracksViewportWidth() {
+		return true;
+	}
+
+	@Override
+	public boolean getScrollableTracksViewportHeight() {
+		return false;
 	}
 
 }

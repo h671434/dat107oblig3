@@ -7,6 +7,9 @@ import java.util.Date;
 
 import javax.swing.JPanel;
 
+/**
+ * Costum textfield for dates.
+ */
 @SuppressWarnings("serial")
 public class DateField extends JPanel {
 

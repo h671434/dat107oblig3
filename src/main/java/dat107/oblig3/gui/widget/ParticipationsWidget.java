@@ -22,7 +22,7 @@ import dat107.oblig3.gui.inputcontrols.NumericField;
 import dat107.oblig3.gui.screen.Screen;
 
 @SuppressWarnings("serial")
-public class ParticipationsWidget extends InfoWidget {
+public class ParticipationsWidget extends Widget {
 	
 	private final Screen screen;
 	
@@ -69,7 +69,7 @@ public class ParticipationsWidget extends InfoWidget {
 		
 		screen.validate();
 	}
-		
+	
 	private void onDelete() {
 		ProjectParticipation selected = participationsList.getSelected();
 		
@@ -85,10 +85,15 @@ public class ParticipationsWidget extends InfoWidget {
 		
 		try {
 			dao.removeEmployeeFromProject(employee.getId(), project.getId());
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			showErrorMessage("Employee has registered hours in the project.");
 		} catch (Throwable e) {
 			e.printStackTrace();
 			showErrorMessage("Error occured deleting project participation");
 		}
+		
+		screen.refresh();
 	}
 	
 	private void onEdit() {
@@ -143,16 +148,7 @@ public class ParticipationsWidget extends InfoWidget {
 	}
 	
 	private void updateButtons(ProjectParticipation selected) {
-		if(selected == null && buttonsAreEnabled()) {
-			setButtonsEnabled(false);
-		} 
-		if(selected != null && !buttonsAreEnabled()) {
-			setButtonsEnabled(true);
-		}
-	}
-	
-	private boolean buttonsAreEnabled() {
-		return deleteButton.isEnabled() || editButton.isEnabled();
+		setButtonsEnabled(selected != null);
 	}
 	
 	private void setButtonsEnabled(boolean enable) {
@@ -171,12 +167,8 @@ public class ParticipationsWidget extends InfoWidget {
 			participationsList.updateContent(Collections.emptyList());
 		}
 		
-		
 		setTitle("Projects");
-		removeField(editorWidget);
-		setButtons(deleteButton, editButton, addNewPartcipationButton);
-		
-		screen.validate();
+		resetWidget();
 	}
 	
 	public void setProject(Project project) {
@@ -191,6 +183,10 @@ public class ParticipationsWidget extends InfoWidget {
 		}
 		
 		setTitle("Participants");
+		resetWidget();
+	}
+	
+	public void resetWidget() {
 		removeField(editorWidget);
 		setButtons(deleteButton, editButton, addNewPartcipationButton);
 		

@@ -89,6 +89,7 @@ public class DepartmentsScreen extends SearchScreen<Department> {
 				showWidget(editDepartmentWidget, 0);
 			}	
 		} else {
+			hideWidget(editDepartmentWidget);
 			hideWidget(employeesWidget);
 			viewEmployeesButton.setText("Show Employees");
 		}

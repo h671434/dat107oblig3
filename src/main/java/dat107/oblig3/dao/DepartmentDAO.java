@@ -22,9 +22,13 @@ public class DepartmentDAO extends DAO<Department> {
 
 	@Override
 	public List<Department> search(String search) {
-		return search(search, "department_name");
+		return search(search, "department_id", "department_name");
 	}
 
+	/**
+	 * Finds all departments where the name contains the search string, and 
+	 * returns a list of all the names. Used to be used for the UI.
+	 */
 	public List<String> getNamesContaining(String search) {
 		String arg = "SELECT t.department_name FROM Department t "
 				+ "WHERE LOWER(t.department_name) LIKE :search";
@@ -37,7 +41,11 @@ public class DepartmentDAO extends DAO<Department> {
 		}
 	}
 
-	public void updateManager(int departmentId, Employee newEmployee) 
+	/**
+	 * Sets a Employee newManager as manager of the department with given department_id.
+	 * @throws IllegalArgumentException if members isn't a member of the department
+	 */
+	public void updateManager(int departmentId, Employee newManager) 
 			throws IllegalArgumentException, Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
@@ -45,16 +53,16 @@ public class DepartmentDAO extends DAO<Department> {
 			
 			tx.begin();
 			
-			newEmployee = em.merge(newEmployee);
+			newManager = em.merge(newManager);
 			
 			Department toUpdate = em.find(Department.class, departmentId);
 			
-			if(!toUpdate.isMember(newEmployee)) {
+			if(!toUpdate.isMember(newManager)) {
 				throw new IllegalArgumentException(
 						"Employee is not a member of the department.");
 			}
 			
-			toUpdate.setManager(newEmployee);
+			toUpdate.setManager(newManager);
 						
 			tx.commit();
 		
@@ -67,6 +75,9 @@ public class DepartmentDAO extends DAO<Department> {
 		}
 	}
 	
+	/**
+	 * Adds a new department with given name and manager in the database.
+	 */
 	public Department saveNewDepartment(String name, Employee manager) 
 			throws Throwable {
 		if(manager.isManager()) {
@@ -86,6 +97,7 @@ public class DepartmentDAO extends DAO<Department> {
 			em.persist(newDepartment);
 			
 			manager.setDepartment(newDepartment);
+			em.merge(manager);
 			
 			tx.commit();
 			

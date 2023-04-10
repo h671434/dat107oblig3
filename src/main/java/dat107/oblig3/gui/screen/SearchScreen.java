@@ -22,7 +22,7 @@ import javax.swing.JScrollPane;
 import dat107.oblig3.gui.UITheme;
 import dat107.oblig3.gui.collection.EntityCollection;
 import dat107.oblig3.gui.inputcontrols.SearchBar;
-import dat107.oblig3.gui.widget.InfoWidget;
+import dat107.oblig3.gui.widget.Widget;
 
 @SuppressWarnings("serial")
 public abstract class SearchScreen<T> extends Screen {
@@ -53,7 +53,7 @@ public abstract class SearchScreen<T> extends Screen {
 		scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 		scrollPane.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(6);
-		scrollPane.setPreferredSize(new Dimension(3000, 2000));
+		scrollPane.setPreferredSize(this.getPreferredSize());
 		
 		widgets.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 		widgets.setLayout(new GridBagLayout());
@@ -123,14 +123,14 @@ public abstract class SearchScreen<T> extends Screen {
 		return newButton;
 	}
 	
-	protected void showWidget(InfoWidget widget, int row) {
+	protected void showWidget(Widget widget, int row) {
 		widgetPositions.gridy = row;
 		widgets.add(widget, widgetPositions);
 		
 		validate();
 	}
 	
-	protected void hideWidget(InfoWidget widget) {
+	protected void hideWidget(Widget widget) {
 		widgets.remove(widget);
 		
 		validate();

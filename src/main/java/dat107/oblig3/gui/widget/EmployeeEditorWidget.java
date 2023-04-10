@@ -15,7 +15,7 @@ import dat107.oblig3.gui.inputcontrols.ToggleableTextField;
 import dat107.oblig3.gui.screen.Screen;
 
 @SuppressWarnings("serial")
-public class EmployeeEditorWidget extends InfoWidget {
+public class EmployeeEditorWidget extends Widget {
 	
 	private final Screen screen;
 	

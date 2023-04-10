@@ -1,11 +1,15 @@
 package dat107.oblig3.gui.widget;
 
+import java.awt.Dimension;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.Element;
 
 import dat107.oblig3.dao.ProjectDAO;
 import dat107.oblig3.entity.Department;
@@ -16,7 +20,7 @@ import dat107.oblig3.gui.inputcontrols.ToggleableTextField;
 import dat107.oblig3.gui.screen.Screen;
 
 @SuppressWarnings("serial")
-public class ProjectEditorWidget extends InfoWidget {
+public class ProjectEditorWidget extends Widget {
 
 	private final Screen screen;
 	
@@ -40,6 +44,9 @@ public class ProjectEditorWidget extends InfoWidget {
 		descriptionLabel.setForeground(UITheme.DEFAULT_TEXT_COLOR);
 		descriptionLabel.setBorder(BorderFactory.createEmptyBorder(8, 4, 16, 0));
 		
+		descriptionArea.setLineWrap(true);
+		descriptionArea.setWrapStyleWord(true);
+		
 		addLabeledField("ID:", idField);
 		addLabeledField("Name:", nameField);
 		addFullWidthField(descriptionLabel);
@@ -56,6 +63,8 @@ public class ProjectEditorWidget extends InfoWidget {
 		}
 			
 		setAllFieldsEditable(false);
+		
+		descriptionArea.setColumns(30);
 		
 		screen.validate();
 	}

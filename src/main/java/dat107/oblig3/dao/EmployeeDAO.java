@@ -27,6 +27,10 @@ public class EmployeeDAO extends DAO<Employee> {
 		return get(id);
 	}
 	
+	/**
+	 * Returns an optional containing the employee whose username is equal to the paramater.
+	 * Empty Optional of no employee is found.
+	 */
 	public Optional<Employee> getByUsername(String username) 
 			throws NonUniqueResultException {
 		String arg = "SELECT DISTINCT t FROM Employee t "
@@ -49,6 +53,9 @@ public class EmployeeDAO extends DAO<Employee> {
 				"last_name", "employment_date", "position", "monthly_salary");
 	}
 	
+	/**
+	 * Sets the position for the employee with given id.
+	 */
 	public void updatePosition(int id, String newPosition) throws Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
@@ -70,6 +77,9 @@ public class EmployeeDAO extends DAO<Employee> {
 		}
 	}
 
+	/**
+	 * Sets the monthly_salary for the employee with given id.
+	 */
 	public void updateSalary(int id, double newSalary) throws Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
@@ -91,8 +101,12 @@ public class EmployeeDAO extends DAO<Employee> {
 		}
 	}
 
+	/**
+	 * Sets the department for the employee with given id.
+	 * @throws IllegalArgumentException if employee is manager in another department.
+	 */
 	public void updateDepartment(int id, Department newDepartment) 
-			throws Throwable {
+			throws IllegalArgumentException, Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();
@@ -121,6 +135,9 @@ public class EmployeeDAO extends DAO<Employee> {
 		}
 	}
 
+	/**
+	 * Saves a new employee with given paramters in the database.
+	 */
 	public Employee saveNewEmployee(String username, String firstName, 
 			String lastName, Date employmentDate, String position, 
 			double monthlySalary, Department department) throws Throwable {
@@ -150,8 +167,11 @@ public class EmployeeDAO extends DAO<Employee> {
 		}
 	}
 	
-	public ProjectParticipation addEmployeeToProject(int employeeId, 
-			int projectId, int hours) throws EntityExistsException, Throwable {
+	/**
+	 * Creates a new ProjectParticipation from given paramters. 
+	 */
+	public ProjectParticipation addEmployeeToProject(int employeeId, int projectId, 
+			String role, int hours) throws EntityExistsException, Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();
@@ -162,7 +182,7 @@ public class EmployeeDAO extends DAO<Employee> {
 			Project project = em.find(Project.class, projectId);
 			
 			ProjectParticipation newParticipation = new ProjectParticipation(
-					employee, project, hours);
+					employee, project, role, hours);
 			em.persist(newParticipation);
 			
 			tx.commit();
@@ -178,13 +198,37 @@ public class EmployeeDAO extends DAO<Employee> {
 		}
 	}
 	
+	/**
+	 * Creates a new ProjectParticipation with default role as "Team Member"
+	 * and default hours_worked as 0.
+	 */
 	public ProjectParticipation addEmployeeToProject(int employeeId, 
 			int projectId) throws EntityExistsException, Throwable {
-		return addEmployeeToProject(employeeId, projectId, 0);
+		return addEmployeeToProject(employeeId, projectId, "Team Member", 0);
 	}
 	
+	/**
+	 * Creates a new ProjectParticipation with default role as "Team Member".
+	 */
+	public ProjectParticipation addEmployeeToProject(int employeeId, 
+			int projectId, int hours) throws EntityExistsException, Throwable {
+		return addEmployeeToProject(employeeId, projectId, "Team Member", hours);
+	}
+	
+	/**
+	 * Creates a new ProjectParticipation with default hours_worked as 0.
+	 */
+	public ProjectParticipation addEmployeeToProject(int employeeId, 
+			int projectId, String role) throws EntityExistsException, Throwable {
+		return addEmployeeToProject(employeeId, projectId, role, 0);
+	}
+	
+	/**
+	 * Deletes a project participation.
+	 * @throws IllegalArgumentException if employee has registered hours in project.
+	 */
 	public void removeEmployeeFromProject(int employeeId, int projectId) 
-			throws Throwable {
+			throws IllegalArgumentException, Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();
@@ -196,7 +240,7 @@ public class EmployeeDAO extends DAO<Employee> {
 			ProjectParticipation participation =
 					em.find(ProjectParticipation.class, pk);
 			
-			if(participation.getHoursWorked() == 0) {
+			if(participation.getHoursWorked() != 0) {
 				throw new IllegalArgumentException(
 						"Employee has registered hours in project.");
 			}
@@ -225,7 +269,7 @@ public class EmployeeDAO extends DAO<Employee> {
 	 * @throws IllegalArgumentException if the ProjectParticipation doesn't exist.
 	 */
 	public void updateProjectParticipation(int employeeId, int projectId, 
-			int hours) throws IllegalArgumentException, Throwable {
+			String role, int hours) throws IllegalArgumentException, Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();
@@ -235,6 +279,7 @@ public class EmployeeDAO extends DAO<Employee> {
 			ProjectParticipationPK pk = new ProjectParticipationPK(employeeId, projectId);
 			ProjectParticipation participation = em.find(ProjectParticipation.class, pk);
 			
+			participation.setRole(role);
 			participation.setHoursWorked(hours);
 			
 			em.merge(participation);
@@ -250,7 +295,12 @@ public class EmployeeDAO extends DAO<Employee> {
 		}
 	}
 	
-	public  void delete(int id) throws IllegalArgumentException, Throwable {
+	/**
+	 * Deletes employee with given id from database.
+	 * @throws IllegalArgumentException if employee is a manager or has registered 
+	 * hours in a project.
+	 */
+	public void delete(Object id) throws IllegalArgumentException, Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();

@@ -68,10 +68,8 @@ public class ProjectsScreen extends SearchScreen<Project> {
 		participantsWidget.setProject(project);
 		
 		hideWidget(editProjectWidget);
-		
-		if(project == null) {
-			hideWidget(participantsWidget);
-		}
+		hideWidget(participantsWidget);
+		viewParticipantsButton.setText("View Participants");
 	}
 	
 	private void onViewParticipants() {
@@ -115,6 +113,7 @@ public class ProjectsScreen extends SearchScreen<Project> {
 	@Override
 	public void display() {
 		dataset.updateContent(dao.getAll());
+		dataset.clearSelection();
 		
 		searchBar.removeText();
 	}

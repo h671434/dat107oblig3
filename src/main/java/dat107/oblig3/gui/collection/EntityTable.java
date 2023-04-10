@@ -1,6 +1,7 @@
 package dat107.oblig3.gui.collection;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;

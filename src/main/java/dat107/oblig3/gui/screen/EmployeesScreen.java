@@ -82,13 +82,6 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 		return Collections.emptyList();
 	}
 	
-	@Override
-	public void display() {
-		dataset.updateContent(dao.getAll());
-		
-		searchBar.removeText();
-	}
-	
 	public void setEmployee(Employee selected) {
 		editEmployeeWidget.setEmployee(selected);
 		projectsWidget.setEmployee(selected);
@@ -124,10 +117,12 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 			dao.delete(getSelected().getId());
 			
 			refresh();
-		} catch(Throwable e) {
+		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, 
-					"Error occured deleting employee.");
+			JOptionPane.showMessageDialog(this, e.getMessage());
+		} catch (Throwable e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Error occured deleting employee.");
 		}
 	}
 	
@@ -140,6 +135,13 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 		}
 		
 		editEmployeeWidget.newEmployee();
+	}
+	
+	@Override
+	public void display() {
+		dataset.updateContent(dao.getAll());
+		
+		searchBar.removeText();
 	}
 	
 }

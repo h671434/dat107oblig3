@@ -17,9 +17,12 @@ public class ProjectDAO extends DAO<Project>{
 
 	@Override
 	public List<Project> search(String search) {
-		return search(search, "project_name", "project_description");
+		return search(search,"project_id", "project_name", "project_description");
 	}
 	
+	/**
+	 * Sets description for project with given id.
+	 */
 	public void updateDescription(int id, String newDescription) throws Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
@@ -41,6 +44,9 @@ public class ProjectDAO extends DAO<Project>{
 		}
 	}
 	
+	/**
+	 * Saves new project with given parameters in database.
+	 */
 	public Project saveNewProject(String name, String description) 
 			throws Throwable {
 		EntityTransaction tx = null;
@@ -65,11 +71,22 @@ public class ProjectDAO extends DAO<Project>{
 		}
 	}
 	
+	// addEmployeeToProject methods are added in this class for easy availability.
+	public void addEmployeeToProject(int employeeId, int projectId,
+			String role, int hours) throws Throwable {
+		new EmployeeDAO().addEmployeeToProject(employeeId, projectId, role, hours);
+	}
+	
 	public void addEmployeeToProject(int employeeId, int projectId, 
 			int hours) throws Throwable {
 		new EmployeeDAO().addEmployeeToProject(employeeId, projectId, hours);
 	}
 	
+	public void addEmployeeToProject(int employeeId, int projectId,
+			String role) throws Throwable {
+		new EmployeeDAO().addEmployeeToProject(employeeId, projectId, role);
+	}
+
 	public void addEmployeeToProject(int employeeId, int projectId) 
 			throws Throwable {
 		new EmployeeDAO().addEmployeeToProject(employeeId, projectId);
@@ -80,7 +97,11 @@ public class ProjectDAO extends DAO<Project>{
 		new EmployeeDAO().removeEmployeeFromProject(employeeId, projectId);
 	}
 
-	public  void delete(int id) throws IllegalArgumentException, Throwable {
+	/**
+	 * Deletes project with given id from database.
+	 * @throws IllegalArgumentException if project has participants.
+	 */
+	public void delete(int id) throws IllegalArgumentException, Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();
