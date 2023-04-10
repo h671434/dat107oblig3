@@ -26,7 +26,7 @@ public class InfoWidget extends JPanel {
 
 	protected JLabel titleLabel = new JLabel("");
 	protected JPanel fieldPanel = new JPanel(new GridBagLayout());
-	protected JPanel buttonPanel = new JPanel(new GridLayout(0, 1));
+	protected JPanel buttonPanel = new JPanel(new GridBagLayout());
 	
 	protected GridBagConstraints nextLabelPos = new GridBagConstraints() {{
 		gridx = 0;
@@ -57,7 +57,6 @@ public class InfoWidget extends JPanel {
 		fieldPanel.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
 		
 		buttonPanel.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
-		buttonPanel.setLayout(new GridLayout(0, 1));
 		
 		add(titleLabel);
 		add(fieldPanel);
@@ -135,15 +134,31 @@ public class InfoWidget extends JPanel {
 	public void setButtons(JButton... buttons) {
 		removeAllButtons();
 		
-		if(buttons.length % 2 == 0) {
-			buttonPanel.setLayout(new GridLayout(0, 2));
-		} else {
-			buttonPanel.setLayout(new GridLayout(0, 1));
+		GridBagConstraints buttonPos = new GridBagConstraints();
+		buttonPos.gridy = 0;
+		buttonPos.gridx = 0;
+		buttonPos.weightx = 0.5;
+		buttonPos.gridwidth = 1;
+		buttonPos.fill = GridBagConstraints.HORIZONTAL;
+		
+		int extra = buttons.length % 2;
+		
+		for(int i = 0; i < buttons.length - extra; i++) {
+			buttonPanel.add(buttons[i], buttonPos);
+			
+			if(buttonPos.gridx == 0) {
+				buttonPos.gridx = 1;
+			} else {
+				buttonPos.gridx = 0;
+				buttonPos.gridy++;
+			}
 		}
 		
-		for (JButton b : buttons) {	
-			buttonPanel.add(b);
+		if(extra == 1) {
+			buttonPos.gridwidth = 2;
+			buttonPanel.add(buttons[buttons.length - 1], buttonPos);
 		}
+		
 	}
 	
 	public void removeAllButtons() {

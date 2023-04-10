@@ -11,15 +11,16 @@ import dat107.oblig3.dao.EmployeeDAO;
 import dat107.oblig3.entity.Department;
 import dat107.oblig3.entity.Employee;
 import dat107.oblig3.gui.inputcontrols.EntityComboBox;
+import dat107.oblig3.gui.inputcontrols.ToggleableTextField;
 import dat107.oblig3.gui.screen.Screen;
 
 @SuppressWarnings("serial")
-public class EditDepartmentWidget extends InfoWidget {
+public class DepartmentEditorWidget extends InfoWidget {
 
 	private final Screen screen;
 	
-	private final JTextField idField = new JTextField(12);
-	private final JTextField nameField = new JTextField(12);
+	private final JTextField idField = new ToggleableTextField(12);
+	private final JTextField nameField = new ToggleableTextField(12);
 	private final EntityComboBox<Employee> managerComboBox = 
 			new EntityComboBox<>(() -> getEmployees());
 	
@@ -29,11 +30,12 @@ public class EditDepartmentWidget extends InfoWidget {
 	private DepartmentDAO dao = new DepartmentDAO();
 	private Department department;
 	
-	public EditDepartmentWidget(Screen screen) {
+	public DepartmentEditorWidget(Screen screen) {
 		super("About Department");
 		this.screen = screen;
 		
 		idField.setEditable(false);
+		nameField.setEditable(false);
 		managerComboBox.setPreferredSize(nameField.getPreferredSize());
 		
 		addLabeledField("ID:", idField);

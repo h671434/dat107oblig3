@@ -13,13 +13,13 @@ import dat107.oblig3.entity.Department;
 import dat107.oblig3.gui.collection.DepartmentTable;
 import dat107.oblig3.gui.collection.EntityCollection;
 import dat107.oblig3.gui.widget.DepartmentEmployeesWidget;
-import dat107.oblig3.gui.widget.EditDepartmentWidget;
+import dat107.oblig3.gui.widget.DepartmentEditorWidget;
 
 @SuppressWarnings("serial")
 public class DepartmentsScreen extends SearchScreen<Department> {
 
-	private final EditDepartmentWidget editDepartmentWidget =
-			new EditDepartmentWidget(this);
+	private final DepartmentEditorWidget editDepartmentWidget =
+			new DepartmentEditorWidget(this);
 	private final DepartmentEmployeesWidget employeesWidget = 
 			new DepartmentEmployeesWidget(this);
 	
@@ -36,7 +36,6 @@ public class DepartmentsScreen extends SearchScreen<Department> {
 		});
 		
 		viewEmployeesButton = addButton("View Employees", e -> onViewEmployees(), true);
-		addButton("Delete Department", e -> onDeleteEmployee(), true);
 		addButton("Edit Department", e -> onEditDepartment(), true);
 		addButton("Add New Department", e -> onAddNewDepartment(), false);
 	}
@@ -64,9 +63,9 @@ public class DepartmentsScreen extends SearchScreen<Department> {
 
 	@Override
 	public void display() {
-		if(dataset.isEmpty()) {
-			dataset.updateContent(dao.getAll());
-		}
+		dataset.updateContent(dao.getAll());
+		
+		searchBar.removeText();
 	}
 	
 	public void setDepartment(Department department) {
@@ -77,6 +76,7 @@ public class DepartmentsScreen extends SearchScreen<Department> {
 		
 		if(department == null) {
 			hideWidget(employeesWidget);
+			viewEmployeesButton.setText("Show Employees");
 		}
 	}
 	
@@ -100,18 +100,6 @@ public class DepartmentsScreen extends SearchScreen<Department> {
 		}
 		
 		editDepartmentWidget.editDepartment();
-	}
-	
-	public void onDeleteEmployee() {
-		try {
-			dao.delete(getSelected().getId());		
-			
-			refresh();
-		} catch (Throwable e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this,
-					"Error occured deleting department.");
-		}
 	}
 	
 	public void onAddNewDepartment() {

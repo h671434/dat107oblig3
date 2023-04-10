@@ -10,7 +10,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
 @SuppressWarnings("serial")
-public class NumericField extends JTextField {
+public class NumericField extends ToggleableTextField {
 	
 	public NumericField(boolean withDecimals) {
 		setNumericDocumentFilter(withDecimals);

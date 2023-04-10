@@ -5,7 +5,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -40,7 +42,7 @@ public class Employee {
 	@OneToOne(mappedBy = "department_manager")
 	private Department department;
 	
-	@OneToMany(mappedBy = "employee")
+	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<ProjectParticipation> project_participations = new ArrayList<>();
 
 	public Employee() {}
@@ -61,8 +63,28 @@ public class Employee {
 		return equals(department.getManager());
 	}
 	
+	public boolean hasRegisteredHours() {
+		for(ProjectParticipation participation : project_participations) {
+			if(participation.getHoursWorked() > 0) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	public void print() {
 		System.out.println(this.toString());
+	}
+	
+	public void printAllFields() {
+		System.out.println("ID: " + employee_id 
+				+ "\nUsername: " + username
+				+ "\nFull name: " + first_name + " " + last_name
+				+ "\nDate of employment: " + employment_date
+				+ "\nPosition: " + position
+				+ "\nMonthly salary: " + monthly_salary
+				+ "\nDepartment: " + department);
 	}
 	
 	public void printWithProjects() {
@@ -144,13 +166,6 @@ public class Employee {
 	
 	public void removeProjectParticipation(ProjectParticipation pp) {
 		project_participations.remove(pp);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(department, employee_id, employment_date, 
-				first_name, last_name, monthly_salary, position,
-				project_participations, username);
 	}
 
 	@Override

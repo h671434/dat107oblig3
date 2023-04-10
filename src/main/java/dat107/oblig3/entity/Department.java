@@ -78,12 +78,6 @@ public class Department {
 	public List<Employee> getEmployees() {
 		return employees;
 	}
-	
-	@Override
-	public int hashCode() {
-		return Objects.hash(department_id, department_manager, department_name, 
-				employees);
-	}
 
 	@Override
 	public boolean equals(Object obj) {

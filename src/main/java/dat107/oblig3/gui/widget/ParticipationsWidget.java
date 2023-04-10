@@ -1,10 +1,15 @@
 package dat107.oblig3.gui.widget;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.util.Collections;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import dat107.oblig3.dao.EmployeeDAO;
@@ -24,110 +29,139 @@ public class ParticipationsWidget extends InfoWidget {
 	private final ProjectParticipationList participationsList = 
 			new ProjectParticipationList();
 	
-	private final JButton addNewPartcipationButton = 
-			createWidgetButton("Add New Participation", e -> onAddParticipation());
-	private final JButton saveButton = 
-			createWidgetButton("Save", 	e -> onSave());
-	private final JButton cancelButton = 
-			createWidgetButton("Cancel", e -> onCancel());
+	private final ParticipationEditorWidget editorWidget;
 	
-	private InfoWidget newParticipationWidget;
+	private final JButton deleteButton = createWidgetButton(
+			"Delete", e -> onDelete());
+	private final JButton editButton = createWidgetButton(
+			"Edit", e -> onEdit());
+	private final JButton addNewPartcipationButton = createWidgetButton(
+			"Add New Participation", e -> onAddParticipation());
+	private final JButton saveButton = createWidgetButton(
+			"Save", e -> onSave());
+	private final JButton cancelButton = createWidgetButton(
+			"Cancel", e -> onCancel());
 	
-	private EntityComboBox<Employee> employeeComboBox = 
-			EntityComboBox.createEmployeeComboBox();
-	private EntityComboBox<Project> projectComboBox = 
-			EntityComboBox.createProjectComboBox();
-	private NumericField hoursField = new NumericField(4);
+	private Object selected;
 	
 	public ParticipationsWidget(String title, Screen screen) {
 		super(title);
 		this.screen = screen;
+		this.editorWidget = new ParticipationEditorWidget(screen);
 		
-		JScrollPane listScrollPane = new JScrollPane(participationsList);
+		editorWidget.setBorder(BorderFactory.createEmptyBorder());
 		
-		listScrollPane.setHorizontalScrollBarPolicy(
+		participationsList.addSelectionListener(selected -> {
+			removeField(editorWidget);
+			updateButtons(selected);
+		});
+		
+		JScrollPane listScrollPane = new JScrollPane(
+				participationsList,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		listScrollPane.setVerticalScrollBarPolicy(
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		listScrollPane.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 		
 		addFullWidthField(listScrollPane);
 		
-		setButtons(addNewPartcipationButton);
+		setButtons(deleteButton, editButton, addNewPartcipationButton);
+		setButtonsEnabled(false);
+		
+		screen.validate();
+	}
+		
+	private void onDelete() {
+		ProjectParticipation selected = participationsList.getSelected();
+		
+		if(selected == null) {
+			showErrorMessage("No projectparticipation selected");
+			return;
+		}
+		
+		Employee employee = selected.getEmployee();
+		Project project = selected.getProject();
+		
+		EmployeeDAO dao = new EmployeeDAO();
+		
+		try {
+			dao.removeEmployeeFromProject(employee.getId(), project.getId());
+		} catch (Throwable e) {
+			e.printStackTrace();
+			showErrorMessage("Error occured deleting project participation");
+		}
 	}
 	
-	private void onAddParticipation() {
-		addFullWidthField(createNewParticipationWidget());
+	private void onEdit() {
+		if(!editorWidget.isShowing()) {
+			addFullWidthField(editorWidget);
+		}
+		
+		editorWidget.edit(participationsList.getSelected());
 		
 		setButtons(cancelButton, saveButton);
 		
 		screen.validate();
 	}
 	
-	private InfoWidget createNewParticipationWidget() {
-		newParticipationWidget = new InfoWidget("New Participation");
+	private void onAddParticipation() {
+		if(!editorWidget.isShowing()) {
+			addFullWidthField(editorWidget);
+		}
 		
-		newParticipationWidget.addLabeledField(
-				"Employee", employeeComboBox);
-		newParticipationWidget.addLabeledField(
-				"Project", projectComboBox);
-		newParticipationWidget.addLabeledField(
-				"Hours", hoursField, "Optional");
+		if(selected instanceof Employee) {
+			editorWidget.newParticipation((Employee) selected);
+		} else if(selected instanceof Project) {
+			editorWidget.newParticipation((Project) selected);
+		} else {
+			editorWidget.newParticipation();
+		}
 		
-		return newParticipationWidget;
+		setButtons(cancelButton, saveButton);
+		
+		screen.validate();
 	}
 	
 	private void onSave() {
-		EmployeeDAO dao = new EmployeeDAO();
-		
-		try {
-			Employee employee = (Employee)employeeComboBox.getSelectedItem();
-			Project project = (Project)projectComboBox.getSelectedItem();
-			
-			ProjectParticipation newParticipation;
-			
-			if(hoursField.getText().isBlank()) {
-				newParticipation = dao.addEmployeeToProject(
-						employee.getId(), project.getId());
-			} else {
-				newParticipation = dao.addEmployeeToProject(
-						employee.getId(), project.getId(),
-						hoursField.getInt());
-			}
-			
-			participationsList.createEntryAndAdd(newParticipation);
-			
-		} catch (Throwable e) {
-			JOptionPane.showMessageDialog(screen, 
-					"Error saving new project participation.");
+		if(!editorWidget.isShowing()) {
+			return;
 		}
+		
+		editorWidget.save();
 		
 		onCancel();
 	}
 	
 	private void onCancel() {
-		removeNewParticipationWidget();
+		if(!editorWidget.isShowing()) {
+			return;
+		}
 		
-		setButtons(addNewPartcipationButton);
+		removeField(editorWidget);
+		setButtons(deleteButton, editButton, addNewPartcipationButton);
 		
 		screen.validate();
 	}
 	
-	private void removeNewParticipationWidget() {
-		removeField(newParticipationWidget);
-		newParticipationWidget = null;
-	}
-
-	public void setEmployee(Employee employee) {
-		employeeComboBox.setSelectedItem(employee);
-		employeeComboBox.setEditable(false);
-		projectComboBox.setSelectedItem(null);
-		projectComboBox.setEditable(true);
-		
-		if(newParticipationWidget != null) {
-			removeNewParticipationWidget();
+	private void updateButtons(ProjectParticipation selected) {
+		if(selected == null && buttonsAreEnabled()) {
+			setButtonsEnabled(false);
+		} 
+		if(selected != null && !buttonsAreEnabled()) {
+			setButtonsEnabled(true);
 		}
-		
-		setTitle("Projects");
+	}
+	
+	private boolean buttonsAreEnabled() {
+		return deleteButton.isEnabled() || editButton.isEnabled();
+	}
+	
+	private void setButtonsEnabled(boolean enable) {
+		deleteButton.setEnabled(enable);
+		editButton.setEnabled(enable);
+	}
+	
+	public void setEmployee(Employee employee) {
+		selected = employee;
 		
 		participationsList.setListType(ProjectParticipationList.ListContent.PROJECT);
 		
@@ -137,22 +171,16 @@ public class ParticipationsWidget extends InfoWidget {
 			participationsList.updateContent(Collections.emptyList());
 		}
 		
-		setButtons(addNewPartcipationButton);
+		
+		setTitle("Projects");
+		removeField(editorWidget);
+		setButtons(deleteButton, editButton, addNewPartcipationButton);
 		
 		screen.validate();
 	}
 	
 	public void setProject(Project project) {
-		projectComboBox.setSelectedItem(project);
-		projectComboBox.setEditable(false);
-		employeeComboBox.setSelectedItem(null);
-		employeeComboBox.setEditable(true);
-		
-		if(newParticipationWidget != null) {
-			removeNewParticipationWidget();
-		}
-		
-		setTitle("Participants");
+		selected = project;
 		
 		participationsList.setListType(ProjectParticipationList.ListContent.EMPLOYEE);
 		
@@ -162,9 +190,15 @@ public class ParticipationsWidget extends InfoWidget {
 			participationsList.updateContent(Collections.emptyList());
 		}
 		
-		setButtons(addNewPartcipationButton);
+		setTitle("Participants");
+		removeField(editorWidget);
+		setButtons(deleteButton, editButton, addNewPartcipationButton);
 		
 		screen.validate();
+	}
+	
+	private void showErrorMessage(String error) {
+		JOptionPane.showMessageDialog(screen, error, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 	
 }

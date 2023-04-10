@@ -69,6 +69,11 @@ public class DepartmentDAO extends DAO<Department> {
 	
 	public Department saveNewDepartment(String name, Employee manager) 
 			throws Throwable {
+		if(manager.isManager()) {
+			throw new IllegalArgumentException(
+					"Employee is already a manager in a different department.");
+		}
+		
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();
@@ -79,6 +84,8 @@ public class DepartmentDAO extends DAO<Department> {
 			
 			Department newDepartment = new Department(name, manager);
 			em.persist(newDepartment);
+			
+			manager.setDepartment(newDepartment);
 			
 			tx.commit();
 			

@@ -20,14 +20,14 @@ import dat107.oblig3.entity.Employee;
 import dat107.oblig3.gui.UITheme;
 import dat107.oblig3.gui.collection.EmployeeTable;
 import dat107.oblig3.gui.collection.EntityCollection;
-import dat107.oblig3.gui.widget.EditEmployeeWidget;
+import dat107.oblig3.gui.widget.EmployeeEditorWidget;
 import dat107.oblig3.gui.widget.ParticipationsWidget;
 
 @SuppressWarnings("serial")
 public class EmployeesScreen extends SearchScreen<Employee> {
 	
-	private final EditEmployeeWidget editEmployeeWidget = 
-			new EditEmployeeWidget(this);
+	private final EmployeeEditorWidget editEmployeeWidget = 
+			new EmployeeEditorWidget(this);
 	private final ParticipationsWidget projectsWidget = 
 			new ParticipationsWidget("Projects", this);
 	
@@ -42,7 +42,6 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 
 		addSelectionListener(selected -> {
 			setEmployee(selected);
-			hideWidget(editEmployeeWidget);
 		});
 		
 		viewProjectsButton = addButton("View Projects", e -> onViewProjects(), true);
@@ -98,6 +97,7 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 		
 		if(selected == null) {
 			hideWidget(projectsWidget);
+			viewProjectsButton.setText("View Projects");
 		}
 	}
 	

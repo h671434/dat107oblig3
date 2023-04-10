@@ -12,14 +12,14 @@ import dat107.oblig3.entity.Employee;
 import dat107.oblig3.entity.Project;
 import dat107.oblig3.gui.collection.EntityCollection;
 import dat107.oblig3.gui.collection.ProjectList;
-import dat107.oblig3.gui.widget.EditProjectWidget;
+import dat107.oblig3.gui.widget.ProjectEditorWidget;
 import dat107.oblig3.gui.widget.ParticipationsWidget;
 
 @SuppressWarnings("serial")
 public class ProjectsScreen extends SearchScreen<Project> {
 
-	private EditProjectWidget editProjectWidget = 
-			new EditProjectWidget(this);
+	private ProjectEditorWidget editProjectWidget = 
+			new ProjectEditorWidget(this);
 	private ParticipationsWidget participantsWidget = 
 			new ParticipationsWidget("Paricipants", this);
 	
@@ -114,9 +114,9 @@ public class ProjectsScreen extends SearchScreen<Project> {
 	
 	@Override
 	public void display() {
-		if(dataset.isEmpty()) {
-			dataset.updateContent(dao.getAll());
-		}
+		dataset.updateContent(dao.getAll());
+		
+		searchBar.removeText();
 	}
 
 }

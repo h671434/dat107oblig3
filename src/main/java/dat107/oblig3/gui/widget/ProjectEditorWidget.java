@@ -12,15 +12,16 @@ import dat107.oblig3.entity.Department;
 import dat107.oblig3.entity.Employee;
 import dat107.oblig3.entity.Project;
 import dat107.oblig3.gui.UITheme;
+import dat107.oblig3.gui.inputcontrols.ToggleableTextField;
 import dat107.oblig3.gui.screen.Screen;
 
 @SuppressWarnings("serial")
-public class EditProjectWidget extends InfoWidget {
+public class ProjectEditorWidget extends InfoWidget {
 
 	private final Screen screen;
 	
-	private final JTextField idField = new JTextField(12);
-	private final JTextField nameField = new JTextField(12);
+	private final JTextField idField = new ToggleableTextField(12);
+	private final JTextField nameField = new ToggleableTextField(12);
 	private final JTextArea descriptionArea = new JTextArea(5, 20);
 	
 	private final JButton saveButton = createWidgetButton("Save", e -> onSave());
@@ -29,7 +30,7 @@ public class EditProjectWidget extends InfoWidget {
 	private ProjectDAO dao = new ProjectDAO();
 	private Project project;
 	
-	public EditProjectWidget(Screen screen) {
+	public ProjectEditorWidget(Screen screen) {
 		super("About Project");
 		this.screen = screen;
 		

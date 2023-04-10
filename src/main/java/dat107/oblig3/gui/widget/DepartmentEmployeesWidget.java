@@ -1,8 +1,11 @@
 package dat107.oblig3.gui.widget;
 
+import java.awt.Color;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JScrollPane;
 
 import dat107.oblig3.entity.Department;
@@ -23,11 +26,10 @@ public class DepartmentEmployeesWidget extends InfoWidget {
 		super("Employees");
 		this.screen = screen;
 		
-		JScrollPane listScrollPane = new JScrollPane(employeesList);
-		listScrollPane.setHorizontalScrollBarPolicy(
+		JScrollPane listScrollPane = new JScrollPane(employeesList,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		listScrollPane.setVerticalScrollBarPolicy(
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		listScrollPane.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 		
 		addFullWidthField(listScrollPane);
 	}

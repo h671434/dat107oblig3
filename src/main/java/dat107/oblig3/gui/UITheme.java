@@ -10,7 +10,7 @@ public interface UITheme {
 	public static final Color DEFAULT_TEXT_COLOR = Color.WHITE;
 	public static final Color TOOLBAR_TEXT_COLOR = Color.WHITE;
 	
-	public static final Color LIGHT_ACCENT_COLOR = Color.LIGHT_GRAY; // Only visible as thin lines between panels
+	public static final Color LIGHT_ACCENT_COLOR = Color.LIGHT_GRAY; 
 
 	public static final Color TABLE_BACKGROUND_COLOR = Color.WHITE;
 	public static final Color TABLE_BORDER_COLOR = Color.DARK_GRAY;

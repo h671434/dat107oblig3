@@ -94,9 +94,9 @@ public abstract class DAO<T> {
 		StringBuilder arg = new StringBuilder();
 		
 		arg.append("SELECT t FROM " + getEntityClass().getSimpleName() + " t ");
-		arg.append("WHERE LOWER(t." + fields[0] + ") LIKE LOWER(:search) ");
+		arg.append("WHERE LOWER(CAST(t." + fields[0] + " AS VARCHAR)) LIKE LOWER(:search) ");
 		for(int i = 1; i < fields.length; i++) {
-			arg.append("OR LOWER(t." + fields[i] + ") LIKE LOWER(:search) ");
+			arg.append("OR LOWER(CAST(t." + fields[0] + " AS VARCHAR)) LIKE LOWER(:search) ");
 		}
 		
 		try (EntityManager em = emf.createEntityManager()) {
@@ -132,28 +132,4 @@ public abstract class DAO<T> {
 		}
 	}
 	
-	/**
-	 * Deletes the given entity from the database.
-	 * @param entity to delete
-	 */
-	public void delete(Object id) throws Throwable {
-		EntityTransaction tx = null;
-		try (EntityManager em = emf.createEntityManager()) {
-			tx = em.getTransaction();
-			
-			tx.begin();
-			
-			Employee toDelete = em.find(Employee.class, id);
-			em.remove(toDelete);
-			
-			tx.commit();
-
-		} catch (Throwable e) {
-			if ((tx != null &&tx.isActive())) {
-				tx.rollback();
-			}
-			
-			throw e;
-		}
-	}
 }

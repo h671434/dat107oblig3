@@ -8,6 +8,8 @@ import dat107.oblig3.entity.Department;
 import dat107.oblig3.entity.Employee;
 import dat107.oblig3.entity.Project;
 import dat107.oblig3.entity.ProjectParticipation;
+import dat107.oblig3.entity.ProjectParticipationPK;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
@@ -43,7 +45,8 @@ public class EmployeeDAO extends DAO<Employee> {
 
 	@Override
 	public List<Employee> search(String search) {
-		return search(search, "username", "first_name", "last_name", "position");
+		return search(search, "employee_id", "username", "first_name", 
+				"last_name", "employment_date", "position", "monthly_salary");
 	}
 	
 	public void updatePosition(int id, String newPosition) throws Throwable {
@@ -148,7 +151,7 @@ public class EmployeeDAO extends DAO<Employee> {
 	}
 	
 	public ProjectParticipation addEmployeeToProject(int employeeId, 
-			int projectId, int hours) throws Throwable {
+			int projectId, int hours) throws EntityExistsException, Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();
@@ -161,9 +164,6 @@ public class EmployeeDAO extends DAO<Employee> {
 			ProjectParticipation newParticipation = new ProjectParticipation(
 					employee, project, hours);
 			em.persist(newParticipation);
-			
-			employee.addProjectParticipation(newParticipation);
-			project.addProjectParticipation(newParticipation);
 			
 			tx.commit();
 			
@@ -179,29 +179,102 @@ public class EmployeeDAO extends DAO<Employee> {
 	}
 	
 	public ProjectParticipation addEmployeeToProject(int employeeId, 
-			int projectId) throws Throwable {
+			int projectId) throws EntityExistsException, Throwable {
+		return addEmployeeToProject(employeeId, projectId, 0);
+	}
+	
+	public void removeEmployeeFromProject(int employeeId, int projectId) 
+			throws Throwable {
 		EntityTransaction tx = null;
 		try (EntityManager em = emf.createEntityManager()) {
 			tx = em.getTransaction();
 			
 			tx.begin();
 			
+			ProjectParticipationPK pk = 
+					new ProjectParticipationPK(employeeId, projectId);
+			ProjectParticipation participation =
+					em.find(ProjectParticipation.class, pk);
+			
+			if(participation.getHoursWorked() == 0) {
+				throw new IllegalArgumentException(
+						"Employee has registered hours in project.");
+			}
+			
+			em.remove(participation);
+			
 			Employee employee = em.find(Employee.class, employeeId);
 			Project project = em.find(Project.class, projectId);
 			
-			ProjectParticipation newParticipation = new ProjectParticipation(
-					employee, project);
-			em.persist(newParticipation);
-			
-			employee.addProjectParticipation(newParticipation);
-			project.addProjectParticipation(newParticipation);
+			employee.removeProjectParticipation(participation);
+			project.removeProjectParticipation(participation);
 			
 			tx.commit();
 			
-			return newParticipation;
+		} catch (Throwable e) {
+			if ((tx != null) && (tx.isActive())) {
+				tx.rollback();
+			}
+			
+			throw e;
+		}
+	}
+	
+	/**
+	 * Updates the houres_worked field for a project participation.
+	 * @throws IllegalArgumentException if the ProjectParticipation doesn't exist.
+	 */
+	public void updateProjectParticipation(int employeeId, int projectId, 
+			int hours) throws IllegalArgumentException, Throwable {
+		EntityTransaction tx = null;
+		try (EntityManager em = emf.createEntityManager()) {
+			tx = em.getTransaction();
+			
+			tx.begin();
+			
+			ProjectParticipationPK pk = new ProjectParticipationPK(employeeId, projectId);
+			ProjectParticipation participation = em.find(ProjectParticipation.class, pk);
+			
+			participation.setHoursWorked(hours);
+			
+			em.merge(participation);
+			
+			tx.commit();
 			
 		} catch (Throwable e) {
 			if ((tx != null) && (tx.isActive())) {
+				tx.rollback();
+			}
+			
+			throw e;
+		}
+	}
+	
+	public  void delete(int id) throws IllegalArgumentException, Throwable {
+		EntityTransaction tx = null;
+		try (EntityManager em = emf.createEntityManager()) {
+			tx = em.getTransaction();
+			
+			tx.begin();
+			
+			Employee toDelete = em.find(Employee.class, id);
+			
+			if(toDelete.isManager()) {
+				throw new IllegalArgumentException(
+						"Employee is a manager and cannot be deleted.");
+			}
+			
+			if(toDelete.hasRegisteredHours()) {
+				throw new IllegalArgumentException(
+						"Employee has registered hours in a project and cannot be deleted.");
+			}
+			
+			em.remove(toDelete);
+			
+			tx.commit();
+
+		} catch (Throwable e) {
+			if ((tx != null &&tx.isActive())) {
 				tx.rollback();
 			}
 			

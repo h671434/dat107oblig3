@@ -74,5 +74,37 @@ public class ProjectDAO extends DAO<Project>{
 			throws Throwable {
 		new EmployeeDAO().addEmployeeToProject(employeeId, projectId);
 	}
+	
+	public void removeEmployeeFromProject(int employeeId, int projectId) 
+			throws Throwable {
+		new EmployeeDAO().removeEmployeeFromProject(employeeId, projectId);
+	}
 
+	public  void delete(int id) throws IllegalArgumentException, Throwable {
+		EntityTransaction tx = null;
+		try (EntityManager em = emf.createEntityManager()) {
+			tx = em.getTransaction();
+			
+			tx.begin();
+			
+			Project toDelete = em.find(Project.class, id);
+			
+			if(toDelete.hasParticipants()) {
+				throw new IllegalArgumentException(
+						"Project has participants and cannot be deleted.");
+			}
+			
+			em.remove(toDelete);
+			
+			tx.commit();
+
+		} catch (Throwable e) {
+			if ((tx != null &&tx.isActive())) {
+				tx.rollback();
+			}
+			
+			throw e;
+		}
+	}
+	
 }

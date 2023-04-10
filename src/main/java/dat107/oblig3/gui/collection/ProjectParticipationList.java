@@ -6,10 +6,12 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 
 import dat107.oblig3.dao.EmployeeDAO;
 import dat107.oblig3.entity.Employee;
@@ -70,11 +72,17 @@ public class ProjectParticipationList extends EntityList<ProjectParticipation> {
 	public class ProjectParticipationListEntry 
 			extends EntityList<ProjectParticipation>.ListEntry {
 		
+		private static final Border BORDER_SELECTED = 
+				BorderFactory.createLineBorder(Color.WHITE, 2);
+		private static final Border BORDER_UNSELECTED =
+				BorderFactory.createEmptyBorder(2, 2, 2, 2);
+		
 		public ProjectParticipationListEntry(ProjectParticipation entity) {
 			super(entity);
 			
-			setLayout(new GridLayout(0, 1));
+			setLayout(new GridLayout(2, 1));
 			setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
+			setBorder(BORDER_UNSELECTED);
 			
 			addIdAndNameLabel();
 			addHoursAndRoleField();
@@ -96,7 +104,7 @@ public class ProjectParticipationList extends EntityList<ProjectParticipation> {
 		}
 		
 		private void addHoursAndRoleField() {
-			String text = "    " + entity.getRole()
+			String text = "       " + entity.getRole()
 					+ " - " + entity.getHoursWorked() + " hours";
 			
 			JLabel hoursWorkedLabel = new JLabel(text);
@@ -104,6 +112,19 @@ public class ProjectParticipationList extends EntityList<ProjectParticipation> {
 			
 			add(hoursWorkedLabel);
 		}
+		
+		@Override
+		public void select() {
+			setBorder(BORDER_SELECTED);
+			validate();
+		}
+		
+		@Override
+		public void unselect() {
+			setBorder(BORDER_UNSELECTED);
+			validate();
+		}
+		
 	}
 
 }
