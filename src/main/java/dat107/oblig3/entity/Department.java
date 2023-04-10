@@ -20,10 +20,13 @@ public class Department {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int department_id;
+	
 	private String department_name;
+	
 	@OneToOne
 	@JoinColumn(name = "department_manager")
 	private Employee department_manager;
+	
 	@OneToMany(mappedBy = "department")
 	private List<Employee> employees = new ArrayList<>();
 
@@ -33,12 +36,11 @@ public class Department {
 		this.department_name = department_name;
 		this.department_manager = department_manager;
 	}
-
-	@Override
-	public String toString() {
-		return "#" + department_id + " " + department_name;
-	}
 	
+	public boolean isMember(Employee employee) {
+		return employees.contains(employee);
+	}
+
 	public void print() {
 		System.out.println(this.toString());
 	}
@@ -48,6 +50,11 @@ public class Department {
 		employees.forEach(e -> System.out.println(e));
 	}
 
+	@Override
+	public String toString() {
+		return "#" + department_id + " " + department_name;
+	}
+	
 	public int getId() {
 		return department_id;
 	}
@@ -68,10 +75,8 @@ public class Department {
 		this.department_manager = department_manager;
 	}
 	
-	@Override
-	public int hashCode() {
-		return Objects.hash(department_id, department_manager, department_name, 
-				employees);
+	public List<Employee> getEmployees() {
+		return employees;
 	}
 
 	@Override

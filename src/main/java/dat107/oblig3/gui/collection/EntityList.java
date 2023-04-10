@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.Scrollable;
 import javax.swing.border.Border;
 
+import dat107.oblig3.entity.ProjectParticipation;
 import dat107.oblig3.gui.UITheme;
 
 /**
@@ -62,7 +63,7 @@ public abstract class EntityList<T> extends JPanel implements EntityCollection<T
 		entries.clear();
 		
 		for (int i = 0; i < newContent.size(); i++) {
-			addEntry(createEntry(newContent.get(i)));
+			createEntryAndAdd(newContent.get(i));
 		}
 		
 		if(newContent.size() == 0) {
@@ -70,9 +71,8 @@ public abstract class EntityList<T> extends JPanel implements EntityCollection<T
 		}
 	}
 	
-	protected void addEntry(ListEntry entry) {
-		add(entry);
-		entries.add(entry);
+	public void createEntryAndAdd(T entity) {
+		addEntry(createEntry(entity));
 	}
 	
 	/**
@@ -81,6 +81,14 @@ public abstract class EntityList<T> extends JPanel implements EntityCollection<T
 	 */
 	protected abstract ListEntry createEntry(T entity);
 	
+	protected void addEntry(ListEntry entry) {
+		add(entry);
+		entries.add(entry);
+	}
+	
+	/**
+	 * Returns panel thats shown when list is empty
+	 */
 	protected JPanel emptyListMessage() {
 		JPanel panel = new JPanel(new BorderLayout());
 		
@@ -92,6 +100,11 @@ public abstract class EntityList<T> extends JPanel implements EntityCollection<T
 		return panel;
 	}
 
+	protected void removeEntry(ListEntry entry) {
+		remove(entry);
+		entries.remove(entry);
+	}
+	
 	public void setSelected(ListEntry selected) {
 		clearSelection();
 		
@@ -175,6 +188,8 @@ public abstract class EntityList<T> extends JPanel implements EntityCollection<T
 		 * Should to be added to every child-component
 		 */
 		protected MouseAdapter clickListener;
+		
+		protected ListEntry() {};
 		
 		public ListEntry(T entity) {
 			this.entity = entity;

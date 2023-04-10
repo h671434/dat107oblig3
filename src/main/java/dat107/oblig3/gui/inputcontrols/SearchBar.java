@@ -33,7 +33,7 @@ public class SearchBar extends JPanel {
 	private static final Border UNFOCUSED_BORDER = 
 			BorderFactory.createLineBorder(Color.DARK_GRAY, 1, true);
 			
-	private JLabel searchByText = new JLabel("Search by:");
+	private JLabel searchByLabel = new JLabel("Search by:");
 	private JComboBox<String> searchOptions = new JComboBox<String>();
 	private JTextField searchField = new JTextField(30);
 	private JPanel outerSearchFieldPanel = new JPanel();
@@ -72,14 +72,20 @@ public class SearchBar extends JPanel {
 		
 		designComponents();
 
-		add(searchByText);
+		add(searchByLabel);
 		add(searchOptions);
 		add(outerSearchFieldPanel);
 		add(searchButton);
 	}
 	
 	private void designComponents() {
-		searchByText.setForeground(UITheme.DEFAULT_TEXT_COLOR);
+		designComboBox();
+		designSearchField();
+		designSearchButton();
+	}
+	
+	private void designComboBox() {
+		searchByLabel.setForeground(UITheme.DEFAULT_TEXT_COLOR);
 		
 		searchOptions.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
 		searchOptions.setForeground(UITheme.DEFAULT_TEXT_COLOR);
@@ -101,7 +107,9 @@ public class SearchBar extends JPanel {
 				arrowButton.setBorder(BorderFactory.createLineBorder(UITheme.ALTERNATIVE_BACKGROUND_COLOR, 5));
 			}
 		});
-		
+	}
+	
+	private void designSearchField() {
 		searchField.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
 		searchField.setForeground(UITheme.DEFAULT_TEXT_COLOR);
 		searchField.setCaretColor(UITheme.LIGHT_ACCENT_COLOR);
@@ -122,7 +130,9 @@ public class SearchBar extends JPanel {
 		
 		outerSearchFieldPanel.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
 		outerSearchFieldPanel.setBorder(UNFOCUSED_BORDER);
-		
+	}
+	
+	private void designSearchButton() {
 		searchButton.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 		searchButton.setForeground(UITheme.DEFAULT_TEXT_COLOR);
 		searchButton.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, UITheme.LIGHT_ACCENT_COLOR));

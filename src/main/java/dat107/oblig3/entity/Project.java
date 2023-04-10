@@ -1,6 +1,7 @@
 package dat107.oblig3.entity;
 
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,6 +19,7 @@ public class Project {
 	private int project_id;
 	
 	private String project_name;
+	
 	private String project_description;
 	
 	@OneToMany(mappedBy = "project")
@@ -28,6 +30,10 @@ public class Project {
 	public Project(String project_name, String project_description) {
 		this.project_name = project_name;
 		this.project_description = project_description;
+	}
+	
+	public boolean hasParticipants() {
+		return project_participations.size() > 0;
 	}
 	
 	public void addProjectParticipation(ProjectParticipation pp) {
@@ -76,6 +82,24 @@ public class Project {
 
 	public List<ProjectParticipation> getParticipations() {
 		return this.project_participations;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(project_description, project_id, project_name, project_participations);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		
+		Project other = (Project) obj;
+		return project_id == other.project_id;
 	}
 	
 }

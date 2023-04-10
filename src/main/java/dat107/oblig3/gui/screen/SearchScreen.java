@@ -3,6 +3,9 @@ package dat107.oblig3.gui.screen;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
@@ -19,23 +22,29 @@ import javax.swing.JScrollPane;
 import dat107.oblig3.gui.UITheme;
 import dat107.oblig3.gui.collection.EntityCollection;
 import dat107.oblig3.gui.inputcontrols.SearchBar;
+import dat107.oblig3.gui.widget.InfoWidget;
 
 @SuppressWarnings("serial")
 public abstract class SearchScreen<T> extends Screen {
 
-	protected final SearchBar searchBar;
-	protected final EntityCollection<T> dataset;
-	protected final JScrollPane scrollPane;
-	protected final JPanel buttons;
+	protected final SearchBar searchBar = new SearchBar((o, s) -> onSearch(o, s));
+	protected final EntityCollection<T> dataset = getDatasetComponent();
+	protected final JScrollPane scrollPane = new JScrollPane(dataset.getGuiComponent());
+	protected final JPanel widgets = new JPanel(new GridBagLayout());
+	protected final JPanel buttons = new JPanel();
 	
 	private Map<String, Function<String, List<T>>> searchOpt = new HashMap<>();
+	
+	private GridBagConstraints widgetPositions = new GridBagConstraints() {{
+		ipady = 8;
+		ipadx = 16;
+		insets = new Insets(8, 0, 8, 16);
+		weightx = 1;
+		weighty = 1;
+		fill = GridBagConstraints.HORIZONTAL;
+	}};
 
 	protected SearchScreen() {
-		this.searchBar = new SearchBar((o, s) -> onSearch(o, s));
-		this.dataset = getDatasetComponent();
-		this.scrollPane = new JScrollPane(dataset.getGuiComponent());
-		this.buttons = new JPanel();
-
 		setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 		setForeground(UITheme.DEFAULT_TEXT_COLOR);
 		
@@ -46,45 +55,48 @@ public abstract class SearchScreen<T> extends Screen {
 		scrollPane.getVerticalScrollBar().setUnitIncrement(6);
 		scrollPane.setPreferredSize(new Dimension(3000, 2000));
 		
+		widgets.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
+		widgets.setLayout(new GridBagLayout());
+		
 		buttons.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 		buttons.setBorder(BorderFactory.createLineBorder(
 				UITheme.DEFAULT_BACKGROUND_COLOR, 18));
 		
 		setTopPanel(searchBar);
 		setCenterPanel(scrollPane);
+		setRightPanel(widgets);
 		setBottomPanel(buttons);
 	}
 
 	protected abstract EntityCollection<T> getDatasetComponent();
 
-	/**
-	 * Called when search button is pressed. Gets a list of entities
-	 * with the corresponding search method and sends it to the gui component.
-	 */
 	private void onSearch(String option, String search) {
 		List<T> results = searchOpt.get(option).apply(search);
 		
 		dataset.updateContent(results);
 	}
 
-	/**
-	 * Adds a new search method, that can be selected by the user.
-	 */
 	protected void addSearchOption(String option, Function<String, List<T>> getter) {
 		searchBar.addSearchOption(option);
 		searchOpt.put(option, getter);
 	}
-
-	/**
-	 * Adds a method to be called when an entity is selected.
-	 */
-	protected void addSelectionListener(Consumer<T> onSelection) {
-		dataset.addSelectionListener(onSelection);
-	}
+	
 
 	protected void showNoResultsDialog(String message) {
 		JOptionPane.showMessageDialog(this, message, "No results", 
 				JOptionPane.ERROR_MESSAGE);
+	}
+
+	protected void addSelectionListener(Consumer<T> onSelection) {
+		dataset.addSelectionListener(onSelection);
+	}
+	
+	public T getSelected() {
+		return dataset.getSelected();
+	}
+	
+	public void refresh() {
+		searchBar.search();
 	}
 	
 	protected JButton addButton(String text, ActionListener onPress, 
@@ -110,17 +122,18 @@ public abstract class SearchScreen<T> extends Screen {
 		
 		return newButton;
 	}
-
-	protected String showEditFieldDialog(String field) {
-		return JOptionPane.showInputDialog(this, "Insert new " + field);
-	}
-
-	public T getSelected() {
-		return dataset.getSelected();
+	
+	protected void showWidget(InfoWidget widget, int row) {
+		widgetPositions.gridy = row;
+		widgets.add(widget, widgetPositions);
+		
+		validate();
 	}
 	
-	public void refresh() {
-		searchBar.search();
+	protected void hideWidget(InfoWidget widget) {
+		widgets.remove(widget);
+		
+		validate();
 	}
 	
 }

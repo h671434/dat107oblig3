@@ -15,5 +15,6 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/dat107Oblig3/lib/jakarta.persistence-api-3.1.0-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

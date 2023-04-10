@@ -5,7 +5,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,17 +24,25 @@ public class Employee {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer employee_id;
+	
 	private String username;
+	
 	private String first_name;
+	
 	private String last_name;
+	
 	private Date employment_date;
+	
 	private String position;
+	
 	private double monthly_salary;
+	
 	@ManyToOne
 	@JoinColumn(name = "department")
 	@OneToOne(mappedBy = "department_manager")
 	private Department department;
-	@OneToMany(mappedBy = "employee")
+	
+	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<ProjectParticipation> project_participations = new ArrayList<>();
 
 	public Employee() {}
@@ -48,22 +58,46 @@ public class Employee {
 		this.monthly_salary = monthlySalary;
 		this.department = department;
 	}
+
+	public boolean isManager() {
+		return equals(department.getManager());
+	}
 	
-	@Override
-	public String toString() {
-		return  "#" + employee_id 
-				+ " @" + username
-				+ " " + first_name + " " + last_name;
+	public boolean hasRegisteredHours() {
+		for(ProjectParticipation participation : project_participations) {
+			if(participation.getHoursWorked() > 0) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	public void print() {
 		System.out.println(this.toString());
 	}
 	
+	public void printAllFields() {
+		System.out.println("ID: " + employee_id 
+				+ "\nUsername: " + username
+				+ "\nFull name: " + first_name + " " + last_name
+				+ "\nDate of employment: " + employment_date
+				+ "\nPosition: " + position
+				+ "\nMonthly salary: " + monthly_salary
+				+ "\nDepartment: " + department);
+	}
+	
 	public void printWithProjects() {
 		System.out.println();
 		print();
 		project_participations.forEach(pp -> pp.print());
+	}
+	
+	@Override
+	public String toString() {
+		return  "#" + employee_id 
+				+ " @" + username
+				+ " " + first_name + " " + last_name;
 	}
 
 	public Integer getId() {
@@ -132,13 +166,6 @@ public class Employee {
 	
 	public void removeProjectParticipation(ProjectParticipation pp) {
 		project_participations.remove(pp);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(department, employee_id, employment_date, 
-				first_name, last_name, monthly_salary, position,
-				project_participations, username);
 	}
 
 	@Override

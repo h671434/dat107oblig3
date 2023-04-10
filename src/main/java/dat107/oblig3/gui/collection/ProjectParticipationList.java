@@ -2,13 +2,24 @@ package dat107.oblig3.gui.collection;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.Border;
 
+import dat107.oblig3.dao.EmployeeDAO;
+import dat107.oblig3.entity.Employee;
+import dat107.oblig3.entity.Project;
 import dat107.oblig3.entity.ProjectParticipation;
 import dat107.oblig3.gui.UITheme;
+import dat107.oblig3.gui.inputcontrols.EntityComboBox;
+import dat107.oblig3.gui.inputcontrols.NumericField;
 
 @SuppressWarnings("serial")
 public class ProjectParticipationList extends EntityList<ProjectParticipation> {
@@ -52,20 +63,29 @@ public class ProjectParticipationList extends EntityList<ProjectParticipation> {
 		
 		return panel;
 	}
+	
+	@Override
+	public Dimension getPreferredScrollableViewportSize() {
+		return new Dimension(278, getPreferredSize().height);
+	}
 
 	public class ProjectParticipationListEntry 
 			extends EntityList<ProjectParticipation>.ListEntry {
 		
+		private static final Border BORDER_SELECTED = 
+				BorderFactory.createLineBorder(Color.WHITE, 2);
+		private static final Border BORDER_UNSELECTED =
+				BorderFactory.createEmptyBorder(2, 2, 2, 2);
+		
 		public ProjectParticipationListEntry(ProjectParticipation entity) {
 			super(entity);
 			
-			setLayout(new FlowLayout(FlowLayout.LEFT));
+			setLayout(new GridLayout(2, 1));
 			setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
+			setBorder(BORDER_UNSELECTED);
 			
 			addIdAndNameLabel();
-			addHoursWorkedField();
-			
-			removeMouseListener(clickListener);
+			addHoursAndRoleField();
 		}
 		
 		private void addIdAndNameLabel() {
@@ -74,21 +94,37 @@ public class ProjectParticipationList extends EntityList<ProjectParticipation> {
 			idAndName.setForeground(UITheme.DEFAULT_TEXT_COLOR);
 			
 			if (type == ListContent.EMPLOYEE) {
-				idAndName.setText(entity.getEmployee().toString() + "  - ");
+				idAndName.setText(entity.getEmployee().toString());
 			}
 			if (type == ListContent.PROJECT) {
-				idAndName.setText(entity.getProject().toString() + "  - ");
+				idAndName.setText(entity.getProject().toString());
 			}
 			
 			add(idAndName);
 		}
 		
-		private void addHoursWorkedField() {
-			JLabel hoursWorkedLabel = new JLabel(entity.getHoursWorked() + " hours worked");
+		private void addHoursAndRoleField() {
+			String text = "       " + entity.getRole()
+					+ " - " + entity.getHoursWorked() + " hours";
+			
+			JLabel hoursWorkedLabel = new JLabel(text);
 			hoursWorkedLabel.setForeground(UITheme.DEFAULT_TEXT_COLOR);
 			
 			add(hoursWorkedLabel);
 		}
+		
+		@Override
+		public void select() {
+			setBorder(BORDER_SELECTED);
+			validate();
+		}
+		
+		@Override
+		public void unselect() {
+			setBorder(BORDER_UNSELECTED);
+			validate();
+		}
+		
 	}
 
 }

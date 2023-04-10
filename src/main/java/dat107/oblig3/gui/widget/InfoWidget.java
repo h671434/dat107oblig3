@@ -3,6 +3,7 @@ package dat107.oblig3.gui.widget;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -17,12 +18,15 @@ import javax.swing.JPanel;
 
 import dat107.oblig3.gui.UITheme;
 
+/**
+ * Widget preset class to easily build new widgets
+ */
 @SuppressWarnings("serial")
 public class InfoWidget extends JPanel {
 
 	protected JLabel titleLabel = new JLabel("");
 	protected JPanel fieldPanel = new JPanel(new GridBagLayout());
-	protected JPanel buttonPanel = new JPanel(new GridLayout(0, 1));
+	protected JPanel buttonPanel = new JPanel(new GridBagLayout());
 	
 	protected GridBagConstraints nextLabelPos = new GridBagConstraints() {{
 		gridx = 0;
@@ -37,6 +41,7 @@ public class InfoWidget extends JPanel {
 		gridy = 0;
 		ipadx = 5;
 		ipady = 5;
+		anchor = GridBagConstraints.LINE_START;
 		insets = new Insets(2, 2, 2, 2);
 	}};
 	
@@ -47,11 +52,11 @@ public class InfoWidget extends JPanel {
 		
 		titleLabel.setForeground(UITheme.DEFAULT_TEXT_COLOR);
 		titleLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+		titleLabel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
 		
 		fieldPanel.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
 		
 		buttonPanel.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
-		buttonPanel.setLayout(new GridLayout(0, 1));
 		
 		add(titleLabel);
 		add(fieldPanel);
@@ -72,7 +77,7 @@ public class InfoWidget extends JPanel {
 		label.setForeground(UITheme.DEFAULT_TEXT_COLOR);
 		label.setLabelFor(field);
 		
-		JPanel outerComponentPanel = new JPanel();
+		JPanel outerComponentPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		outerComponentPanel.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
 		outerComponentPanel.add(field);
 		
@@ -91,7 +96,7 @@ public class InfoWidget extends JPanel {
 	
 	public void addFullWidthField(Component field) {
 		GridBagConstraints fullWidth = new GridBagConstraints() {{
-			fill = GridBagConstraints.HORIZONTAL;
+			gridwidth = 2;
 			gridy = nextLabelPos.gridy;
 		}};
 		
@@ -99,6 +104,13 @@ public class InfoWidget extends JPanel {
 		
 		nextLabelPos.gridy++;
 		nextFieldPos.gridy++;
+	}
+	
+	/**
+	 * Does not remove label
+	 */
+	public void removeField(Component component) {
+		fieldPanel.remove(component);
 	}
 	
 	public void removeAllFields() {
@@ -122,15 +134,31 @@ public class InfoWidget extends JPanel {
 	public void setButtons(JButton... buttons) {
 		removeAllButtons();
 		
-		if(buttons.length % 2 == 0) {
-			buttonPanel.setLayout(new GridLayout(0, 2));
-		} else {
-			buttonPanel.setLayout(new GridLayout(0, 1));
+		GridBagConstraints buttonPos = new GridBagConstraints();
+		buttonPos.gridy = 0;
+		buttonPos.gridx = 0;
+		buttonPos.weightx = 0.5;
+		buttonPos.gridwidth = 1;
+		buttonPos.fill = GridBagConstraints.HORIZONTAL;
+		
+		int extra = buttons.length % 2;
+		
+		for(int i = 0; i < buttons.length - extra; i++) {
+			buttonPanel.add(buttons[i], buttonPos);
+			
+			if(buttonPos.gridx == 0) {
+				buttonPos.gridx = 1;
+			} else {
+				buttonPos.gridx = 0;
+				buttonPos.gridy++;
+			}
 		}
 		
-		for (JButton b : buttons) {	
-			buttonPanel.add(b);
+		if(extra == 1) {
+			buttonPos.gridwidth = 2;
+			buttonPanel.add(buttons[buttons.length - 1], buttonPos);
 		}
+		
 	}
 	
 	public void removeAllButtons() {

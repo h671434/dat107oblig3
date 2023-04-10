@@ -7,7 +7,7 @@ import dat107.oblig3.gui.AppWindow;
 import dat107.oblig3.util.ServerReplacer;
 
 public class Main {
-
+	
 	private static final int PORT = 8564;
 
 	public static void main(String[] args) {
