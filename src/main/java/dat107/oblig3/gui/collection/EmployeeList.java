@@ -28,10 +28,9 @@ public class EmployeeList extends EntityList<Employee> {
 			
 			setLayout(new FlowLayout(FlowLayout.LEFT));
 			setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
-			
-			addIdAndNameLabel();
-			
 			removeMouseListener(clickListener);
+			
+			addIdAndNameLabel();	
 		}
 		
 		private void addIdAndNameLabel() {

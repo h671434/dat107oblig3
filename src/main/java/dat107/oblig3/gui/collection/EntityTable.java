@@ -16,17 +16,21 @@ import javax.swing.table.AbstractTableModel;
 @SuppressWarnings("serial")
 public abstract class EntityTable<T> extends JTable implements EntityCollection<T> {
 	
-	protected List<T> content = new ArrayList<>();
-	protected EntityTableModel model = getTableModel();
+	protected final EntityTableModel model;
+	protected List<T> content;
 
 	public EntityTable() {
+		this.model = getTableModel();
+		this.content = new ArrayList<>();
+		
+		configureTable();
+	}
+	
+	private void configureTable() {
 		setModel(model);
 		setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 	}
-	
-	/**
-	 * Get the tablemodel for the current table. 
-	 */
+	 
 	protected abstract EntityTableModel getTableModel();
 	
 	@Override

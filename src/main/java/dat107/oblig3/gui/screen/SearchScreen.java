@@ -27,27 +27,43 @@ import dat107.oblig3.gui.widget.Widget;
 @SuppressWarnings("serial")
 public abstract class SearchScreen<T> extends Screen {
 
-	protected final SearchBar searchBar = new SearchBar((o, s) -> onSearch(o, s));
-	protected final EntityCollection<T> dataset = getDatasetComponent();
-	protected final JScrollPane scrollPane = new JScrollPane(dataset.getGuiComponent());
-	protected final JPanel widgets = new JPanel(new GridBagLayout());
-	protected final JPanel buttons = new JPanel();
+	protected final SearchBar searchBar;
+	protected final EntityCollection<T> dataset;
+	protected final JScrollPane scrollPane;
+	protected final JPanel widgets;
+	protected final JPanel buttons;
 	
-	private Map<String, Function<String, List<T>>> searchOpt = new HashMap<>();
+	private Map<String, Function<String, List<T>>> searchOptions;
 	
-	private GridBagConstraints widgetPositions = new GridBagConstraints() {{
-		ipady = 8;
-		ipadx = 16;
-		insets = new Insets(8, 0, 8, 16);
-		weightx = 1;
-		weighty = 1;
-		fill = GridBagConstraints.HORIZONTAL;
-	}};
+	private GridBagConstraints widgetPositions;
 
-	protected SearchScreen() {
+	public SearchScreen() {
+		this.searchBar = new SearchBar((o, s) -> onSearch(o, s));
+		this.dataset = getDatasetComponent();
+		this.scrollPane = new JScrollPane(dataset.getGuiComponent());
+		this.widgets = new JPanel(new GridBagLayout());
+		this.buttons = new JPanel();
+		this.searchOptions = new HashMap<>();
+		this.widgetPositions = new GridBagConstraints() {{
+			ipady = 8;
+			ipadx = 16;
+			insets = new Insets(8, 0, 8, 16);
+			weightx = 1;
+			weighty = 1;
+			fill = GridBagConstraints.HORIZONTAL;
+		}};
+		
+		configureScreen();
+		configureComponents();
+		addComponents();
+	}
+	
+	private void configureScreen() {
 		setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 		setForeground(UITheme.DEFAULT_TEXT_COLOR);
-		
+	}
+	
+	private void configureComponents() {
 		searchBar.setAlignmentX(JPanel.LEFT_ALIGNMENT);
 		
 		scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
@@ -61,7 +77,9 @@ public abstract class SearchScreen<T> extends Screen {
 		buttons.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 		buttons.setBorder(BorderFactory.createLineBorder(
 				UITheme.DEFAULT_BACKGROUND_COLOR, 18));
-		
+	}
+	
+	private void addComponents() {
 		setTopPanel(searchBar);
 		setCenterPanel(scrollPane);
 		setRightPanel(widgets);
@@ -71,14 +89,14 @@ public abstract class SearchScreen<T> extends Screen {
 	protected abstract EntityCollection<T> getDatasetComponent();
 
 	private void onSearch(String option, String search) {
-		List<T> results = searchOpt.get(option).apply(search);
+		List<T> results = searchOptions.get(option).apply(search);
 		
 		dataset.updateContent(results);
 	}
 
 	protected void addSearchOption(String option, Function<String, List<T>> getter) {
 		searchBar.addSearchOption(option);
-		searchOpt.put(option, getter);
+		searchOptions.put(option, getter);
 	}
 	
 
@@ -99,7 +117,7 @@ public abstract class SearchScreen<T> extends Screen {
 		searchBar.search();
 	}
 	
-	protected JButton addButton(String text, ActionListener onPress, 
+	protected JButton createScreenButton(String text, ActionListener onPress, 
 			boolean onlyEnabledOnSelection) {
 		JButton newButton = new JButton(text);
 		
@@ -118,9 +136,11 @@ public abstract class SearchScreen<T> extends Screen {
 			});
 		}
 		
-		buttons.add(newButton);
-		
 		return newButton;
+	}
+	
+	protected void addButton(JButton button) {
+		buttons.add(button);
 	}
 	
 	protected void showWidget(Widget widget, int row) {

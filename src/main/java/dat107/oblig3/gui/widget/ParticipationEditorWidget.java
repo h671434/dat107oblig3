@@ -15,7 +15,7 @@ import dat107.oblig3.entity.Project;
 import dat107.oblig3.entity.ProjectParticipation;
 import dat107.oblig3.gui.inputcontrols.EntityComboBox;
 import dat107.oblig3.gui.inputcontrols.NumericField;
-import dat107.oblig3.gui.inputcontrols.ToggleableTextField;
+import dat107.oblig3.gui.inputcontrols.StyledTextField;
 import dat107.oblig3.gui.screen.Screen;
 import jakarta.persistence.EntityExistsException;
 
@@ -24,23 +24,31 @@ public class ParticipationEditorWidget extends Widget {
 
 	private final Screen screen;
 	
-	private final EntityComboBox<Employee> employeeComboBox = 
-			EntityComboBox.createEmployeeComboBox();
-	private final EntityComboBox<Project> projectComboBox = 
-			EntityComboBox.createProjectComboBox();
-	private final JTextField roleField = new ToggleableTextField(12);
-	private final NumericField hoursField = new NumericField(12);
+	private final EntityComboBox<Employee> employeeComboBox;
+	private final EntityComboBox<Project> projectComboBox;
+	private final JTextField roleField;
+	private final NumericField hoursField;
 	
 	private ProjectParticipation participationToEdit;
 	
 	public ParticipationEditorWidget(Screen screen) {
 		super("About Participation");
 		this.screen = screen;
-		
-		Dimension fieldSize = hoursField.getPreferredSize();
-		employeeComboBox.setPreferredSize(fieldSize);
-		projectComboBox.setPreferredSize(fieldSize);
-		
+		this.employeeComboBox = EntityComboBox.createEmployeeComboBox();
+		this.projectComboBox = EntityComboBox.createProjectComboBox();
+		this.roleField = new StyledTextField(12);
+		this.hoursField = new NumericField(12);
+
+		configureComponents();
+		addComponents();
+	}
+	
+	private void configureComponents() {
+		employeeComboBox.setPreferredSize(hoursField.getPreferredSize());
+		projectComboBox.setPreferredSize(hoursField.getPreferredSize());
+	}
+	
+	private void addComponents() {
 		addLabeledField("Employee:", employeeComboBox);
 		addLabeledField("Project:", projectComboBox);
 		addLabeledField("Role:", roleField);
@@ -99,7 +107,7 @@ public class ParticipationEditorWidget extends Widget {
 	
 	public void save() {
 		if(participationToEdit != null) {
-			saveChanges();
+			saveExistingParticipation();
 		} else {
 			saveNewParticipation();
 		}
@@ -107,21 +115,8 @@ public class ParticipationEditorWidget extends Widget {
 		setTitle("About Participation");
 	}
 	
-	/**
-	 * Trys to udate project participation with values from fields.
-	 * Asks user to save as new project participation if particpation doesn't exist.
-	 */
-	private void saveChanges() {
-		if(!employeeIsValid()) {
-			showErrorMessage("No employee selected");
-			return;
-		}
-		if(!projectIsValid()) {
-			showErrorMessage("No project selected");
-			return;
-		}
-		if(!hoursIsValid()) {
-			showErrorMessage("Hours field is empty or invalid.");
+	private void saveExistingParticipation() {
+		if(!validqteFieldInputsForExistingEmployee()) {
 			return;
 		}
 		
@@ -150,61 +145,23 @@ public class ParticipationEditorWidget extends Widget {
 		}
 	}
 	
-	/**
-	 * Trys to save a new project participation with values from fields.
-	 * Asks to update existing participation of participation exists.
-	 */
-	private void saveNewParticipation() {
+	private boolean validqteFieldInputsForExistingEmployee() {
 		if(!employeeIsValid()) {
-			showErrorMessage("No employee selected.");
-			return;
+			showErrorMessage("No employee selected");
+			return false;
 		}
+		
 		if(!projectIsValid()) {
-			showErrorMessage("No project selected.");
-			return;
+			showErrorMessage("No project selected");
+			return false;
 		}
 		
-		Employee employee = (Employee) employeeComboBox.getSelectedItem();
-		Project project = (Project) projectComboBox.getSelectedItem();
-		
-		EmployeeDAO dao = new EmployeeDAO();
-		
-		String error = null;
-		boolean shouldAskToUpdate = false;
-		
-		try {
-			if(hoursIsValid() && roleIsValid()) {
-				String role = roleField.getText();
-				int hours = hoursField.getInt();
-				
-				dao.addEmployeeToProject(employee.getId(), project.getId(), role, hours);
-			} else if(roleIsValid())  {
-				String role = roleField.getText();
-				
-				dao.addEmployeeToProject(employee.getId(), project.getId(), role);
-			} else if (hoursIsValid()) {
-				int hours = hoursField.getInt();
-				
-				dao.addEmployeeToProject(employee.getId(), project.getId(), hours);	
-			} else {
-				dao.addEmployeeToProject(employee.getId(), project.getId());
-			}
-			
-		} catch (EntityExistsException e) {
-			e.printStackTrace();
-			error = "Participation already exists.";
-			shouldAskToUpdate = hoursIsValid();
-		} catch (Throwable e) {
-			e.printStackTrace();
-			error = "Unexpected error updating project participation.";
+		if(!hoursIsValid()) {
+			showErrorMessage("Hours field is empty or invalid.");
+			return false;
 		}
 		
-		if(error != null && shouldAskToUpdate) {
-			askUserToUpdateExisting(error);
-		}
-		if(error != null & !shouldAskToUpdate) {
-			showErrorMessage(error);
-		}
+		return true;
 	}
 	
 	private boolean employeeIsValid() {
@@ -233,6 +190,69 @@ public class ParticipationEditorWidget extends Widget {
 		return true;
 	}
 	
+	private void saveNewParticipation() {
+		if(!validateFieldInputsForNewParticipation()) {
+			return;
+		}
+		
+		EmployeeDAO dao = new EmployeeDAO();
+		
+		try {
+			if(hoursIsValid() && roleIsValid()) {
+				dao.addEmployeeToProject(
+						((Employee) employeeComboBox.getSelectedItem()).getId(), 
+						((Project) projectComboBox.getSelectedItem()).getId(), 
+						roleField.getText(), 
+						hoursField.getInt());
+				
+			} else if(roleIsValid())  {
+				dao.addEmployeeToProject(
+						((Employee) employeeComboBox.getSelectedItem()).getId(), 
+						((Project) projectComboBox.getSelectedItem()).getId(), 
+						roleField.getText());
+				
+			} else if (hoursIsValid()) {
+				dao.addEmployeeToProject(
+						((Employee) employeeComboBox.getSelectedItem()).getId(), 
+						((Project) projectComboBox.getSelectedItem()).getId(), 
+						hoursField.getInt());	
+				
+			} else {
+				dao.addEmployeeToProject((
+						(Employee) employeeComboBox.getSelectedItem()).getId(), 
+						((Project) projectComboBox.getSelectedItem()).getId());
+			}
+			
+		} catch (EntityExistsException e) {
+			e.printStackTrace();
+			String error = "Participation already exists.";
+			
+			if(hoursIsValid()) {
+				askUserToUpdateExisting(error);
+			} else {
+				showErrorMessage(error);
+			}
+			
+		} catch (Throwable e) {
+			e.printStackTrace();
+			showErrorMessage("Unexpected error updating project participation.");
+		}
+	}
+	
+	private boolean validateFieldInputsForNewParticipation() {
+		if(!employeeIsValid()) {
+			showErrorMessage("No employee selected.");
+			return false;
+		}
+		
+		if(!projectIsValid()) {
+			showErrorMessage("No project selected.");
+			return false;
+		}
+		
+		return true;
+	}
+ 	
 	private void showErrorMessage(String message) {
 		JOptionPane.showMessageDialog(screen, message, 
 				"Error saving project participation", 
@@ -244,7 +264,7 @@ public class ParticipationEditorWidget extends Widget {
 				"Do you wish to update the existing participation?");
 		
 		if(doUpdate) {
-			saveChanges();
+			saveExistingParticipation();
 		}
 	}
 	

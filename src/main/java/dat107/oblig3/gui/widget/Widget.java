@@ -25,32 +25,50 @@ import dat107.oblig3.gui.UITheme;
 @SuppressWarnings("serial")
 public class Widget extends JPanel {
 
-	protected JLabel titleLabel = new JLabel("");
-	protected JPanel fieldPanel = new JPanel(new GridBagLayout());
-	protected JPanel buttonPanel = new JPanel(new GridBagLayout());
+	protected JLabel titleLabel;
+	protected JPanel fieldPanel;
+	protected JPanel buttonPanel;
 	
-	protected GridBagConstraints nextLabelPos = new GridBagConstraints() {{
-		gridx = 0;
-		gridy = 0;
-		ipadx = 5;
-		ipady = 5;
-		anchor = GridBagConstraints.LINE_END;
-		insets = new Insets(2, 2, 2, 2);
-	}};
-	protected GridBagConstraints nextFieldPos = new GridBagConstraints() {{
-		gridx = 1;
-		gridy = 0;
-		ipadx = 5;
-		ipady = 5;
-		anchor = GridBagConstraints.LINE_START;
-		insets = new Insets(2, 2, 2, 2);
-	}};
+	protected GridBagConstraints nextLabelPos;
+	protected GridBagConstraints nextFieldPos;
+	
+	public Widget(String title) {
+		this.titleLabel = new JLabel(title);
+		this.fieldPanel = new JPanel(new GridBagLayout());
+		this.buttonPanel = new JPanel(new GridBagLayout());
+		this.nextLabelPos = new GridBagConstraints() {{
+			gridx = 0;
+			gridy = 0;
+			ipadx = 5;
+			ipady = 5;
+			anchor = GridBagConstraints.LINE_END;
+			insets = new Insets(2, 2, 2, 2);
+		}};
+		this.nextFieldPos = new GridBagConstraints() {{
+			gridx = 1;
+			gridy = 0;
+			ipadx = 5;
+			ipady = 5;
+			anchor = GridBagConstraints.LINE_START;
+			insets = new Insets(2, 2, 2, 2);
+		}};
+		
+		configureWidget();
+		configureComponents();
+		addComponents();
+	}
 	
 	public Widget() {
+		this("");
+	}
+	
+	private void configureWidget() {
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
 		setBorder(BorderFactory.createLineBorder(UITheme.LIGHT_ACCENT_COLOR));
-		
+	}
+	
+	private void configureComponents() {
 		titleLabel.setForeground(UITheme.DEFAULT_TEXT_COLOR);
 		titleLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 		titleLabel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
@@ -58,24 +76,18 @@ public class Widget extends JPanel {
 		fieldPanel.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
 		
 		buttonPanel.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
-		
+	}
+	
+	private void addComponents() {
 		add(titleLabel);
 		add(fieldPanel);
 		add(buttonPanel);
-	}
-	
-	public Widget(String title) {
-		this();
-		titleLabel.setText(title);
 	}
 	
 	public void setTitle(String title) {
 		titleLabel.setText(title);
 	}
 	
-	/**
-	 * Adds a new row to fieldPanel with a label and the field-component.
-	 */
 	public JLabel addLabeledField(String name, Component field) {
 		JLabel label = new JLabel(name, JLabel.TRAILING);
 		label.setForeground(UITheme.DEFAULT_TEXT_COLOR);
@@ -109,10 +121,7 @@ public class Widget extends JPanel {
 		nextLabelPos.gridy++;
 		nextFieldPos.gridy++;
 	}
-	
-	/**
-	 * Does not remove labels.
-	 */
+
 	public void removeField(Component component) {
 		fieldPanel.remove(component);
 	}
@@ -131,11 +140,6 @@ public class Widget extends JPanel {
 		return button;
 	}
 	
-	/**
-	 * Removes the current buttons and adds the new given buttons.
-	 * Each row in the buttonpanel can contain two buttons.
-	 * If the amount of buttons are odd, the last button will be full width.
-	 */
 	public void setButtons(JButton... buttons) {
 		removeAllButtons();
 		

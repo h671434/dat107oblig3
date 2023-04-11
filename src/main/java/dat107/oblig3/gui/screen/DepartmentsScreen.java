@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 
 import dat107.oblig3.dao.DepartmentDAO;
 import dat107.oblig3.entity.Department;
+import dat107.oblig3.entity.Employee;
 import dat107.oblig3.gui.collection.DepartmentTable;
 import dat107.oblig3.gui.collection.EntityCollection;
 import dat107.oblig3.gui.widget.DepartmentEmployeesWidget;
@@ -18,26 +19,40 @@ import dat107.oblig3.gui.widget.DepartmentEditorWidget;
 @SuppressWarnings("serial")
 public class DepartmentsScreen extends SearchScreen<Department> {
 
-	private final DepartmentEditorWidget editDepartmentWidget =
-			new DepartmentEditorWidget(this);
-	private final DepartmentEmployeesWidget employeesWidget = 
-			new DepartmentEmployeesWidget(this);
-	
+	private final DepartmentEditorWidget editDepartmentWidget;
+	private final DepartmentEmployeesWidget employeesWidget;
 	private final JButton viewEmployeesButton;
+	private final JButton editButton;
+	private final JButton newDepartmentButton;
 	
-	private DepartmentDAO dao = new DepartmentDAO();
+	private final DepartmentDAO dao;
 	
 	public DepartmentsScreen() {
+		this.editDepartmentWidget = new DepartmentEditorWidget(this);
+		this.employeesWidget = new DepartmentEmployeesWidget(this);
+		this.viewEmployeesButton = 
+				createScreenButton("View Employees", e -> onViewEmployees(), true);
+		this.editButton =
+				createScreenButton("Edit Department", e -> onEditDepartment(), true);
+		this.newDepartmentButton =
+				createScreenButton("Add New Department", e -> onAddNewDepartment(), false);
+		this.dao = new DepartmentDAO();
+		
+		configureScreen();
+		addComponents();
+	}
+	
+	private void configureScreen() {
 		addSearchOption("Any", s -> dao.search(s));
 		addSearchOption("ID", s -> searchById(s));
 		
-		addSelectionListener(selected -> {
-			setDepartment(selected);
-		});
-		
-		viewEmployeesButton = addButton("View Employees", e -> onViewEmployees(), true);
-		addButton("Edit Department", e -> onEditDepartment(), true);
-		addButton("Add New Department", e -> onAddNewDepartment(), false);
+		addSelectionListener(selected -> setDepartment(selected));
+	}
+	
+	private void addComponents() {
+		addButton(viewEmployeesButton);
+		addButton(editButton);
+		addButton(newDepartmentButton);
 	}
 	
 	@Override
@@ -46,19 +61,16 @@ public class DepartmentsScreen extends SearchScreen<Department> {
 	}
 	
 	private List<Department> searchById(String search) {
+		Optional<Department> result = Optional.empty();
+		
 		try {
-			int id = Integer.parseInt(search);
-			Optional<Department> result = dao.get(id);
-			
-			if(result.isPresent()) {
-				return Collections.singletonList(result.get());
-			} 
-			
+			result = dao.get(Integer.parseInt(search));
 		} catch (NumberFormatException e) {
 			showNoResultsDialog("ID must be a number");
 		}	
 		
-		return Collections.emptyList();
+		// Return single department in list, empty if no department is found.
+		return result.map(Collections::singletonList).orElse(Collections.emptyList());
 	}
 
 	@Override
@@ -108,7 +120,7 @@ public class DepartmentsScreen extends SearchScreen<Department> {
 			showWidget(editDepartmentWidget, 0);
 		}
 		
-		editDepartmentWidget.newDepartment();
+		editDepartmentWidget.createNewDepartment();
 	}
 	
 }

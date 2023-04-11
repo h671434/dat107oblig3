@@ -50,7 +50,7 @@ public class EntityComboBox<T> extends JComboBox<T> {
 	 */
 	public void configureComboBox() {
 		setOpaque(false);
-		setBackground(ToggleableTextField.DEFAULT_BACKGROUND);
+		setBackground(StyledTextField.DEFAULT_BACKGROUND);
 		
 		configureRenderer();
 		configureEditor();
@@ -59,9 +59,9 @@ public class EntityComboBox<T> extends JComboBox<T> {
 	
 	private void configureUI() {
 		UIManager.put("ComboBox.disabledForeground", 
-				ToggleableTextField.DEFAULT_UNEDITABLE_FOREGROUND);
+				StyledTextField.DEFAULT_UNEDITABLE_FOREGROUND);
 		UIManager.put("ComboBox.disabledBackground", 
-				ToggleableTextField.DEFAULT_BACKGROUND);
+				StyledTextField.DEFAULT_BACKGROUND);
 		
 		setUI(new BasicComboBoxUI() {
 			@Override
@@ -103,7 +103,7 @@ public class EntityComboBox<T> extends JComboBox<T> {
 	private void configureEditor() {
 		setEditor(new BasicComboBoxEditor() {
 			@Override public JTextField createEditorComponent() {
-		        return new ToggleableTextField(9);
+		        return new StyledTextField(9);
 			}	
 		});
 	}
@@ -120,18 +120,18 @@ public class EntityComboBox<T> extends JComboBox<T> {
 	}
 	
 	private void setEditableLook(boolean editable) {
-		setBackground(ToggleableTextField.DEFAULT_BACKGROUND);
+		setBackground(StyledTextField.DEFAULT_BACKGROUND);
 		
 		if(editable) {
-			setForeground(ToggleableTextField.DEFAULT_EDITABLE_FOREGROUND);
-			setBorder(ToggleableTextField.DEFAULT_EDITABLE_BORDER);
+			setForeground(StyledTextField.DEFAULT_EDITABLE_FOREGROUND);
+			setBorder(StyledTextField.DEFAULT_EDITABLE_BORDER);
 		} else {
-			setForeground(ToggleableTextField.DEFAULT_UNEDITABLE_FOREGROUND);
-			setBorder(ToggleableTextField.DEFAULT_UNEDITABLE_BORDER);
+			setForeground(StyledTextField.DEFAULT_UNEDITABLE_FOREGROUND);
+			setBorder(StyledTextField.DEFAULT_UNEDITABLE_BORDER);
 		}
 		
-		ToggleableTextField editorComponent = 
-				((ToggleableTextField)getEditor().getEditorComponent());
+		StyledTextField editorComponent = 
+				((StyledTextField)getEditor().getEditorComponent());
 		editorComponent.setEditable(editable);
 	}
 	

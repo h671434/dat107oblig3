@@ -16,7 +16,7 @@ import dat107.oblig3.entity.Department;
 import dat107.oblig3.entity.Employee;
 import dat107.oblig3.entity.Project;
 import dat107.oblig3.gui.UITheme;
-import dat107.oblig3.gui.inputcontrols.ToggleableTextField;
+import dat107.oblig3.gui.inputcontrols.StyledTextField;
 import dat107.oblig3.gui.screen.Screen;
 
 @SuppressWarnings("serial")
@@ -24,12 +24,12 @@ public class ProjectEditorWidget extends Widget {
 
 	private final Screen screen;
 	
-	private final JTextField idField = new ToggleableTextField(12);
-	private final JTextField nameField = new ToggleableTextField(12);
-	private final JTextArea descriptionArea = new JTextArea(5, 20);
-	
-	private final JButton saveButton = createWidgetButton("Save", e -> onSave());
-	private final JButton cancelButton = createWidgetButton("Cancel", e -> onCancel());
+	private final JTextField idField;
+	private final JTextField nameField;
+	private final JLabel descriptionLabel;
+	private final JTextArea descriptionArea;
+	private final JButton saveButton;
+	private final JButton cancelButton;
 	
 	private ProjectDAO dao = new ProjectDAO();
 	private Project project;
@@ -37,16 +37,28 @@ public class ProjectEditorWidget extends Widget {
 	public ProjectEditorWidget(Screen screen) {
 		super("About Project");
 		this.screen = screen;
+		this.idField = new StyledTextField(12);
+		this.nameField = new StyledTextField(12);
+		this.descriptionLabel = new JLabel("Description:");
+		this.descriptionArea = new JTextArea(5, 20);
+		this.saveButton = createWidgetButton("Save", e -> onSave());
+		this.cancelButton = createWidgetButton("Cancel", e -> onCancel());
 		
+		configureComponents();
+		addComponents();
+	}
+	
+	private void configureComponents() {
 		idField.setEditable(false);
 		
-		JLabel descriptionLabel = new JLabel("Description:");
 		descriptionLabel.setForeground(UITheme.DEFAULT_TEXT_COLOR);
 		descriptionLabel.setBorder(BorderFactory.createEmptyBorder(8, 4, 16, 0));
 		
 		descriptionArea.setLineWrap(true);
 		descriptionArea.setWrapStyleWord(true);
-		
+	}
+	
+	private void addComponents() {
 		addLabeledField("ID:", idField);
 		addLabeledField("Name:", nameField);
 		addFullWidthField(descriptionLabel);
@@ -107,33 +119,29 @@ public class ProjectEditorWidget extends Widget {
 	
 	private void onSave() {
 		if(project != null) {
-			saveChanges();
+			saveExistingProject();
 		} else {
-			saveNewDepartment();
+			saveNewProject();
 		}
 		
 		onCancel();
 	}
 	
-	private void saveChanges() {
+	private void saveExistingProject() {
 		if(!project.getDescription().equals(descriptionArea.getText())) {
-			saveDescription();
+			try {
+				dao.updateDescription(project.getId(), descriptionArea.getText());
+			} catch (Throwable e) {
+				handleSaveException(e, "Error occured updating project description.");
+			}
 		}
 	}
 	
-	private void saveDescription() {
-		try {
-			dao.updateDescription(project.getId(), descriptionArea.getText());
-		} catch (Throwable e) {
-			handleSaveException(e, "Error occured updating manager.");
-		}
-	}
-	
-	private void saveNewDepartment() {
+	private void saveNewProject() {
 		try {
 			dao.saveNewProject(nameField.getText(), descriptionArea.getText());
 		} catch (Throwable e) {
-			handleSaveException(e, "Error occured saving new department.");
+			handleSaveException(e, "Error occured saving new project.");
 		}
 	}
 	

@@ -17,11 +17,8 @@ public class Project {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int project_id;
-	
 	private String project_name;
-	
 	private String project_description;
-	
 	@OneToMany(mappedBy = "project")
 	private List<ProjectParticipation> project_participations;
 	

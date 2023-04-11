@@ -7,6 +7,7 @@ import java.awt.event.WindowEvent;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -23,34 +24,45 @@ public class AppWindow extends JFrame implements AutoCloseable {
 	public final ToolBar toolbar;
 	public final NavigationSideBar navigation;
 	public final JPanel screenPanel;
-	
 	private final JScrollPane screenScrollPane;
 	private final CardLayout screenCards;
+	
+	private final Map<String, Screen> screens;
 	private Screen currentScreen;
 
-	private Map<String, Screen> screens = new LinkedHashMap<>() {{
-			put("Employees", new EmployeesScreen());
-			put("Departments", new DepartmentsScreen());
-			put("Projects", new ProjectsScreen());
-	}};
-
 	public AppWindow() {
-		setBackground(UITheme.LIGHT_ACCENT_COLOR);
-		setSize(1400, 900);
-		
 		this.toolbar = new ToolBar();
 		this.screenCards = new CardLayout();
 		this.screenPanel = new JPanel(screenCards);
 		this.screenScrollPane = new JScrollPane(screenPanel);
 		this.navigation = new NavigationSideBar(this);
-		
-		setJMenuBar(toolbar);
-		getContentPane().add(navigation, BorderLayout.WEST);
-		getContentPane().add(screenScrollPane, BorderLayout.CENTER);
-		
+		this.screens  = new LinkedHashMap<>() {{
+			put("Employees", new EmployeesScreen());
+			put("Departments", new DepartmentsScreen());
+			put("Projects", new ProjectsScreen());
+		}};
+
+		configureAppWindow();
+		configureComponents();
+		addComponents();
 		addScreens();
 		
 		screens.get("Employees").display();
+	}
+	
+	private void configureAppWindow() {
+		setBackground(UITheme.LIGHT_ACCENT_COLOR);
+		setSize(1400, 900);
+	}
+	
+	private void configureComponents() {
+		screenScrollPane.setBorder(BorderFactory.createEmptyBorder());
+	}
+	
+	private void addComponents() {
+		setJMenuBar(toolbar);
+		getContentPane().add(navigation, BorderLayout.WEST);
+		getContentPane().add(screenScrollPane, BorderLayout.CENTER);
 	}
 
 	public void addScreens() {
@@ -63,10 +75,9 @@ public class AppWindow extends JFrame implements AutoCloseable {
 	public void changeScreen(String name)  {		
 		try {
 			currentScreen = screens.get(name);
+			
 			currentScreen.safeDisplay();
-			
 			screenCards.show(screenPanel, name);
-			
 			screenScrollPane.revalidate();
 			
 		} catch (Exception e) {

@@ -11,7 +11,7 @@ import dat107.oblig3.dao.EmployeeDAO;
 import dat107.oblig3.entity.Department;
 import dat107.oblig3.entity.Employee;
 import dat107.oblig3.gui.inputcontrols.EntityComboBox;
-import dat107.oblig3.gui.inputcontrols.ToggleableTextField;
+import dat107.oblig3.gui.inputcontrols.StyledTextField;
 import dat107.oblig3.gui.screen.Screen;
 
 /**
@@ -22,13 +22,11 @@ public class DepartmentEditorWidget extends Widget {
 
 	private final Screen screen;
 	
-	private final JTextField idField = new ToggleableTextField(12);
-	private final JTextField nameField = new ToggleableTextField(12);
-	private final EntityComboBox<Employee> managerComboBox = 
-			new EntityComboBox<>(() -> getEmployees());
-	
-	private final JButton saveButton = createWidgetButton("Save", e -> onSave());
-	private final JButton cancelButton = createWidgetButton("Cancel", e -> onCancel());
+	private final JTextField idField;
+	private final JTextField nameField;
+	private final EntityComboBox<Employee> managerComboBox;
+	private final JButton saveButton;
+	private final JButton cancelButton;
 	
 	private DepartmentDAO dao = new DepartmentDAO();
 	private Department department;
@@ -36,19 +34,30 @@ public class DepartmentEditorWidget extends Widget {
 	public DepartmentEditorWidget(Screen screen) {
 		super("About Department");
 		this.screen = screen;
-		
+		this.idField = new StyledTextField(12);
+		this.nameField = new StyledTextField(12);
+		this.managerComboBox = new EntityComboBox<>(() -> getEmployees());
+		this.saveButton = createWidgetButton("Save", e -> onSave());
+		this.cancelButton = createWidgetButton("Cancel", e -> onCancel());
+		this.dao = new DepartmentDAO();
+
+		configureComponents();
+		addComponents();
+	}
+	
+	private void configureComponents() {
 		idField.setEditable(false);
 		nameField.setEditable(false);
 		managerComboBox.setPreferredSize(nameField.getPreferredSize());
-		
+	}
+	
+	private void addComponents() {
 		addLabeledField("ID:", idField);
 		addLabeledField("Name:", nameField);
 		addLabeledField("Manager:", managerComboBox);
 	}
 	
-	/**
-	 * Returns the employees from the current department to the employees-combobox.
-	 */
+
 	private List<Employee> getEmployees() {
 		if(department == null) {
 			return new EmployeeDAO().getAll();
@@ -83,9 +92,6 @@ public class DepartmentEditorWidget extends Widget {
 		managerComboBox.setSelectedItem(null);
 	}
 	
-	/**
-	 * Fills the widgets fields with info from the current department.
-	 */
 	private void fillAllFields() {
 		idField.setText(department.getId() + "");
 		nameField.setText(department.getName());
@@ -99,20 +105,14 @@ public class DepartmentEditorWidget extends Widget {
 		managerComboBox.setEditable(editable);
 	}
 	
-	/**
-	 * Updates gui components to allow editing.
-	 */
 	public void editDepartment() {		
  		managerComboBox.setEditable(true);
 		
 		setTitle("Edit Department");
 		setButtons(cancelButton, saveButton);
 	}
-	
-	/**
-	 * Sets department to null and updates gui components.
-	 */
-	public void newDepartment() {
+
+	public void createNewDepartment() {
 		setDepartment(null);
 		
 		idField.setText("Generated");
@@ -123,7 +123,7 @@ public class DepartmentEditorWidget extends Widget {
 
 	private void onSave() {
 		if(department != null) {
-			saveChanges();
+			saveExistingDepartment();
 		} else {
 			saveNewDepartment();
 		}
@@ -131,23 +131,16 @@ public class DepartmentEditorWidget extends Widget {
 		onCancel();
 	}
 	
-	/**
-	 * Updates manager if the field has been changed.
-	 */
-	private void saveChanges() {
+	private void saveExistingDepartment() {
 		Employee newManager = (Employee) managerComboBox.getSelectedItem();
 		
 		if(!newManager.equals(department.getManager())) {
-			saveManager();
-		}
-	}
-	
-	private void saveManager() {
-		try {
-			dao.updateManager(department.getId(), 
-					(Employee) managerComboBox.getSelectedItem());
-		} catch (Throwable e) {
-			handleSaveException(e, "Error occured updating manager.");
+			try {
+				dao.updateManager(department.getId(), 
+						(Employee) managerComboBox.getSelectedItem());
+			} catch (Throwable e) {
+				handleSaveException(e, "Error occured updating manager.");
+			}
 		}
 	}
 	

@@ -28,12 +28,19 @@ import dat107.oblig3.gui.UITheme;
 @SuppressWarnings("serial")
 public abstract class EntityList<T> extends JPanel implements EntityCollection<T>, Scrollable {
 	
-	protected List<ListEntry> entries = new ArrayList<>();
-	private ListEntry selected = null;
+	protected List<ListEntry> entries;
+	private ListEntry selected;
 	
-	private List<Consumer<T>> selectionListeners = new ArrayList<>();
+	private List<Consumer<T>> selectionListeners;
 	
 	public EntityList() {
+		this.selectionListeners = new ArrayList<>();
+		this.entries = new ArrayList<>();
+		
+		configureList();
+	}
+	
+	private void configureList() {
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 	}
 	
@@ -178,7 +185,7 @@ public abstract class EntityList<T> extends JPanel implements EntityCollection<T
 	public abstract class ListEntry extends JPanel {
 		
 		private static final Border BORDER_SELECTED =
-				BorderFactory.createLineBorder(UITheme.TABLE_BORDER_COLOR);
+				BorderFactory.createLineBorder(Color.DARK_GRAY);
 		private static final Border BORDER_UNSELECTED = 
 				BorderFactory.createEmptyBorder();
 		

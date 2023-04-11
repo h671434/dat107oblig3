@@ -15,40 +15,56 @@ public class NavigationSideBar extends JPanel {
     
 	private final AppWindow window;
 	
+	private GridBagConstraints nextButtonPos;
 	private JButton selectedButton;
 	
-	private GridBagConstraints nextButtonPos = new GridBagConstraints() {{
+	public NavigationSideBar(AppWindow window) {
+		this.window = window;
+		this.nextButtonPos = new GridBagConstraints() {{
 			fill = GridBagConstraints.HORIZONTAL;
 			weightx = 1;
 			weighty = 0;
 			anchor = GridBagConstraints.PAGE_START;
 			gridx = 0;
 			gridy = 0;
-	}};
+		}};
+
+		configureSideBar();
+		fillEmptySpace();
+	}
 	
-	public NavigationSideBar(AppWindow window) {
-		this.window = window;
-		
+	private void configureSideBar() {
 		setLayout(new GridBagLayout());
 		setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 		setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-		setPreferredSize(new Dimension(window.getWidth() / 6, getHeight()));
-		
+		setPreferredSize(new Dimension(200, getHeight()));
+	}
+	
+	private void fillEmptySpace() {
 		JPanel emptyArea = new JPanel();
+		GridBagConstraints fill = new GridBagConstraints() {{
+			fill = GridBagConstraints.BOTH;
+			weighty = 1;
+			gridy = 100;
+		}};
+		
 		emptyArea.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
-		
-		GridBagConstraints fillUnderButtons = new GridBagConstraints() {
-			{
-				fill = GridBagConstraints.BOTH;
-				weighty = 1;
-				gridy = 100;
-			}	
-		};
-		
-		add(emptyArea, fillUnderButtons);
+
+		add(emptyArea, fill);
 	}
 
 	public void addNavigationButton(String screenName) {
+		JButton button = createNavigationButton(screenName);
+		
+		add(button, nextButtonPos);
+		nextButtonPos.gridy++;
+		
+		if(selectedButton == null) {
+			setSelectedButton(button);
+		}
+	}
+	
+	private JButton createNavigationButton(String screenName) {
 		JButton button = new JButton(screenName);
 		
 		button.addActionListener(e -> window.changeScreen(screenName));
@@ -61,21 +77,11 @@ public class NavigationSideBar extends JPanel {
 		button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		button.setFocusPainted(false);
 		
-		add(button, nextButtonPos);
-		nextButtonPos.gridy++;
-		
-		if(selectedButton == null) {
-			setSelectedButton(button);
-		}
+		return button;
 	}
 	
 	private void setSelectedButton(JButton button) {
-		if(selectedButton != null) {
-			selectedButton.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
-		}
-		
 		selectedButton = button;
-		
 		selectedButton.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
 	}
 }

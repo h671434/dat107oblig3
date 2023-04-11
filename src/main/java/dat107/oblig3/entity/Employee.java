@@ -24,19 +24,12 @@ public class Employee {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer employee_id;
-	
 	private String username;
-	
 	private String first_name;
-	
 	private String last_name;
-	
 	private Date employment_date;
-	
 	private String position;
-	
 	private double monthly_salary;
-	
 	@ManyToOne
 	@JoinColumn(name = "department")
 	@OneToOne(mappedBy = "department_manager")

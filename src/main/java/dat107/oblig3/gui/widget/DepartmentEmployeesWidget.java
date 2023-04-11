@@ -18,19 +18,28 @@ public class DepartmentEmployeesWidget extends Widget {
 	
 	private final Screen screen;
 	
-	private EmployeeList employeesList = new EmployeeList();
+	private final EmployeeList employeesList;
+	private final JScrollPane listScrollPane;
 	
 	private Department department;
 	
 	public DepartmentEmployeesWidget(Screen screen) {
 		super("Employees");
 		this.screen = screen;
+		this.employeesList = new EmployeeList();
+		this.listScrollPane = new JScrollPane(employeesList);
 		
-		JScrollPane listScrollPane = new JScrollPane(employeesList,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		configureComponents();
+		addComponents();
+	}
+	
+	private void configureComponents() {
+		listScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		listScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		listScrollPane.setBorder(BorderFactory.createLineBorder(Color.WHITE));
-		
+	}
+	
+	private void addComponents() {
 		addFullWidthField(listScrollPane);
 	}
 	

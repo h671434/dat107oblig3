@@ -20,27 +20,44 @@ import dat107.oblig3.gui.UITheme;
 @SuppressWarnings("serial")
 public abstract class Screen extends JPanel implements Scrollable, AutoCloseable {
 
-	protected BorderLayout layout = new BorderLayout();
+	protected BorderLayout layout;
 	
-	protected JPanel top = new JPanel();
-	protected JPanel bottom = new JPanel();
-	protected JPanel left = new JPanel();
-	protected JPanel right = new JPanel();
-	protected Component center = new JPanel();
+	protected JPanel top;
+	protected JPanel bottom;
+	protected JPanel left;
+	protected JPanel right;
+	protected Component center;
 
 	public Screen() {
+		this.layout = new BorderLayout();
+		this.top = new JPanel();
+		this.bottom = new JPanel();
+		this.left = new JPanel();
+		this.right = new JPanel();
+		this.center = new JPanel();
+
+		configureScreen();
+		configureComponents();
+		addComponents();
+	}
+	
+	private void configureScreen() {
 		setLayout(layout);
 		setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 		
 		layout.setVgap(5);
 		layout.setHgap(20);
-
+	}
+	
+	private void configureComponents() {
 		top.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 		bottom.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 		left.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 		right.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 		center.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
+	}
 
+	private void addComponents() {
 		add(top, BorderLayout.NORTH);
 		add(bottom, BorderLayout.SOUTH);
 		add(left, BorderLayout.WEST);
@@ -80,7 +97,6 @@ public abstract class Screen extends JPanel implements Scrollable, AutoCloseable
 		return null;
 	}
 	
-	
 	public void setTopPanel(Component top) {
 		replacePanelContent(this.top, top);
 	}
@@ -104,10 +120,6 @@ public abstract class Screen extends JPanel implements Scrollable, AutoCloseable
 		this.center = center;
 	}
 	
-	/*
-	 * Removes all current components from parent, and adds newContent.
-	 * If newContent is null, an empty JPanel will be added instead.
-	 */
 	private void replacePanelContent(JPanel parent, Component newContent) {
 		for (Component comp : parent.getComponents()) {
 			parent.remove(comp);

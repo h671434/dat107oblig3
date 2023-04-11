@@ -18,27 +18,44 @@ import dat107.oblig3.gui.widget.ParticipationsWidget;
 @SuppressWarnings("serial")
 public class ProjectsScreen extends SearchScreen<Project> {
 
-	private ProjectEditorWidget editProjectWidget = 
-			new ProjectEditorWidget(this);
-	private ParticipationsWidget participantsWidget = 
-			new ParticipationsWidget("Paricipants", this);
+	private final ProjectEditorWidget editProjectWidget;
+	private final ParticipationsWidget participantsWidget;
+	private final JButton viewParticipantsButton;
+	private final JButton deleteButton;
+	private final JButton editButton;
+	private final JButton newProjectButton;
 	
-	private JButton viewParticipantsButton;
-	
-	private ProjectDAO dao = new ProjectDAO();
+	private final ProjectDAO dao;
 	
 	public ProjectsScreen() {
+		this.editProjectWidget = new ProjectEditorWidget(this);
+		this.participantsWidget = new ParticipationsWidget("Paricipants", this);
+		this.viewParticipantsButton =
+				createScreenButton("View Participants", e -> onViewParticipants(), true);
+		this.deleteButton = 
+				createScreenButton("Delete Project", e -> onDeleteProject(), true);
+		this.editButton = 
+				createScreenButton("Edit Project", e -> onEditProject(), true);
+		this.newProjectButton = 
+				createScreenButton("Add New Project", e -> onAddNewProject(), false);
+		this.dao = new ProjectDAO();
+		
+		configureScreen();
+		addComponents();
+	}
+	
+	private void configureScreen() {
 		addSearchOption("Any", s -> dao.search(s));
 		addSearchOption("ID", s -> searchById(s));
 		
-		addSelectionListener(selected -> {
-			setProject(selected);
-		});
-		
-		viewParticipantsButton = addButton("View Participants", e -> onViewParticipants(), true);
-		addButton("Delete Project", e -> onDeleteProject(), true);
-		addButton("Edit Project", e -> onEditProject(), true);
-		addButton("Add New Project", e -> onAddNewProject(), false);
+		addSelectionListener(selected -> setProject(selected));
+	}
+	
+	private void addComponents() {
+		addButton(viewParticipantsButton);
+		addButton(deleteButton);
+		addButton(editButton);
+		addButton(newProjectButton);
 	}
 	
 	@Override
@@ -47,20 +64,15 @@ public class ProjectsScreen extends SearchScreen<Project> {
 	}
 	
 	private List<Project> searchById(String search) {
+		Optional<Project> result = Optional.empty();
+		
 		try {
-			int id = Integer.parseInt(search);
-			
-			Optional<Project> result = dao.get(id);
-			
-			if(result.isPresent()) {
-				return Collections.singletonList(result.get());
-			} 
-			
+			result = dao.get(Integer.parseInt(search));
 		} catch (NumberFormatException e) {
 			showNoResultsDialog("ID must be a number");
 		}	
 		
-		return Collections.emptyList();
+		return result.map(Collections::singletonList).orElse(Collections.emptyList());
 	}
 	
 	public void setProject(Project project) {
@@ -69,6 +81,7 @@ public class ProjectsScreen extends SearchScreen<Project> {
 		
 		hideWidget(editProjectWidget);
 		hideWidget(participantsWidget);
+		
 		viewParticipantsButton.setText("View Participants");
 	}
 	
@@ -95,10 +108,12 @@ public class ProjectsScreen extends SearchScreen<Project> {
 			dao.delete(getSelected().getId());
 			
 			refresh();
-		} catch(Throwable e) {
+			
+		} catch (IllegalArgumentException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage());
+		} catch (Throwable e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, 
-					"Error occured deleting employee.");
+			JOptionPane.showMessageDialog(this, "Error occured deleting project.");
 		}
 	}
 	

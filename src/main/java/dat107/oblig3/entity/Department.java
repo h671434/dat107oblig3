@@ -20,13 +20,10 @@ public class Department {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int department_id;
-	
 	private String department_name;
-	
 	@OneToOne
 	@JoinColumn(name = "department_manager")
 	private Employee department_manager;
-	
 	@OneToMany(mappedBy = "department")
 	private List<Employee> employees = new ArrayList<>();
 

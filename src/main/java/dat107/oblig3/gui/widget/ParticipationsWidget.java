@@ -26,48 +26,52 @@ public class ParticipationsWidget extends Widget {
 	
 	private final Screen screen;
 	
-	private final ProjectParticipationList participationsList = 
-			new ProjectParticipationList();
-	
+	private final ProjectParticipationList participationsList;
+	private final JScrollPane listScrollPane;
 	private final ParticipationEditorWidget editorWidget;
-	
-	private final JButton deleteButton = createWidgetButton(
-			"Delete", e -> onDelete());
-	private final JButton editButton = createWidgetButton(
-			"Edit", e -> onEdit());
-	private final JButton addNewPartcipationButton = createWidgetButton(
-			"Add New Participation", e -> onAddParticipation());
-	private final JButton saveButton = createWidgetButton(
-			"Save", e -> onSave());
-	private final JButton cancelButton = createWidgetButton(
-			"Cancel", e -> onCancel());
+	private final JButton deleteButton;
+	private final JButton editButton;
+	private final JButton newPartcipationButton;
+	private final JButton saveButton;
+	private final JButton cancelButton;
 	
 	private Object selected;
 	
 	public ParticipationsWidget(String title, Screen screen) {
 		super(title);
 		this.screen = screen;
+		this.participationsList = new ProjectParticipationList();
+		this.listScrollPane = new JScrollPane(participationsList);
 		this.editorWidget = new ParticipationEditorWidget(screen);
+		this.deleteButton = createWidgetButton("Delete", e -> onDelete());
+		this.editButton = createWidgetButton("Edit", e -> onEdit());
+		this.newPartcipationButton = createWidgetButton("Add New Participation", e -> onAddParticipation());
+		this.saveButton = createWidgetButton("Save", e -> onSave());
+		this.cancelButton = createWidgetButton("Cancel", e -> onCancel());
 		
+		configureComponents();
+		addComponents();
+		screen.validate();
+	}
+	
+	private void configureComponents() {
 		editorWidget.setBorder(BorderFactory.createEmptyBorder());
 		
 		participationsList.addSelectionListener(selected -> {
 			removeField(editorWidget);
-			updateButtons(selected);
+			setEditAndCancelButtonsEnabled(selected != null);
 		});
 		
-		JScrollPane listScrollPane = new JScrollPane(
-				participationsList,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		listScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		listScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		listScrollPane.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 		
+		setEditAndCancelButtonsEnabled(false);
+	}
+	
+	private void addComponents() {
 		addFullWidthField(listScrollPane);
-		
-		setButtons(deleteButton, editButton, addNewPartcipationButton);
-		setButtonsEnabled(false);
-		
-		screen.validate();
+		setButtons(deleteButton, editButton, newPartcipationButton);
 	}
 	
 	private void onDelete() {
@@ -142,16 +146,12 @@ public class ParticipationsWidget extends Widget {
 		}
 		
 		removeField(editorWidget);
-		setButtons(deleteButton, editButton, addNewPartcipationButton);
+		setButtons(deleteButton, editButton, newPartcipationButton);
 		
 		screen.validate();
 	}
 	
-	private void updateButtons(ProjectParticipation selected) {
-		setButtonsEnabled(selected != null);
-	}
-	
-	private void setButtonsEnabled(boolean enable) {
+	private void setEditAndCancelButtonsEnabled(boolean enable) {
 		deleteButton.setEnabled(enable);
 		editButton.setEnabled(enable);
 	}
@@ -188,7 +188,7 @@ public class ParticipationsWidget extends Widget {
 	
 	public void resetWidget() {
 		removeField(editorWidget);
-		setButtons(deleteButton, editButton, addNewPartcipationButton);
+		setButtons(deleteButton, editButton, newPartcipationButton);
 		
 		screen.validate();
 	}

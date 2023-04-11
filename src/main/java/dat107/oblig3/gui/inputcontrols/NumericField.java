@@ -13,7 +13,7 @@ import javax.swing.text.DocumentFilter;
  * A textfield which only allows numbers.
  */
 @SuppressWarnings("serial")
-public class NumericField extends ToggleableTextField {
+public class NumericField extends StyledTextField {
 	
 	public NumericField(boolean withDecimals) {
 		setNumericDocumentFilter(withDecimals);

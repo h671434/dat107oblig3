@@ -17,6 +17,7 @@ import javax.swing.Scrollable;
 
 import dat107.oblig3.dao.EmployeeDAO;
 import dat107.oblig3.entity.Employee;
+import dat107.oblig3.entity.Project;
 import dat107.oblig3.gui.UITheme;
 import dat107.oblig3.gui.collection.EmployeeTable;
 import dat107.oblig3.gui.collection.EntityCollection;
@@ -26,28 +27,45 @@ import dat107.oblig3.gui.widget.ParticipationsWidget;
 @SuppressWarnings("serial")
 public class EmployeesScreen extends SearchScreen<Employee> {
 	
-	private final EmployeeEditorWidget editEmployeeWidget = 
-			new EmployeeEditorWidget(this);
-	private final ParticipationsWidget projectsWidget = 
-			new ParticipationsWidget("Projects", this);
+	private final EmployeeEditorWidget editEmployeeWidget;
+	private final ParticipationsWidget projectsWidget;
+	private final JButton viewProjectsButton;
+	private final JButton deleteButton;
+	private final JButton editButton;
+	private final JButton newEmployeeButton;
 	
-	private JButton viewProjectsButton;
-	
-	private EmployeeDAO dao = new EmployeeDAO();
+	private final EmployeeDAO dao;
 
 	public EmployeesScreen() {
+		this.editEmployeeWidget = new EmployeeEditorWidget(this);
+		this.projectsWidget = new ParticipationsWidget("Projects", this);
+		this.viewProjectsButton = 
+				createScreenButton("View Projects", e -> onViewProjects(), true);
+		this.deleteButton = 
+				createScreenButton("Delete Employee", e -> onDeleteEmployee(), true);
+		this.editButton =		
+				createScreenButton("Edit Employee", e -> onEditEmployee(), true);
+		this.newEmployeeButton = 
+				createScreenButton("Add New Employee", e -> onNewEmployee(), false);
+		this.dao = new EmployeeDAO();
+
+		configureScreen();
+		addComponents();
+	}
+	
+	private void configureScreen() {
 		addSearchOption("Any", s -> dao.search(s));
 		addSearchOption("ID", s -> searchById(s));
 		addSearchOption("Username", s -> searchByUsername(s));
-
-		addSelectionListener(selected -> {
-			setEmployee(selected);
-		});
 		
-		viewProjectsButton = addButton("View Projects", e -> onViewProjects(), true);
-		addButton("Delete Employee", e -> onDeleteEmployee(), true);
-		addButton("Edit Employee", e -> onEditEmployee(), true);
-		addButton("Add New Employee", e -> onNewEmployee(), false);
+		addSelectionListener(selected -> setEmployee(selected));
+	}
+	
+	private void addComponents() {
+		addButton(viewProjectsButton);
+		addButton(deleteButton);
+		addButton(editButton);
+		addButton(newEmployeeButton);
 	}
 
 	@Override
@@ -56,30 +74,22 @@ public class EmployeesScreen extends SearchScreen<Employee> {
 	}
 
 	private List<Employee> searchById(String search) {
+		Optional<Employee> result = Optional.empty();
+		
 		try {
-			int id = Integer.parseInt(search);
-			
-			Optional<Employee> result = dao.get(id);
-			
-			if(result.isPresent()) {
-				return Collections.singletonList(result.get());
-			} 
-			
+			result = dao.get(Integer.parseInt(search));
 		} catch (NumberFormatException e) {
 			showNoResultsDialog("ID must be a number");
 		}	
 		
-		return Collections.emptyList();
+		// Return as list, empty if no employee is found.
+		return result.map(Collections::singletonList).orElse(Collections.emptyList());
 	}
 
 	private List<Employee> searchByUsername(String search) {
 		Optional<Employee> result = dao.getByUsername(search);
 		
-		if(result.isPresent()) {
-			return Collections.singletonList(result.get());
-		} 
-
-		return Collections.emptyList();
+		return result.map(Collections::singletonList).orElse(Collections.emptyList());
 	}
 	
 	public void setEmployee(Employee selected) {

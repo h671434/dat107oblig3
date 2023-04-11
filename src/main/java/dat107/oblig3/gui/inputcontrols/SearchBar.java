@@ -33,11 +33,11 @@ public class SearchBar extends JPanel {
 	private static final Border UNFOCUSED_BORDER = 
 			BorderFactory.createLineBorder(Color.DARK_GRAY, 1, true);
 			
-	private JLabel searchByLabel = new JLabel("Search by:");
-	private JComboBox<String> searchOptions = new JComboBox<String>();
-	private JTextField searchField = new JTextField(30);
-	private JPanel outerSearchFieldPanel = new JPanel();
-	private JButton searchButton = new JButton("Search");
+	private JLabel searchByLabel;
+	private JComboBox<String> searchOptions;
+	private JTextField searchField;
+	private JPanel outerSearchFieldPanel;
+	private JButton searchButton;
 	
 	private BiConsumer<String, String> onSearch;
 
@@ -50,41 +50,30 @@ public class SearchBar extends JPanel {
 	 */
 	public SearchBar(BiConsumer<String, String> onSearch) {
 		this.onSearch = onSearch;
+		this.searchByLabel = new JLabel("Search by:");
+		this.searchOptions = new JComboBox<String>();
+		this.searchField = new JTextField(30);
+		this.outerSearchFieldPanel = new JPanel();
+		this.searchButton = new JButton("Search");
 		
+		configureSearchBar();
+		configureComponents();
+		addComponents();
+	}
+	
+	private void configureSearchBar() {
 		setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 		setLayout(new FlowLayout());
 		setAlignmentX(CENTER_ALIGNMENT);
-
-		searchField.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-					search();
-					
-					searchField.transferFocus();
-				}	
-			}
-		});
-		
-		outerSearchFieldPanel.add(searchField);
-		
-		searchButton.addActionListener(e -> search());
-		
-		designComponents();
-
-		add(searchByLabel);
-		add(searchOptions);
-		add(outerSearchFieldPanel);
-		add(searchButton);
 	}
 	
-	private void designComponents() {
-		designComboBox();
-		designSearchField();
-		designSearchButton();
+	private void configureComponents() {
+		configureComboBox();
+		configureSearchField();
+		configureSearchButton();
 	}
 	
-	private void designComboBox() {
+	private void configureComboBox() {
 		searchByLabel.setForeground(UITheme.DEFAULT_TEXT_COLOR);
 		
 		searchOptions.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
@@ -101,7 +90,7 @@ public class SearchBar extends JPanel {
 
 			@Override
 			public void configureArrowButton() {
-				super.configureArrowButton(); //Do not forget this!
+				super.configureArrowButton(); 
 				arrowButton.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
 				arrowButton.setForeground(UITheme.LIGHT_ACCENT_COLOR);
 				arrowButton.setBorder(BorderFactory.createLineBorder(UITheme.ALTERNATIVE_BACKGROUND_COLOR, 5));
@@ -109,46 +98,41 @@ public class SearchBar extends JPanel {
 		});
 	}
 	
-	private void designSearchField() {
+	private void configureSearchField() {
 		searchField.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
 		searchField.setForeground(UITheme.DEFAULT_TEXT_COLOR);
 		searchField.setCaretColor(UITheme.LIGHT_ACCENT_COLOR);
 		searchField.setBorder(BorderFactory.createEmptyBorder());
-		searchField.addFocusListener(new FocusListener() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				searchField.setForeground(UITheme.DEFAULT_TEXT_COLOR);
-				outerSearchFieldPanel.setBorder(FOCUSED_BORDER);
-			}
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				searchField.setForeground(UITheme.LIGHT_ACCENT_COLOR);
-				outerSearchFieldPanel.setBorder(UNFOCUSED_BORDER);
-			}
-		});
+		searchField.addFocusListener(new SearchFieldListener());
+		searchField.addKeyListener(new SearchFieldListener());
 		
 		outerSearchFieldPanel.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
 		outerSearchFieldPanel.setBorder(UNFOCUSED_BORDER);
+		
+		outerSearchFieldPanel.add(searchField);
 	}
 	
-	private void designSearchButton() {
+	private void configureSearchButton() {
 		searchButton.setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
 		searchButton.setForeground(UITheme.DEFAULT_TEXT_COLOR);
 		searchButton.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, UITheme.LIGHT_ACCENT_COLOR));
 		searchButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		searchButton.setPreferredSize(new Dimension(85, 32));
 		searchButton.setFocusPainted(false);
+		searchButton.addActionListener(e -> search());
+	}
+	
+	private void addComponents() {
+		add(searchByLabel);
+		add(searchOptions);
+		add(outerSearchFieldPanel);
+		add(searchButton);
 	}
 	
 	public void search() {
 		onSearch.accept((String) searchOptions.getSelectedItem(), searchField.getText());
 	}
 
-	/**
-	 * Adds a string to the searchOptions combobox for the user to select.
-	 * The action for each option is handled outside of this class.
-	 */
 	public void addSearchOption(String option) {
 		searchOptions.addItem(option);
 	}
@@ -156,4 +140,30 @@ public class SearchBar extends JPanel {
 	public void removeText() {
 		searchField.setText("");
 	}
+	
+	public class SearchFieldListener extends KeyAdapter implements FocusListener {
+		
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				search();
+				
+				searchField.transferFocus();
+			}	
+		}
+		
+		@Override
+		public void focusGained(FocusEvent e) {
+			searchField.setForeground(UITheme.DEFAULT_TEXT_COLOR);
+			outerSearchFieldPanel.setBorder(FOCUSED_BORDER);
+		}
+
+		@Override
+		public void focusLost(FocusEvent e) {
+			searchField.setForeground(UITheme.LIGHT_ACCENT_COLOR);
+			outerSearchFieldPanel.setBorder(UNFOCUSED_BORDER);
+		}
+		
+	}
+	
 }

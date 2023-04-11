@@ -71,7 +71,7 @@ public class ProjectDAO extends DAO<Project>{
 		}
 	}
 	
-	// addEmployeeToProject methods are added in this class for easy availability.
+	// addEmployeeToProject methods are added in this class aswell for availability.
 	public void addEmployeeToProject(int employeeId, int projectId,
 			String role, int hours) throws Throwable {
 		new EmployeeDAO().addEmployeeToProject(employeeId, projectId, role, hours);

@@ -11,7 +11,7 @@ import dat107.oblig3.gui.UITheme;
 import dat107.oblig3.gui.inputcontrols.DateField;
 import dat107.oblig3.gui.inputcontrols.EntityComboBox;
 import dat107.oblig3.gui.inputcontrols.NumericField;
-import dat107.oblig3.gui.inputcontrols.ToggleableTextField;
+import dat107.oblig3.gui.inputcontrols.StyledTextField;
 import dat107.oblig3.gui.screen.Screen;
 
 @SuppressWarnings("serial")
@@ -19,38 +19,43 @@ public class EmployeeEditorWidget extends Widget {
 	
 	private final Screen screen;
 	
-	private final JTextField id = new ToggleableTextField(10);
-	private final JTextField username = new ToggleableTextField(10);
-	private final JTextField firstName = new ToggleableTextField(10);
-	private final JTextField lastName = new ToggleableTextField(10);
-	private final DateField employmentDate = new DateField();
-	private final JTextField position = new ToggleableTextField(10);
-	private final NumericField salary = new NumericField(10, true);
-	private final EntityComboBox<Department> department = 
-			EntityComboBox.createDepartmentComboBox();
+	private final JTextField id;
+	private final JTextField username;
+	private final JTextField firstName;
+	private final JTextField lastName;
+	private final DateField employmentDate;
+	private final JTextField position;
+	private final NumericField salary;
+	private final EntityComboBox<Department> department;
+	private final JButton saveButton;
+	private final JButton cancelButton;
 	
-	private final JButton saveButton = createWidgetButton("Save", e -> onSave());
-	private final JButton cancelButton = createWidgetButton("Cancel", e -> onCancel());
-	
-	private EmployeeDAO dao = new EmployeeDAO();
+	private final EmployeeDAO dao;
 	private Employee employee;
 	
 	public EmployeeEditorWidget(Screen screen) {
 		super("About Employee");
 		this.screen = screen;
+		this.id = new StyledTextField(10);
+		this.username = new StyledTextField(10);
+		this.firstName = new StyledTextField(10);
+		this.lastName = new StyledTextField(10);
+		this.employmentDate = new DateField();
+		this.position = new StyledTextField(10);
+		this.salary = new NumericField(10, true);
+		this.department = EntityComboBox.createDepartmentComboBox();
+		this.saveButton = createWidgetButton("Save", e -> onSave());
+		this.cancelButton = createWidgetButton("Cancel", e -> onCancel());
+		this.dao = new EmployeeDAO();
 		
+		configureComponents();
+		addComponents();
+	}
+	 
+	private void configureComponents() {
 		id.setEditable(false);
 		employmentDate.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);	
 		department.setPreferredSize(position.getPreferredSize());
-		
-		addLabeledField("ID:", id, "Auto-generated");
-		addLabeledField("Username:", username, "3 characters");
-		addLabeledField("First Name:", firstName);
-		addLabeledField("Last Name", lastName);
-		addLabeledField("Date of Employment:", employmentDate, "Day/Month/Year");
-		addLabeledField("Position:", position);
-		addLabeledField("Monthly Salary:", salary);
-		addLabeledField("Department:", department);
 		
 		setAllFieldsEditable(false);
 	}
@@ -70,6 +75,17 @@ public class EmployeeEditorWidget extends Widget {
 		}
 	}
 
+	private void addComponents() {
+		addLabeledField("ID:", id, "Auto-generated");
+		addLabeledField("Username:", username, "3 characters");
+		addLabeledField("First Name:", firstName);
+		addLabeledField("Last Name", lastName);
+		addLabeledField("Date of Employment:", employmentDate, "Day/Month/Year");
+		addLabeledField("Position:", position);
+		addLabeledField("Monthly Salary:", salary);
+		addLabeledField("Department:", department);
+	}
+	
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
 		

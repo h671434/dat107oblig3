@@ -14,16 +14,22 @@ import javax.swing.border.Border;
  * or focused.
  */
 @SuppressWarnings("serial")
-public class ToggleableTextField extends JTextField {
+public class StyledTextField extends JTextField {
 
 	public static final Color DEFAULT_BACKGROUND = Color.DARK_GRAY;
+	
 	public static final Color DEFAULT_EDITABLE_FOREGROUND = Color.LIGHT_GRAY;
+	
 	public static final Color DEFAULT_UNEDITABLE_FOREGROUND = Color.WHITE;
+	
 	public static final Color DEFAULT_FOCUSED_FOREGROUND = Color.WHITE;
+	
 	public static final Border DEFAULT_EDITABLE_BORDER = 
 			BorderFactory.createLineBorder(DEFAULT_EDITABLE_FOREGROUND, 1, true);
+	
 	public static final Border DEFAULT_UNEDITABLE_BORDER = 
 			BorderFactory.createLineBorder(DEFAULT_BACKGROUND, 1, true);
+	
 	public static final Border DEFAULT_FOCUSED_BORDER =
 			BorderFactory.createLineBorder(Color.WHITE, 1, true);
 	
@@ -37,7 +43,7 @@ public class ToggleableTextField extends JTextField {
 	private Border uneditableBorder = DEFAULT_UNEDITABLE_BORDER;
 	private Border focusedBorder = DEFAULT_FOCUSED_BORDER;
 	
-	public ToggleableTextField() {
+	public StyledTextField() {
 		addFocusListener(focusListener);
 		
 		setCaretColor(Color.WHITE);
@@ -45,7 +51,7 @@ public class ToggleableTextField extends JTextField {
 	}
 	
 	
-	public ToggleableTextField(int columns) {
+	public StyledTextField(int columns) {
 		super(columns);
 		
 		addFocusListener(focusListener);

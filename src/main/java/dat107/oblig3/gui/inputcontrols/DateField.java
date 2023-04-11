@@ -15,11 +15,19 @@ public class DateField extends JPanel {
 
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyy");
 	
-	private NumericField day = new NumericField(2);
-	private NumericField month = new NumericField(2);
-	private NumericField year = new NumericField(4);
+	private final NumericField day;
+	private final NumericField month;
+	private final NumericField year;
 	
 	public DateField() {
+		this.day = new NumericField(2);
+		this.month = new NumericField(2);
+		this.year = new NumericField(4);
+		
+		addComponents();
+	}
+	
+	private void addComponents() {
 		add(day);
 		add(month);
 		add(year);

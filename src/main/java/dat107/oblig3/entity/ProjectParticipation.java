@@ -16,14 +16,11 @@ public class ProjectParticipation {
 	@ManyToOne
 	@JoinColumn(name = "employee")
 	private Employee employee;
-	
 	@Id 
 	@ManyToOne
 	@JoinColumn(name = "project")
 	private Project project;
-	
 	private String role = "Team Member";
-	
 	private int hours_worked = 0;
 	
 	public ProjectParticipation() {}
