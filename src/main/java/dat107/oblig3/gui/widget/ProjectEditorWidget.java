@@ -107,14 +107,14 @@ public class ProjectEditorWidget extends Widget {
 	}
 	
 	public void newProject() {
+		setProject(null);
+		
 		setTitle("New Project");
-		
 		emptyAllFields();
-		
-		idField.setText("Generated");
-		
 		setAllFieldsEditable(true);
 		setButtons(cancelButton, saveButton);
+		
+		idField.setText("Generated");
 	}
 	
 	private void onSave() {

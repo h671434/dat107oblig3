@@ -91,7 +91,7 @@ CREATE TABLE project_participations(
 	hours_worked INTEGER,
 	CONSTRAINT pk_project_participation PRIMARY KEY(employee, project),
 	CONSTRAINT fk_employee FOREIGN KEY(employee)
-		REFERENCES employees(employee_id) ON DELETE CASCADE,
+		REFERENCES employees(employee_id),
 	CONSTRAINT fk_project FOREIGN KEY(project)
 		REFERENCES projects(project_id)
 );		

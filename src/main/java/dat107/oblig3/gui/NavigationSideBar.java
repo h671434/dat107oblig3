@@ -86,7 +86,6 @@ public class NavigationSideBar extends JPanel {
 		}
 		
 		selectedButton = button;
-		
 		selectedButton.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);
 	}
 }

@@ -78,6 +78,8 @@ public class ParticipationEditorWidget extends Widget {
 		
 		employeeComboBox.setSelectedItem(employee);
 		projectComboBox.setSelectedItem(project);
+		roleField.setText(participationToEdit.getRole());
+		hoursField.setText(participationToEdit.getHoursWorked() + "");
 	}
 	
 	private void enableComboBoxes(boolean enable) {
@@ -117,6 +119,7 @@ public class ParticipationEditorWidget extends Widget {
 	
 	private void saveExistingParticipation() {
 		if(!validqteFieldInputsForExistingEmployee()) {
+			showErrorMessage("Invalid input");
 			return;
 		}
 		
@@ -192,6 +195,7 @@ public class ParticipationEditorWidget extends Widget {
 	
 	private void saveNewParticipation() {
 		if(!validateFieldInputsForNewParticipation()) {
+			showErrorMessage("Invalid input");
 			return;
 		}
 		

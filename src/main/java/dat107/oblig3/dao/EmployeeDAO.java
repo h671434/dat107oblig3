@@ -287,6 +287,7 @@ public class EmployeeDAO extends DAO<Employee> {
 			tx.commit();
 			
 		} catch (Throwable e) {
+			e.printStackTrace();
 			if ((tx != null) && (tx.isActive())) {
 				tx.rollback();
 			}

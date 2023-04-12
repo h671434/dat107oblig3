@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -13,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import dat107.oblig3.dao.EmployeeDAO;
+import dat107.oblig3.dao.ProjectDAO;
 import dat107.oblig3.entity.Employee;
 import dat107.oblig3.entity.Project;
 import dat107.oblig3.entity.ProjectParticipation;
@@ -137,7 +140,7 @@ public class ParticipationsWidget extends Widget {
 		
 		editorWidget.save();
 		
-		onCancel();
+		screen.refresh();
 	}
 	
 	private void onCancel() {
@@ -145,10 +148,7 @@ public class ParticipationsWidget extends Widget {
 			return;
 		}
 		
-		removeField(editorWidget);
-		setButtons(deleteButton, editButton, newPartcipationButton);
-		
-		screen.validate();
+		resetWidget();
 	}
 	
 	private void setEditAndCancelButtonsEnabled(boolean enable) {
